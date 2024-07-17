@@ -10,7 +10,19 @@ use Spatie\Permission\Models\Permission;
 
 Route::get('/', function () {
     return view('welcome');
-    $role = Role::create(['name' => 'admin', 'guard_name' => 'api']);
+
+    // $permission = Permission::create(['name'=> 'add vehicle', 'guard_name'=>'api']);
+
+    $role = Spatie\Permission\Models\Role::create(['name' => 'ticket seller', 'guard_name' => 'api']);
+
+    $permission = Spatie\Permission\Models\Permission::create(['name'=>'add ticket record', 'guard_name'=>'api']);  
+    $permission2 = Spatie\Permission\Models\Permission::create(['name'=>'update ticket record', 'guard_name'=>'api']); 
+    $permission3 = Spatie\Permission\Models\Permission::create(['name'=>'delete ticket record', 'guard_name'=>'api']); 
+
+    $role = Spatie\Permission\Models\Role::create(['name'=>'ticket seller','guard_name'=>'api']); 
+    $role->givePermissionTo($permission);  
+    $role->givePermissionTo($permission2); 
+    $role->givePermissionTo($permission3); 
 });
 
 Route::get('auth/google/redirect', function(){
