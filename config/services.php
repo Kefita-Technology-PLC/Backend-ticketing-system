@@ -35,10 +35,16 @@ return [
         ],
     ],
 
-    'google' => [
-        'client_id' => env('GOOGLE_CLIENT_ID'),
-        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-        'redirect' => env('GOOGLE_REDIRECT')
-    ]
+    'google_admin' => [
+        'client_id' => env('GOOGLE_ADMIN_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_ADMIN_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI_ADMIN'),
+    ],
+    
+    'google_ticket_seller' => [
+        'client_id' => env('GOOGLE_TICKET_SELLER_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_TICKET_SELLER_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI_TICKET_SELLER'),
+    ],
 
 ];

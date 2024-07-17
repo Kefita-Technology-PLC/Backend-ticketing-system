@@ -7,26 +7,36 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
+use Spatie\Permission\Models\Role;
+use Laravel\Socialite\Two\GoogleProvider;
 
 class GoogleAuthController extends Controller
 {
     public function redirectToGoogle(){
-        return Socialite::driver('google')->redirect();
+        return Socialite::buildProvider(
+            GoogleProvider::class,
+            config('services.google_admin')
+        )->redirect();
+
     }
 
-    public function handleGoogleCallback(Request $request){
+    public function handleGoogleCallback(){
         try{
-            $googleUser  = Socialite::driver("google")->stateless()->user();
+            $googleUser = Socialite::buildProvider(
+                \Laravel\Socialite\Two\GoogleProvider::class,
+                config('services.google_admin')
+            )->stateless()->user();
+
             $user = User::where('google_id', $googleUser->id)->first();
     
             if($user){
                 Auth::login($user);
                 return response()->json([
                     'status' => true,
-                    'message' => 'User logged in successfully',
+                    'message' => 'Admin logged in successfully',
                     'token' => $user->createToken('API TOKEN')->plainTextToken,
                 ]);
-            } else{
+            } 
                 $user = User::updateOrCreate([
                     'google_id' => $googleUser->id
                 ],[
@@ -36,14 +46,16 @@ class GoogleAuthController extends Controller
                 ]);
     
                 //Assign admin role
-                $user->assignRole('admin');
+                $adminRole = Role::where('name', 'admin')->where('guard_name', 'api')->first();
+                $user->assignRole($adminRole);
+
                 Auth::login($user);
                 return response()->json([
                     'status'=>true,
                     'message' => 'User has registered and logged in successfully',
                     'token' => $user->createToken('API TOKEN')->plainTextToken,
                 ]);
-            }
+            
     
         }catch(\Exception $e){
             return response()->json([
@@ -55,12 +67,19 @@ class GoogleAuthController extends Controller
     }
 
     public function redirectToGoogleForTicketSeller(){
-        return Socialite::driver('google')->redirect();
+        return Socialite::buildProvider(
+            \Laravel\Socialite\Two\GoogleProvider::class,
+            config('services.google_ticket_seller')
+        )->redirect();
     }
 
-    public function handleGoogleCallbackForTicketSeller(Request $request){
+    public function handleGoogleCallbackForTicketSeller(){
         try {
-            $googleUser = Socialite::driver('google')->stateless()->user();
+            $googleUser = Socialite::buildProvider(
+                \Laravel\Socialite\Two\GoogleProvider::class,
+                config('services.google_ticket_seller')
+            )->stateless()->user();
+
             $user = User::where('google_id', $googleUser->id)->first();
 
             if ($user) {
@@ -75,7 +94,9 @@ class GoogleAuthController extends Controller
                 ]);
 
                 // Assign role for ticket sellers
-                $user->assignRole('ticket seller');
+                $ticketSeller = Role::where('name', 'ticket seller')->where('guard_name', 'api')->first();
+                $user->assignRole($ticketSeller);
+
                 Auth::login($user);
             }
 
