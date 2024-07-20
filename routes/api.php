@@ -10,8 +10,9 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+Route::post('/admin-register', [SessionController::class, 'adminRegister']);
 
-Route::post('/register', [SessionController::class, 'register']);
+Route::post('/ticket-seller-register', [SessionController::class, 'ticketSellerRegister']);
 
 Route::post('/login', [SessionController::class, 'login'])->middleware('auth:sanctum', 'verified');
 

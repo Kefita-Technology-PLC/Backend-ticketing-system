@@ -8,10 +8,11 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Permission\Models\Role;
 
 class SessionController extends Controller
 {
-    public function register(Request $request)
+    public function adminRegister(Request $request)
     {
         $attrs = Validator::make($request->all(),[
             'name'=> 'required',
@@ -35,9 +36,49 @@ class SessionController extends Controller
 
         event(new Registered($user));
         $user->sendEmailVerificationNotification();
+        $adminRole = Role::where('name', 'admin')->where('guard_name', 'api')->first();
+        $user->assignRole($adminRole);
         return response()->json([
             'status' => true,
-            'message' => 'User Created Successfully. Email Verification link sent',
+            'message' => 'Admin User Created Successfully. Email Verification link sent',
+            'token' => $user->createToken("API TOKEN")->plainTextToken,
+            'data'=>[
+                'user'=> $user,
+            ]
+        ]);
+    }
+
+    public function ticketSellerRegister(Request $request)
+    {
+        $attrs = Validator::make($request->all(),[
+            'name'=> 'required',
+            'email'=> 'required|email|unique:users,email',
+            'password'=> 'required',
+        ]);
+
+        if($attrs->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation Error',
+                'errors' => $attrs->errors()
+            ], 401);
+        }
+
+        $user = User::create([
+            'name'=> $request->name,
+            'email' => $request->email,
+            'password'=> $request->password,
+        ]);
+
+        event(new Registered($user));
+        $user->sendEmailVerificationNotification();
+
+        $ticketSeller = Role::where('name', 'ticket seller')->where('guard_name', 'api')->first();
+        $user->assignRole($ticketSeller);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Ticket Seller User Created Successfully. Email Verification link sent',
             'token' => $user->createToken("API TOKEN")->plainTextToken,
             'data'=>[
                 'user'=> $user,
