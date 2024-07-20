@@ -18,6 +18,8 @@ Route::post('/login', [SessionController::class, 'login'])->middleware('auth:san
 
 Route::post('/logout', [SessionController::class, 'logout'])->middleware('auth:sanctum', 'verified');
 
+Route::delete('/delete', [SessionController::class, 'destroy'])->middleware('auth:sanctum', 'verified');
+
 Route::get('/verified-middleware', function(){
     return response()->json([
         'message'=> 'The email account is already confirmed now you are able to see this message...',

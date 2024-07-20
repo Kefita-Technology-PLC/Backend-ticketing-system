@@ -8,6 +8,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password as RulesPassword;
 use Spatie\Permission\Models\Role;
 
 class SessionController extends Controller
@@ -15,9 +16,9 @@ class SessionController extends Controller
     public function adminRegister(Request $request)
     {
         $attrs = Validator::make($request->all(),[
-            'name'=> 'required',
+            'name'=> 'required|string',
             'email'=> 'required|email|unique:users,email',
-            'password'=> 'required',
+            'password'=> ['required',RulesPassword::min(6), 'confirmed'],
         ]);
 
         if($attrs->fails()){
@@ -53,7 +54,7 @@ class SessionController extends Controller
         $attrs = Validator::make($request->all(),[
             'name'=> 'required',
             'email'=> 'required|email|unique:users,email',
-            'password'=> 'required',
+            'password'=> ['required', RulesPassword::min(6)],
         ]);
 
         if($attrs->fails()){
@@ -91,7 +92,7 @@ class SessionController extends Controller
         try{
             $attrs = Validator::make($request->all(), [
                 'email'=> 'required|email',
-                'password'=> 'required',
+                'password'=> ['required', RulesPassword::min(6)],
             ]);
     
             if($attrs->fails()){
@@ -124,7 +125,7 @@ class SessionController extends Controller
         }
     }
 
-    public function destroy(Request $request)
+    public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
         return response()->json(
@@ -141,6 +142,14 @@ class SessionController extends Controller
             'message'=> 'Profile Information',
             'data'=> $user,
             'id'=> auth()->user()->id
+        ]);
+    }
+
+    public function destroy(Request $request){
+        $request->user()->delete();
+        return response()->json([
+            'status' => true,
+            'message' => 'User Deleted Successfully'
         ]);
     }
 }
