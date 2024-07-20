@@ -23,7 +23,7 @@ class GoogleAuthController extends Controller
     public function handleGoogleCallback(){
         try{
             $googleUser = Socialite::buildProvider(
-                \Laravel\Socialite\Two\GoogleProvider::class,
+                GoogleProvider::class,
                 config('services.google_admin')
             )->stateless()->user();
 
@@ -68,7 +68,7 @@ class GoogleAuthController extends Controller
 
     public function redirectToGoogleForTicketSeller(){
         return Socialite::buildProvider(
-            \Laravel\Socialite\Two\GoogleProvider::class,
+            GoogleProvider::class,
             config('services.google_ticket_seller')
         )->redirect();
     }
@@ -76,7 +76,7 @@ class GoogleAuthController extends Controller
     public function handleGoogleCallbackForTicketSeller(){
         try {
             $googleUser = Socialite::buildProvider(
-                \Laravel\Socialite\Two\GoogleProvider::class,
+                GoogleProvider::class,
                 config('services.google_ticket_seller')
             )->stateless()->user();
 

@@ -18,3 +18,5 @@ Route::get('auth/google/callback',[GoogleAuthController::class, 'handleGoogleCal
 
 Route::get('auth/google/ticket-seller/redirect', [GoogleAuthController::class, 'redirectToGoogleForTicketSeller']);
 Route::get('auth/google/ticket-seller/callback', [GoogleAuthController::class, 'handleGoogleCallbackForTicketSeller']);
+
+
