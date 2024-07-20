@@ -26,7 +26,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            Schema::dropIfExists('users');
+            $table->dropColumn('phone_no');
+            $table->dropConstrainedForeignIdFor(Station::class);
+            $table->dropColumn('gender');
+            $table->dropColumn('salary');
         });
     }
 };

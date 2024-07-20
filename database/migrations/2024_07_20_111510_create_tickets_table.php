@@ -16,11 +16,11 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class)->constrained('users')->cascadeOnDelete();
-            $table->foreignIdFor(Vehicle::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(User::class)->constrained('users');
+            $table->foreignIdFor(Vehicle::class)->constrained();
             $table->enum('level', ['level1', 'level2', 'level3']);
             $table->integer('number_of_passengers');
-            $table->foreignIdFor(Destination::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Destination::class)->constrained();
             $table->decimal('price', 8, 2);
             $table->decimal('service_price', 8, 2);
             $table->boolean('sold_status');

@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('tariffs', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Station::class);
-            $table->foreignIdFor(Destination::class);
+            $table->foreignIdFor(Station::class)->constrained();
+            $table->foreignIdFor(Destination::class)->constrained();
             $table->integer('distance');
             $table->integer('number_of_passengers');
             $table->decimal('level1_price', 8, 2);
