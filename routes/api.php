@@ -31,3 +31,4 @@ Route::post('verify-email/{id}/{hash}', [EmailVerificationController::class, 've
 Route::post('forgot-password', [NewPasswordController::class, 'forgotPassword']);
 
 Route::post('reset-password', [NewPasswordController::class, 'reset']);
+
