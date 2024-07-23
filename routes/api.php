@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\EmailVerificationController;
 use App\Http\Controllers\Api\NewPasswordController;
 use App\Http\Controllers\Api\SessionController;
+use App\Http\Controllers\Api\StationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -33,4 +34,8 @@ Route::post('verify-email/{id}/{hash}', [EmailVerificationController::class, 've
 Route::post('forgot-password', [NewPasswordController::class, 'forgotPassword']);
 
 Route::post('reset-password', [NewPasswordController::class, 'reset']);
+
+Route::middleware('auth:sanctum')->group(function(){
+    Route::resource('stations', StationController::class)->middleware(['role:admin']);
+});
 
