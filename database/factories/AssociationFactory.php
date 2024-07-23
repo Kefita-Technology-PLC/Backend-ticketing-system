@@ -17,7 +17,8 @@ class AssociationFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => fake()->company,
+            'establishment_date' => fake()->date(),
         ];
     }
 }

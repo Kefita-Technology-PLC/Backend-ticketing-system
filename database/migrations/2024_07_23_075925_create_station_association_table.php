@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Association;
 use App\Models\Station;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -12,11 +13,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('associations', function (Blueprint $table) {
+        Schema::create('station_association', function (Blueprint $table) {
             $table->id();
-            // $table->foreignIdFor(Station::class)->constrained();
-            $table->string('name');
-            $table->date('establishment_date');
+            $table->foreignIdFor(Station::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Association::class)->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('associations');
+        Schema::dropIfExists('station_association');
     }
 };

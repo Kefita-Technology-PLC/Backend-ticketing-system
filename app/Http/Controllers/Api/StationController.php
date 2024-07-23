@@ -17,7 +17,20 @@ class StationController extends Controller
     {
         return new StationCollection(Station::all());
     }
-        //
+    
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $attrs = $request->validate([
+            'name'=> ['required', 'unique:stations,name', 'max:100'],
+            'location' => ['required', 'max:50']
+        ]);
+
+        $station = Station::create($attrs);
+        return new StationResource($station);
+    }
     
 
     /**

@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Vehicle extends Model
 {
     use HasFactory;
+
+    public function station(){
+        return $this->belongsTo(Station::class);
+    }
+
+    public function association(){
+        return $this->belongsTo(Association::class);
+    }
 }

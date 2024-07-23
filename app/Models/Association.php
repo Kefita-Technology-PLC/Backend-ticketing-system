@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Association extends Model
 {
     use HasFactory;
+
+    public function stations(){
+        return $this->belongsToMany(Station::class);
+    }
 }
