@@ -14,17 +14,17 @@ Route::post('/admin-register', [SessionController::class, 'adminRegister']);
 
 Route::post('/ticket-seller-register', [SessionController::class, 'ticketSellerRegister']);
 
-Route::post('/login', [SessionController::class, 'login'])->middleware('auth:sanctum', 'verified');
+Route::post('/login', [SessionController::class, 'login']);
 
 Route::post('/logout', [SessionController::class, 'logout'])->middleware('auth:sanctum', 'verified');
 
-Route::delete('/delete', [SessionController::class, 'destroy'])->middleware('auth:sanctum', 'verified');
+Route::delete('/delete', [SessionController::class, 'destroy'])->middleware('auth:sanctum');
 
 Route::get('/verified-middleware', function(){
     return response()->json([
         'message'=> 'The email account is already confirmed now you are able to see this message...',
     ], 201);
-})->middleware('auth:sanctum', 'verified');
+})->middleware('auth:sanctum');
 
 Route::post('email/verification-notification', [EmailVerificationController::class, 'sendVerificationEmail'])->middleware('auth:sanctum');
 

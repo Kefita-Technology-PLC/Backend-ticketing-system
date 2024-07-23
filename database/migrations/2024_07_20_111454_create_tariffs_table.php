@@ -22,6 +22,7 @@ return new class extends Migration
             $table->decimal('level1_price', 8, 2);
             $table->decimal('level2_price', 8, 2);
             $table->decimal('level3_price', 8, 2);
+            $table->decimal('total_triff');
             $table->timestamps();
         });
     }

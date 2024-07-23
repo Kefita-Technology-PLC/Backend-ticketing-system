@@ -18,7 +18,8 @@ class SessionController extends Controller
         $attrs = Validator::make($request->all(),[
             'name'=> 'required|string',
             'email'=> 'required|email|unique:users,email',
-            'password'=> ['required',RulesPassword::min(6), 'confirmed'],
+           'phone_no' => ['required', 'regex:/^(09|07)[0-9]{8}$/', 'unique:users,phone_no'],
+            'password'=> ['required',RulesPassword::min(4), 'confirmed'],
         ]);
 
         if($attrs->fails()){
@@ -32,6 +33,7 @@ class SessionController extends Controller
         $user = User::create([
             'name'=> $request->name,
             'email' => $request->email,
+            'phone_no' => $request->phone_no,
             'password'=> $request->password,
         ]);
 
@@ -54,7 +56,8 @@ class SessionController extends Controller
         $attrs = Validator::make($request->all(),[
             'name'=> 'required',
             'email'=> 'required|email|unique:users,email',
-            'password'=> ['required', RulesPassword::min(6)],
+            'phone_no' => ['required', 'regex:/^(09|07)[0-9]{8}$/','unique:users,phone_no'],
+            'password'=> ['required', RulesPassword::min(4)],
         ]);
 
         if($attrs->fails()){
@@ -68,6 +71,7 @@ class SessionController extends Controller
         $user = User::create([
             'name'=> $request->name,
             'email' => $request->email,
+            'phone_no' => $request->phone_no,
             'password'=> $request->password,
         ]);
 
@@ -91,7 +95,8 @@ class SessionController extends Controller
     {
         try{
             $attrs = Validator::make($request->all(), [
-                'email'=> 'required|email',
+                //'email'=> 'required|email',
+                'phone_no' => ['required', 'regex:/^(09|07)[0-9]{8}$/'],
                 'password'=> ['required', RulesPassword::min(6)],
             ]);
     
@@ -103,14 +108,14 @@ class SessionController extends Controller
                 ], 401);
             }
 
-            if(!Auth::attempt($request->only(['email', 'password']))){
+            if(!Auth::attempt($request->only(['phone_no', 'password']))){
                 return response()->json([
                     'status' => false,
                     'message' => 'The credintials do not match',
                 ], 401);
             }
 
-            $user = User::where('email', $request->email)->first();
+            $user = User::where('phone_no', $request->phone_no)->first();
             return response()->json([
                 'status'=> true,
                 'message'=> 'User login successfully',

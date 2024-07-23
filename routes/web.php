@@ -1,13 +1,8 @@
 <?php
 
 use App\Http\Controllers\GoogleAuthController;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Laravel\Socialite\Facades\Socialite;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 
 Route::get('/', function () {
     return view('welcome');
@@ -19,4 +14,26 @@ Route::get('auth/google/callback',[GoogleAuthController::class, 'handleGoogleCal
 Route::get('auth/google/ticket-seller/redirect', [GoogleAuthController::class, 'redirectToGoogleForTicketSeller']);
 Route::get('auth/google/ticket-seller/callback', [GoogleAuthController::class, 'handleGoogleCallbackForTicketSeller']);
 
+
+Route::get('/dummyapi', function(Request $request){
+    // $to ='0944055361';
+    // $otp = '4875';
+    // $domain = 'biruklemma.com';
+    // $id = '24516';
+     
+    // $server = 'https://sms.yegara.com/api3/send';
+    // $postData = array('to' => $to, 'otp' => $otp,  'id' =>$id,  'domain' => $domain );
+    // $content = json_encode($postData);
+    // $curl = curl_init($server);
+    // curl_setopt($curl, CURLOPT_HEADER, false);
+    // curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    // curl_setopt($curl, CURLOPT_HTTPHEADER,  array("Content-type: application/json"));
+    // curl_setopt($curl, CURLOPT_POST, true);
+    // curl_setopt($curl, CURLOPT_POSTFIELDS, $content);
+    // $json_response = curl_exec($curl);
+    // $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+    // curl_close($curl);
+    
+    // return $json_response; 
+});
 
