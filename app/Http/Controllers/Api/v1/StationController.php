@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StationCollection;
 use App\Http\Resources\StationResource;
+use App\Models\Association;
 use App\Models\Station;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class StationController extends Controller
 {
@@ -15,7 +17,8 @@ class StationController extends Controller
      */
     public function index()
     {
-        return new StationCollection(Station::all());
+        $station = Station::all();
+        return new StationCollection($station);
     }
     
     /**
@@ -25,10 +28,17 @@ class StationController extends Controller
     {
         $attrs = $request->validate([
             'name'=> ['required', 'unique:stations,name', 'max:100'],
-            'location' => ['required', 'max:50']
+            'location' => ['required', 'max:50'],
+            'associations' => ['array'],
         ]);
 
-        $station = Station::create($attrs);
+       // return $attrs['associations'];
+
+        $station = Station::create(Arr::except($attrs, 'associations'));
+        
+        foreach($attrs['associations'] as $association){
+            $station->association($association);
+        }
         return new StationResource($station);
     }
     
@@ -38,6 +48,7 @@ class StationController extends Controller
      */
     public function show(Station $station)
     {
+       // return $station;
         return new StationResource($station);
     }
 
@@ -47,11 +58,21 @@ class StationController extends Controller
     public function update(Request $request, Station $station)
     {
         $attrs = $request->validate([
-            'name'=> ['required', 'unique:stations,name', 'max:50'],
-            'location' => ['required', 'max:50']
+            'name'=> ['required', 'max:50'],
+            'location' => ['required', 'max:100'],
+            'associations' => ['array'],
         ]);
 
-        $station->update($attrs);
+        $associations = Association::pluck('name');
+        foreach($associations as $association){
+            $station->removeAssociation($association);
+        }
+
+        foreach($attrs['associations'] as $association){
+            $station->association($association);
+        }
+
+        $station->update(Arr::except($attrs, 'associations'));
         return new StationResource($station);
     }
 

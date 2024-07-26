@@ -1,12 +1,11 @@
 <?php
 
-use App\Http\Controllers\Api\EmailVerificationController;
-use App\Http\Controllers\Api\NewPasswordController;
-use App\Http\Controllers\Api\SessionController;
-use App\Http\Controllers\Api\StationController;
-use App\Http\Controllers\AssociationController;
-use App\Http\Controllers\VehicleController;
-use App\Models\Association;
+use App\Http\Controllers\Api\v1\SessionController;
+use App\Http\Controllers\Api\v1\EmailVerificationController;
+use App\Http\Controllers\Api\v1\NewPasswordController;
+use App\Http\Controllers\Api\v1\StationController;
+use App\Http\Controllers\Api\v1\AssociationController;
+use App\Http\Controllers\Api\v1\VehicleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -38,7 +37,7 @@ Route::post('forgot-password', [NewPasswordController::class, 'forgotPassword'])
 
 Route::post('reset-password', [NewPasswordController::class, 'reset']);
 
-Route::middleware('auth:sanctum')->group(function(){
+Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
     Route::resource('stations', StationController::class)->middleware(['role:admin']);
     Route::resource('associations', AssociationController::class)->middleware(['role:admin']);
     Route::resource('vehicles', VehicleController::class)->middleware(['role:admin']);

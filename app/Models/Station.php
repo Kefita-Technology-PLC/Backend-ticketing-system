@@ -12,6 +12,22 @@ class Station extends Model
     public function vechicles(){
         return $this->hasMany(Vehicle::class);
     }
+
+    public function association(string $name){
+        $association = Association::where([
+            'name' => $name,
+        ])->first();
+
+        $this->associations()->attach($association);
+    }
+
+    public function removeAssociation(string $name){
+        $association = Association::where([
+            'name' => $name,
+        ])->first();
+
+        $this->associations()->detach($association);
+    }
     
     public function associations(){
         return $this->belongsToMany(Association::class);

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\v1;
 
+use App\Http\Controllers\Controller;
 use App\Http\Resources\VehicleCollection;
 use App\Http\Resources\VehicleResource;
 use App\Models\Association;
@@ -34,9 +35,6 @@ class VehicleController extends Controller
             'station_name' => ['required'],
             'association_name'=> ['required'],
         ]);
-
-        $station = Station::where('name', $attrs['station_name'])->first();
-        $association = Association::where('name', $attrs['association_name'])->first();
 
         $stations = Station::pluck('id', 'name');
         $associations = Association::pluck('id', 'name');
@@ -80,9 +78,6 @@ class VehicleController extends Controller
             'station_name' => ['required'],
             'association_name'=> ['required'],
         ]);
-
-        $station = Station::where('name', $attrs['station_name'])->first();
-        $association = Association::where('name', $attrs['association_name'])->first();
 
         $stations = Station::pluck('id', 'name');
         $associations = Association::pluck('id', 'name');

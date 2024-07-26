@@ -12,8 +12,16 @@ class AssociationCollection extends ResourceCollection
      *
      * @return array<int|string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray(Request $request)
     {
-        return parent::toArray($request);
+        return $this->collection->transform(function($association){
+            return [
+                'id' => $association->id,
+                'name' => $association->name,
+                'establishment_date' => $association->establishment_date,
+                'created_at' => $association->created_at,
+                'updated_at' => $association->updated_at,
+            ];
+        });
     }
 }

@@ -12,10 +12,18 @@ class StationCollection extends ResourceCollection
      *
      * @return array<int|string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray(Request $request)
     {
-        return [
-            'data' => $this->collection
-        ];
+        // return [
+        //     'data' => $this->collection
+        // ];
+        return $this->collection->transform(function($station) {
+            return [
+                'id' => $station->id,
+                'name' => $station->name,
+                'location' => $station->location,
+                'associations' => new AssociationCollection($station->associations),
+            ];
+        });
     }
 }
