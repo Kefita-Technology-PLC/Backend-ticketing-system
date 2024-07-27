@@ -32,4 +32,8 @@ class Station extends Model
     public function associations(){
         return $this->belongsToMany(Association::class);
     }
+
+    public function tickets(){
+        return $this->hasMany(Ticket::class);
+    }
 }

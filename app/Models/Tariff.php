@@ -8,4 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class Tariff extends Model
 {
     use HasFactory;
+
+    public function station(){
+        return $this->belongsTo(Station::class);
+    }
+
+    public function destination(){
+       return $this->belongsTo(Destination::class);
+    }
+
+    public function deploymentLines(){
+        return $this->belongsTo(DeploymentLine::class);
+    }
 }

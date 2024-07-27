@@ -16,4 +16,8 @@ class Vehicle extends Model
     public function association(){
         return $this->belongsTo(Association::class);
     }
+
+    public function tickets(){
+        return $this->hasMany(Ticket::class);
+    }
 }

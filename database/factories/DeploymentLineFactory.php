@@ -17,7 +17,8 @@ class DeploymentLineFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'origin' => fake()->randomElement(['megenagna', 'mexico', 'ayertena', 'kotebe', 'yekabado']),
+            'destination' => fake()->randomElement(['megenagna', 'mexico', 'ayertena', 'kotebe', 'yekabado']),
         ];
     }
 }
