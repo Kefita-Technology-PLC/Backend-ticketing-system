@@ -15,7 +15,7 @@ class StationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public static $paginate = 10;
+   
     public function index()
     {
         $station = Station::latest()->paginate(env('PAGINATION_NUMBER', 15));

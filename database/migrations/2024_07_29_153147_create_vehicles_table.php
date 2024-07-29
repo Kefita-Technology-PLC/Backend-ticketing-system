@@ -18,8 +18,8 @@ return new class extends Migration
             $table->foreignIdFor(Station::class)->constrained();
             $table->foreignIdFor(Association::class)->constrained();
             $table->string('plate_number');
-            $table->enum('level', ['level1', 'level2', 'level3']);
-            $table->date('registration_date');
+            $table->enum('code',['1', '2', '3']);
+            $table->enum('level', ['level_1', 'level_2', 'level_3']);
             $table->integer('number_of_passengers');
             $table->string('car_type');
             $table->timestamps();

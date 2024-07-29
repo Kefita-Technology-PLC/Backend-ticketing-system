@@ -8,6 +8,7 @@ use App\Http\Resources\VehicleResource;
 use App\Models\Association;
 use App\Models\Station;
 use App\Models\Vehicle;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
@@ -33,12 +34,12 @@ class VehicleController extends Controller
     {
         $attrs = $request->validate([
             'plate_number' => ['required', 'unique:vehicles,plate_number'],
-            'level' => ['required', 'in:level1,level2,level3'],
-           // 'registration_date' => ['required', 'date'],
+            'level' => ['required', 'in:level_1,level_2,level_3'],
             'number_of_passengers' => ['required', 'integer',],
             'car_type' => ['required', 'max:250'],
             'station_name' => ['required'],
             'association_name'=> ['required'],
+            'code' => ['required','in:1,2,3']
         ]);
 
         $stations = Station::pluck('id', 'name');
@@ -65,6 +66,7 @@ class VehicleController extends Controller
      */
     public function show(Vehicle $vehicle)
     {
+        
         $vehicle->load(['station', 'association']);
         return new VehicleResource($vehicle);
     }
@@ -76,12 +78,12 @@ class VehicleController extends Controller
     {
         $attrs = $request->validate([
             'plate_number' => ['required',],
-            'level' => ['required', 'in:level1,level2,level3'],
-            'registration_date' => ['required', 'date'],
+            'level' => ['required', 'in:level_1,level_2,level_3'],
             'number_of_passengers' => ['required', 'integer',],
             'car_type' => ['required', 'max:250'],
             'station_name' => ['required'],
             'association_name'=> ['required'],
+            'code' => ['required','in:1,2,3']
         ]);
 
         $stations = Station::pluck('id', 'name');
@@ -107,9 +109,26 @@ class VehicleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Vehicle $vehicle)
+    public function destroy($id)
     {
-        $vehicle->delete();
-        return new VehicleCollection(Vehicle::with(['association','station'])->get());
+        try {
+            $vehicle = Vehicle::findOrFail($id);
+            $vehicle->delete();
+    
+            return response()->json([
+                'status' => true,
+                'message' => 'Vehicle Deleted Successfully.'
+            ]);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Vehicle not found.'
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'An error occurred while deleting the vehicle.'
+            ], 500);
+        }
     }
 }
