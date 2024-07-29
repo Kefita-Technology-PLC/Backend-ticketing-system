@@ -8,25 +8,24 @@ use App\Models\Ticket;
 use App\Models\User;
 use App\Models\Vehicle;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
+use App\Custom\EthiopianDateCustom;
+use Illuminate\Http\Requesst;
 
 class ReportController extends Controller
 {
     public function dailyReport(){
 
         $today = Carbon::today();
-        $ticket_numbers = Ticket::whereDate('created_at', $today)->count();
-        $vehicles = Vehicle::whereDate('created_at', $today)->count();
-        $total_price = Ticket::whereDate('created_at', $today)->sum('price');
-
-        $associations = Association::whereDate('created_at', $today)->count();
+        $ticket_numbers = Ticket::where('created_at', $today)->count();
+        $vehicles = Vehicle::where('created_at', $today)->count();
+        $total_price = Ticket::where('created_at', $today)->sum('price');
+        $associations = Association::where('created_at', $today)->count();
 
         $ticketSellersCount = User::role('ticket seller')
         ->whereHas('roles', function ($query) {
             $query->where('guard_name', 'api');
         })
         ->count();
-
 
         $adminsCount = User::role('admin')
         ->whereHas('roles', function ($query) {
@@ -57,7 +56,7 @@ class ReportController extends Controller
 
         $weeklyTotalPrice = Ticket::whereBetween('created_at', [$startOfWeek, $endOfWeek])->sum('price');
 
-        $associations = Association::whereDate('created_at',[$startOfWeek, $endOfWeek] )->count();
+        $associations = Association::whereBetween('created_at',[$startOfWeek, $endOfWeek] )->count();
 
         $ticketSellersCount = User::role('ticket seller')
         ->whereHas('roles', function ($query) {
@@ -132,9 +131,15 @@ class ReportController extends Controller
 
     }
 
-    public function yearlyReport(){
-        $startOfYear = Carbon::now()->startOfYear();
-        $endOfYear = Carbon::now()->endOfYear();
+    public function yearlyReport(Request $request){
+
+        $attrs = $request->validate([
+            'start_year' => 'required|date',
+            'end_year' => 'required|date'
+        ]);
+
+        $startOfYear = EthiopianDateCustom::input($request->start_year);
+        $endOfYear = EthiopianDateCustom::input($request->start_year);
 
         // Count the number of tickets sold this month
         $yearlyTicketNumbers = Ticket::whereBetween('created_at', [$startOfYear, $endOfYear])->count();
@@ -175,9 +180,53 @@ class ReportController extends Controller
         ]);
     }
 
-    public function customDateReport(){
+    public function customDateReport(Request $request){
 
+        $attrs = $request->validate([
+            'start_year' => 'required|date',
+            'end_year' => 'required|date'
+        ]);
+
+        $startOfYear = EthiopianDateCustom::input($request->start_year);
+        $endOfYear = EthiopianDateCustom::input($request->start_year);
+
+        // Count the number of tickets sold this month
+        $yearlyTicketNumbers = Ticket::whereBetween('created_at', [$startOfYear, $endOfYear])->count();
+
+        // Count the number of vehicles created this month
+        $yearlyVehicles = Vehicle::whereBetween('created_at', [$startOfYear, $endOfYear])->count();
+
+        // Calculate the total price of all tickets sold this month
+        $yearlyTotalPrice = Ticket::whereBetween('created_at', [$startOfYear, $endOfYear])->sum('price');
+
+        $associations = Association::whereDate('created_at',[$startOfYear, $endOfYear] )->count();
+
+        $ticketSellersCount = User::role('ticket seller')
+        ->whereHas('roles', function ($query) {
+            $query->where('guard_name', 'api');
+        })
+        ->whereBetween('created_at',[$startOfYear, $endOfYear])
+        ->count();
+
+
+        $adminsCount = User::role('admin')
+        ->whereHas('roles', function ($query) {
+            $query->where('guard_name', 'api');
+        })
+        ->whereBetween('created_at',[$startOfYear, $endOfYear])
+        ->count();
+
+        return response()->json([
+            'status' => true,
+            'data' => [
+                'ticket_numbers' => $yearlyTicketNumbers,
+                'vehicles' => $yearlyVehicles,
+                'total_price' => $yearlyTotalPrice,
+                'ticket_sellers' => $ticketSellersCount,
+                'admins' => $adminsCount,
+                'associations_number' => $associations,
+            ]
+        ]);
     }
-
 
 }

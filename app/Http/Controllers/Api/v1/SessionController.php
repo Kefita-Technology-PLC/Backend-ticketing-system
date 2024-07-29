@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\EmailVerificationSend;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
@@ -37,8 +38,7 @@ class SessionController extends Controller
             'password'=> $request->password,
         ]);
 
-        event(new Registered($user));
-        $user->sendEmailVerificationNotification();
+        EmailVerificationSend::dispatch($user);
         $adminRole = Role::where('name', 'admin')->where('guard_name', 'api')->first();
         $user->assignRole($adminRole);
         return response()->json([
@@ -75,12 +75,11 @@ class SessionController extends Controller
             'password'=> $request->password,
         ]);
 
-        event(new Registered($user));
-        $user->sendEmailVerificationNotification();
+        EmailVerificationSend::dispatch($user);
 
         $ticketSeller = Role::where('name', 'ticket seller')->where('guard_name', 'api')->first();
         $user->assignRole($ticketSeller);
-
+        
         return response()->json([
             'status' => true,
             'message' => 'Ticket Seller User Created Successfully. Email Verification link sent',
