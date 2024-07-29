@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\v1;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Jobs\SendPasswordResetLink;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
@@ -18,18 +19,21 @@ class NewPasswordController extends Controller
             'email' => 'required|email',
         ]);
 
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
 
-        if ($status == Password::RESET_LINK_SENT) {
-            return response()->json([
-                'status' => __($status)
-            ]);
-        }
+        SendPasswordResetLink::dispatch($request->only('email')['email']);
 
-        throw ValidationException::withMessages([
-            'email' => [trans($status)],
+        // if ($status == Password::RESET_LINK_SENT) {
+        //     return response()->json([
+        //         'status' => __($status)
+        //     ]);
+        // }
+
+        // throw ValidationException::withMessages([
+        //     'email' => [trans($status)],
+        // ]);
+
+        return response()->json([
+            'status' => 'Reset link will be sent shortly.'
         ]);
     }
 
@@ -37,12 +41,12 @@ class NewPasswordController extends Controller
     {
         $request->validate([
             'token' => 'required',
-            'email' => 'required|email',
+            'phone_no' => 'required',
             'password' => ['required', 'confirmed',],
         ]);
 
         $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
+            $request->only('phone_no', 'password', 'password_confirmation', 'token'),
             function ($user) use ($request) {
                 $user->forceFill([
                     'password' => Hash::make($request->password),

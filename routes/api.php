@@ -22,7 +22,7 @@ Route::post('/ticket-seller-register', [SessionController::class, 'ticketSellerR
 
 Route::post('/login', [SessionController::class, 'login']);
 
-Route::post('/logout', [SessionController::class, 'logout'])->middleware('auth:sanctum', 'verified');
+Route::post('/logout', [SessionController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::delete('/delete', [SessionController::class, 'destroy'])->middleware('auth:sanctum');
 
