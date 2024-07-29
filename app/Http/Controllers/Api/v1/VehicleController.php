@@ -16,9 +16,14 @@ class VehicleController extends Controller
     /**
      * Display a listing of the resource.
      */
+    
     public function index()
     {
-        return new VehicleCollection(Vehicle::with(['association','station'])->get());
+        $vehicles = Vehicle::with(['association', 'station'])
+        ->latest()
+        ->paginate(env("PAGINATION_NUMBER", 15));
+
+        return new VehicleCollection($vehicles);
     }
 
     /**
@@ -29,7 +34,7 @@ class VehicleController extends Controller
         $attrs = $request->validate([
             'plate_number' => ['required', 'unique:vehicles,plate_number'],
             'level' => ['required', 'in:level1,level2,level3'],
-            'registration_date' => ['required', 'date'],
+           // 'registration_date' => ['required', 'date'],
             'number_of_passengers' => ['required', 'integer',],
             'car_type' => ['required', 'max:250'],
             'station_name' => ['required'],

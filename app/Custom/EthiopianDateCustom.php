@@ -16,4 +16,8 @@ class EthiopianDateCustom{
     return $gregorianDateString;
   }
 
+  public static function toEthiopian(){
+    
+  }
+
 }

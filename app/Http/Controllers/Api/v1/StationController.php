@@ -15,9 +15,11 @@ class StationController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public static $paginate = 10;
     public function index()
     {
-        $station = Station::all();
+        $station = Station::latest()->paginate(env('PAGINATION_NUMBER', 15));
+
         return new StationCollection($station);
     }
     
@@ -82,6 +84,9 @@ class StationController extends Controller
     public function destroy(Station $station)
     {
         $station->delete();
-        return new StationCollection(Station::all());
+        return response()->json([
+            'status' => true,
+            'message' => 'Station Deleted Successfully.',
+        ]);
     }
 }

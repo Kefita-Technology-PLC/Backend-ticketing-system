@@ -24,7 +24,9 @@ Route::post('/login', [SessionController::class, 'login']);
 
 Route::post('/logout', [SessionController::class, 'logout'])->middleware('auth:sanctum');
 
-Route::delete('/delete', [SessionController::class, 'destroy'])->middleware('auth:sanctum');
+Route::delete('/user-delete', [SessionController::class, 'destroy'])->middleware('auth:sanctum');
+
+Route::patch('/user-update', [SessionController::class, 'update'])->middleware('auth:sanctum');
 
 Route::get('/verified-middleware', function(){
     return response()->json([

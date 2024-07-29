@@ -14,9 +14,9 @@ class Station extends Model
     }
 
     public function association(string $name){
-        $association = Association::where([
+        $association = Association::firstOrCreate([
             'name' => $name,
-        ])->first();
+        ]);
 
         $this->associations()->attach($association);
     }

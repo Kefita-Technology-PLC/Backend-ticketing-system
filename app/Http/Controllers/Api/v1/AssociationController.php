@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Api\v1;
 
+use App\Custom\EthiopianDateCustom;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AssociationCollection;
 use App\Http\Resources\AssociationResource;
 use App\Models\Association;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class AssociationController extends Controller
 {
@@ -15,7 +17,8 @@ class AssociationController extends Controller
      */
     public function index()
     {
-        return new AssociationCollection(Association::all());
+        $associations = Association::latest()->paginate(env('PAGINATION_NUMBER', 15));
+        return new AssociationCollection($associations);
     }
 
     /**
@@ -26,9 +29,21 @@ class AssociationController extends Controller
         $attrs = $request->validate([
             'name' => ['required', 'unique:associations,name', 'max:200'],
             'establishment_date' => ['required', 'date'],
+            'amharic' => ['boolean'],
         ]);
 
-        $association =  Association::create($attrs);
+        if($attrs['amharic']){
+            $establish_date = EthiopianDateCustom::input($attrs['establishment_date']);
+        }else{
+            $establish_date = $attrs['establishment_date'];
+        }
+
+
+        $association =  Association::create([
+            'name' => $request->name,
+            'establishment_date' => $establish_date,
+        ]);
+
         return new AssociationResource($association);
     }
 
@@ -46,11 +61,22 @@ class AssociationController extends Controller
     public function update(Request $request, Association $association)
     {
         $attrs = $request->validate([
-            'name' => ['required', 'unique:associatons,name', 'max:200'],
-            'establishemnt_date' => ['required', 'date'],
+            'name' => ['required', 'max:200'],
+            'establishment_date' => ['required', 'date'],
+            'amharic' => ['boolean']
         ]);
 
-        $association->update($attrs);
+        if($attrs['amharic']){
+            $establish_date = EthiopianDateCustom::input($attrs['establishment_date']);
+        }else{
+            $establish_date = $attrs['establishment_date'];
+        }
+
+        $association->update([
+            'name' => $request->name,
+            'establishment_date' => $establish_date,
+        ]);
+
         return new AssociationResource($association);
     }
 
@@ -60,6 +86,9 @@ class AssociationController extends Controller
     public function destroy(Association $association)
     {
         $association->delete();
-        return new AssociationCollection(Association::all());
+        return response()->json([
+            "status"=> true,
+            "message" => 'Association Deleted Succesfully.'
+        ]);
     }
 }

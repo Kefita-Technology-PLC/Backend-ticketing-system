@@ -129,6 +129,42 @@ class SessionController extends Controller
         }
     }
 
+    public function update(Request $request)
+    {
+        $attrs = Validator::make($request->all(),[
+            'name'=> 'required',
+            'email'=> 'required|email|unique:users,email',
+            'phone_no' => ['required', 'regex:/^(09|07)[0-9]{8}$/'],
+            'password'=> ['required', RulesPassword::min(4)],
+        ]);
+
+        if($attrs->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation Error',
+                'errors' => $attrs->errors()
+            ], 401);
+        }
+
+        $request->user()->update([
+            'name'=> $request->name,
+            'email' => $request->email,
+            'phone_no' => $request->phone_no,
+            'password'=> $request->password,
+        ]);
+
+        EmailVerificationSend::dispatch($request->user());
+        
+        return response()->json([
+            'status' => true,
+            'message' => 'User Credintials Updated Successfully',
+            'token' => $request->user()->createToken("API TOKEN")->plainTextToken,
+            'data'=>[
+                'user'=> $request->user(),
+            ]
+        ]);
+    }
+
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
