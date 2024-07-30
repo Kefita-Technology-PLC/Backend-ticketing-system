@@ -36,4 +36,8 @@ class Station extends Model
     public function tickets(){
         return $this->hasMany(Ticket::class);
     }
+
+    public function tariffs(){
+        return $this->hasMany(Tariff::class);
+    }
 }

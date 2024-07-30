@@ -15,14 +15,15 @@ return new class extends Migration
     {
         Schema::create('tariffs', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Station::class)->constrained();
-            $table->foreignIdFor(Destination::class)->constrained();
+            $table->foreignIdFor(Station::class);
+           // $table->foreignIdFor(Destination::class);
             $table->integer('distance');
-            $table->integer('number_of_passengers');
+            $table->string('origin');
+            $table->string('destination');
+            $table->string('car_type');
             $table->decimal('level1_price', 8, 2);
             $table->decimal('level2_price', 8, 2);
             $table->decimal('level3_price', 8, 2);
-            $table->decimal('total_triff');
             $table->timestamps();
         });
     }

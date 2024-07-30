@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TicketResource;
-use App\Models\Association;
-use App\Models\DeploymentLine;
 use App\Models\Station;
 use App\Models\Ticket;
 use App\Models\Vehicle;
@@ -21,7 +19,6 @@ class TicketGeneratorController extends Controller
     {
         $attrs = $request->validate([
             'station_name' => 'required',
-            'deployment_line' => 'required',
             'arrival_time' => 'required',
             'plate_number' => 'required',
             'service_price' => 'required',
@@ -48,7 +45,7 @@ class TicketGeneratorController extends Controller
 
         $ticket = Ticket::create([
             'user_id' => Auth::user()->id,
-            'vechicle_id' => $vehicle_id,
+            'vehicle_id' => $vehicle_id,
             'station_id' => $station_id,
             'deployment_line_id' => $request->deployment_line_id,
             'level'=> $request->level,

@@ -13,10 +13,6 @@ class Tariff extends Model
         return $this->belongsTo(Station::class);
     }
 
-    public function destination(){
-       return $this->belongsTo(Destination::class);
-    }
-
     public function deploymentLines(){
         return $this->belongsTo(DeploymentLine::class);
     }

@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\v1\StationController;
 use App\Http\Controllers\Api\v1\AssociationController;
 use App\Http\Controllers\Api\v1\DeploymentLineController;
 use App\Http\Controllers\Api\v1\ReportController;
+use App\Http\Controllers\Api\v1\TariffController;
 use App\Http\Controllers\Api\v1\TicketGeneratorController;
 use App\Http\Controllers\Api\v1\VehicleController;
 use Illuminate\Http\Request;
@@ -47,7 +48,9 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
     Route::resource('associations', AssociationController::class)->middleware(['role:admin']);
     Route::resource('vehicles', VehicleController::class)->middleware(['role:admin']);
     Route::resource('deployment-lines', DeploymentLineController::class)->middleware(['role:admin']);
-    
+
+    Route::resource('tariffs', TariffController::class)->middleware(['role:admin']);
+
     Route::post('/generate-ticket', TicketGeneratorController::class);
     Route::get('/daily-report', [ReportController::class, 'dailyReport'])->middleware(['role:admin']);
     Route::get('/weekly-report', [ReportController::class, 'weeklyReport'])->middleware(['role:admin']);
