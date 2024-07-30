@@ -48,9 +48,16 @@ class StationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Station $station)
+    public function show($id)
     {
        // return $station;
+        $station = Station::find($id);
+        if(!$station){
+            return response()->json([
+                'status' => false,
+                 'message' => 'Station not found.'
+            ], 404);
+        }
         return new StationResource($station);
     }
 
@@ -81,8 +88,15 @@ class StationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Station $station)
+    public function destroy($id)
     {
+        $station = Station::find($id);
+        if(!$station){
+            return response()->json([
+                'status' => false,
+                 'message' => 'Station not found.'
+            ], 404);
+        }
         $station->delete();
         return response()->json([
             'status' => true,

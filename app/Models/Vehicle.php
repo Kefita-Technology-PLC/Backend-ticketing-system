@@ -20,4 +20,8 @@ class Vehicle extends Model
     public function tickets(){
         return $this->hasMany(Ticket::class);
     }
+
+    public function deploymentLine(){
+        return $this->belongsTo(DeploymentLine::class);
+    }
 }

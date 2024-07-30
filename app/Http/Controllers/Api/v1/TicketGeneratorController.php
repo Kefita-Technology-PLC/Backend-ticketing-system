@@ -28,30 +28,29 @@ class TicketGeneratorController extends Controller
             'origin' => 'required',
             'level' => ['required', 'in:level1,level2,level3'],
             'number_of_passengers' => 'required',
+            'deployment_line_id' => 'required',
             'service_price' => '',
         ]);
 
         $vehicles = Vehicle::pluck('id', 'plate_number');
         $stations = Station::pluck('id', 'name');
-        $deploymentLines = DeploymentLine::pluck('id', 'origin');
+        // $deploymentLines = DeploymentLine::pluck('id', 'origin');
 
         $station_id = $stations[$attrs['station_name']] ?? null;
         $vehicle_id = $vehicles[$attrs['plate_number']] ?? null;
-        $deployment_line_id = $deploymentLines[$attrs['origin']] ?? null;
+        // $deployment_line_id = $deploymentLines[$attrs['origin']] ?? null;
 
-        if (!$station_id || !$vehicle_id || !$deployment_line_id) {
+        if (!$station_id || !$vehicle_id) {
             return response()->json([
                 'status' => false,
-                'error' => 'Station, Association or Deployment line not found'], 404);
+                'error' => 'Station or Association not found'], 404);
         }
-
-        $vehicle = Vehicle::find($vehicle_id);
 
         $ticket = Ticket::create([
             'user_id' => Auth::user()->id,
             'vechicle_id' => $vehicle_id,
             'station_id' => $station_id,
-            'deployment_line_id' => $deployment_line_id,
+            'deployment_line_id' => $request->deployment_line_id,
             'level'=> $request->level,
             'number_of_passengers' => $request->number_of_passengers,
             'price' => $request->price,

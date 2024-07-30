@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Association;
+use App\Models\DeploymentLine;
 use App\Models\Station;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -15,8 +16,9 @@ return new class extends Migration
     {
         Schema::create('vehicles', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Station::class)->constrained();
-            $table->foreignIdFor(Association::class)->constrained();
+            $table->foreignIdFor(Station::class);
+            $table->foreignIdFor(Association::class);
+            $table->foreignIdFor(DeploymentLine::class);
             $table->string('plate_number');
             $table->enum('code',['1', '2', '3']);
             $table->enum('level', ['level_1', 'level_2', 'level_3']);

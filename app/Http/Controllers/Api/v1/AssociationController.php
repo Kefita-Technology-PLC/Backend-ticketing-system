@@ -50,8 +50,15 @@ class AssociationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Association $association)
+    public function show($id)
     {
+        $association = Association::find($id);
+        if(!$association){
+            return response()->json([
+                'status' => false,
+                 'message' => 'Association not found.'
+            ], 404);
+        }
         return new AssociationResource($association);
     }
 
@@ -83,8 +90,17 @@ class AssociationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Association $association)
+    public function destroy($id)
     {
+
+        $association = Association::find($id);
+        if(!$association){
+            return response()->json([
+                'status' => false,
+                 'message' => 'Association not found.'
+            ], 404);
+        }
+
         $association->delete();
         return response()->json([
             "status"=> true,

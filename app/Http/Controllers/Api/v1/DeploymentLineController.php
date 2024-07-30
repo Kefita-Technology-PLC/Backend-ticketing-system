@@ -15,7 +15,8 @@ class DeploymentLineController extends Controller
      */
     public function index()
     {
-        $deployments = DeploymentLine::all();
+        $deployments = DeploymentLine::latest()->paginate(env('PAGINATION_NUMBER', 15));
+
         return new DeploymentCollection($deployments);
     }
 
@@ -27,7 +28,7 @@ class DeploymentLineController extends Controller
         $attrs = $request->validate([
             'origin' => ['required', 'string', 'max:250'],
             'destination' => ['required', 'string', 'max:250'],
-            'arrival' => [ 'in:pending,arrival']
+            //'arrival' => [ 'in:pending,arrival, ']
         ]);
 
         $deploymentLine = DeploymentLine::create($attrs);
@@ -38,8 +39,16 @@ class DeploymentLineController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(DeploymentLine $deploymentLine)
+    public function show($id)
     {
+        $deploymentLine = DeploymentLine::find($id);
+        if(!$deploymentLine){
+            return response()->json([
+                'status' => false,
+                 'message' => 'Deployment line not found.'
+            ]);
+        }
+
         return new DeploymentResource($deploymentLine);
     }
 
@@ -61,9 +70,19 @@ class DeploymentLineController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(DeploymentLine $deploymentLine)
+    public function destroy($id)
     {
+        $deploymentLine = DeploymentLine::find($id);
+        if(!$deploymentLine){
+            return response()->json([
+                'status' => false,
+                 'message' => 'Deployment line not found.'
+            ]);
+        }
         $deploymentLine->delete();
-        return new DeploymentCollection(DeploymentLine::all());
+        return response()->json([
+            'status' => false,
+             'message' => 'Deploymnet line deleted successfully.'
+        ]);
     }
 }

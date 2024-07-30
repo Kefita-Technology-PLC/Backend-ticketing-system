@@ -20,7 +20,7 @@ class VehicleController extends Controller
     
     public function index()
     {
-        $vehicles = Vehicle::with(['association', 'station'])
+        $vehicles = Vehicle::with(['association', 'station', 'deploymentLine'])
         ->latest()
         ->paginate(env("PAGINATION_NUMBER", 15));
 
@@ -39,6 +39,7 @@ class VehicleController extends Controller
             'car_type' => ['required', 'max:250'],
             'station_name' => ['required'],
             'association_name'=> ['required'],
+            'deployment_line_id' => ['required'],
             'code' => ['required','in:1,2,3']
         ]);
 
@@ -64,10 +65,16 @@ class VehicleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Vehicle $vehicle)
+    public function show($id)
     {
-        
-        $vehicle->load(['station', 'association']);
+        $vehicle = Vehicle::find($id);
+        if(!$vehicle){
+            return response()->json([
+                'status' => false,
+                 'message' => 'Vehicle not found.'
+            ]);
+        }
+        $vehicle->load(['station', 'association','deploymentLine']);
         return new VehicleResource($vehicle);
     }
 
@@ -83,6 +90,7 @@ class VehicleController extends Controller
             'car_type' => ['required', 'max:250'],
             'station_name' => ['required'],
             'association_name'=> ['required'],
+            'deployment_line_id' => ['required'],
             'code' => ['required','in:1,2,3']
         ]);
 
@@ -102,7 +110,7 @@ class VehicleController extends Controller
             ...Arr::except($attrs, ['station_name', 'association_name']),
         ]);
 
-        $vehicle->load(['station', 'association']);
+        $vehicle->load(['station', 'association','deploymentLine']);
         return new VehicleResource($vehicle);
     }
 

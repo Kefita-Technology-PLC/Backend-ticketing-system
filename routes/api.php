@@ -47,6 +47,7 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
     Route::resource('associations', AssociationController::class)->middleware(['role:admin']);
     Route::resource('vehicles', VehicleController::class)->middleware(['role:admin']);
     Route::resource('deployment-lines', DeploymentLineController::class)->middleware(['role:admin']);
+    
     Route::post('/generate-ticket', TicketGeneratorController::class);
     Route::get('/daily-report', [ReportController::class, 'dailyReport'])->middleware(['role:admin']);
     Route::get('/weekly-report', [ReportController::class, 'weeklyReport'])->middleware(['role:admin']);
