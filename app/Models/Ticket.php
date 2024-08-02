@@ -24,4 +24,9 @@ class Ticket extends Model
     public function destination(){
         return $this->belongsTo(Destination::class);
     }
+
+    public function deploymentLine(){
+        return $this->belongsTo(DeploymentLine::class);
+    }
+
 }

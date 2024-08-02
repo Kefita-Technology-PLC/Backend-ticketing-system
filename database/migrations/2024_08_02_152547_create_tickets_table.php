@@ -24,9 +24,9 @@ return new class extends Migration
             $table->foreignIdFor(DeploymentLine::class);
             $table->enum('level', ['level1', 'level2', 'level3']);
             $table->integer('number_of_passengers');
-            $table->foreignIdFor(Destination::class)->constrained();
-            $table->decimal('price', 8, 2);
-            $table->decimal('service_price', 8, 2);
+            $table->foreignIdFor(Destination::class);
+            $table->decimal('price', 8, 2)->nullable();
+            $table->decimal('service_price', 8, 2)->nullable();
             $table->boolean('sold_status')->nullable();
             $table->date('arrival_time');
             $table->timestamps();

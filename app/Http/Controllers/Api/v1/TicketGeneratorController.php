@@ -27,20 +27,22 @@ class TicketGeneratorController extends Controller
             'number_of_passengers' => 'required',
             'deployment_line_id' => 'required',
             'service_price' => '',
+            'destination_id' => 'required',
         ]);
 
         $vehicles = Vehicle::pluck('id', 'plate_number');
         $stations = Station::pluck('id', 'name');
+        $destinations = Station::pluck('id', 'name');
         // $deploymentLines = DeploymentLine::pluck('id', 'origin');
 
         $station_id = $stations[$attrs['station_name']] ?? null;
         $vehicle_id = $vehicles[$attrs['plate_number']] ?? null;
         // $deployment_line_id = $deploymentLines[$attrs['origin']] ?? null;
 
-        if (!$station_id || !$vehicle_id) {
+        if (!$station_id || !$vehicle_id ) {
             return response()->json([
                 'status' => false,
-                'error' => 'Station or Association not found'], 404);
+                'error' => 'Station or Vehicle not found'], 404);
         }
 
         $ticket = Ticket::create([
@@ -48,12 +50,17 @@ class TicketGeneratorController extends Controller
             'vehicle_id' => $vehicle_id,
             'station_id' => $station_id,
             'deployment_line_id' => $request->deployment_line_id,
+            'destination_id' => $request->destination_id,
+            "arrival_time"=> $request->arrival_time,
             'level'=> $request->level,
             'number_of_passengers' => $request->number_of_passengers,
             'price' => $request->price,
             'service_price' => $request->service_price,
             'sold_status' => $request->sold_status,
         ]);
+
+        $ticket->load('user','vehicle','station','deploymentLine', 'destination');
+        
         return new TicketResource($ticket);
     }
 }

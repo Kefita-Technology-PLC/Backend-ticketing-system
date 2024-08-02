@@ -52,7 +52,10 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
     Route::resource('tariffs', TariffController::class)->middleware(['role:admin']);
 
     Route::post('/generate-ticket', TicketGeneratorController::class);
+
     Route::get('/daily-report', [ReportController::class, 'dailyReport'])->middleware(['role:admin']);
+
+    
     Route::get('/weekly-report', [ReportController::class, 'weeklyReport'])->middleware(['role:admin']);
     Route::get('/monthly-report', [ReportController::class, 'monthlyReport'])->middleware(['role:admin']);
     Route::get('/yearly-report', [ReportController::class, 'yearlyReport'])->middleware(['role:admin']);

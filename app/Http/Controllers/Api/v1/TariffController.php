@@ -94,7 +94,7 @@ class TariffController extends Controller
         }
         $tariff->delete();
         return response()->json([
-            'status'=> false,
+            'status'=> true,
             'message' => 'Tariff deleted successfully'
         ]);
     }
