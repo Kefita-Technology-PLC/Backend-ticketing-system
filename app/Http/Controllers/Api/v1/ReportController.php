@@ -119,6 +119,8 @@ class ReportController extends Controller
         })
         ->whereBetween('created_at',[$startOfWeek, $endOfWeek])
         ->count();
+
+
         $stations = Station::whereBetween('created_at',[$startOfWeek, $endOfWeek])->count();
         $deployments = DeploymentLine::whereBetween('created_at',[$startOfWeek, $endOfWeek])->count();
 
@@ -153,20 +155,21 @@ class ReportController extends Controller
 
         $associations = Association::whereDate('created_at',[$startOfMonth, $endOfMonth] )->count();
 
-        $ticketSellersCount = User::role('ticket seller')
-        ->whereHas('roles', function ($query) {
-            $query->where('guard_name', 'api');
+        $ticketSellersCount = User::whereHas('roles', function ($query){
+            $query->where('name', 'ticket seller')->where('guard_name', 'api');
+        })->whereBetween('created_at',[$startOfMonth, $endOfMonth])
+        ->count();
+       
+
+        $adminsCount = User::whereHas('roles', function ($query) {
+            $query->where('guard_name', 'api')->where('name', 'admin');
         })
         ->whereBetween('created_at',[$startOfMonth, $endOfMonth])
         ->count();
 
-
-        $adminsCount = User::role('admin')
-        ->whereHas('roles', function ($query) {
-            $query->where('guard_name', 'api');
-        })
-        ->whereBetween('created_at',[$startOfMonth, $endOfMonth])
-        ->count();
+        
+        $stations = Station::whereBetween('created_at',[$startOfMonth, $endOfMonth])->count();
+        $deployments = DeploymentLine::whereBetween('created_at',[$startOfMonth, $endOfMonth])->count();
 
         return response()->json([
             'status' => true,
@@ -177,6 +180,8 @@ class ReportController extends Controller
                 'ticket_sellers' => $ticketSellersCount,
                 'admins' => $adminsCount,
                 'associations_number' => $associations,
+                'stations'=> $stations,
+                'deployments' => $deployments
             ]
         ]);
 
