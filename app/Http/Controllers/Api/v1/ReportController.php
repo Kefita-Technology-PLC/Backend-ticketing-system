@@ -208,20 +208,21 @@ class ReportController extends Controller
 
         $associations = Association::whereDate('created_at',[$startOfYear, $endOfYear] )->count();
 
-        $ticketSellersCount = User::role('ticket seller')
-        ->whereHas('roles', function ($query) {
-            $query->where('guard_name', 'api');
+        $ticketSellersCount = User::whereHas('roles', function ($query){
+            $query->where('name', 'ticket seller')->where('guard_name', 'api');
+        })->whereBetween('created_at',[$startOfYear, $endOfYear])
+        ->count();
+       
+
+        $adminsCount = User::whereHas('roles', function ($query) {
+            $query->where('guard_name', 'api')->where('name', 'admin');
         })
         ->whereBetween('created_at',[$startOfYear, $endOfYear])
         ->count();
 
-
-        $adminsCount = User::role('admin')
-        ->whereHas('roles', function ($query) {
-            $query->where('guard_name', 'api');
-        })
-        ->whereBetween('created_at',[$startOfYear, $endOfYear])
-        ->count();
+        
+        $stations = Station::whereBetween('created_at',[$startOfYear, $endOfYear])->count();
+        $deployments = DeploymentLine::whereBetween('created_at',[$startOfYear, $endOfYear])->count();
 
         return response()->json([
             'status' => true,
@@ -232,6 +233,8 @@ class ReportController extends Controller
                 'ticket_sellers' => $ticketSellersCount,
                 'admins' => $adminsCount,
                 'associations_number' => $associations,
+                'stations'=> $stations,
+                'deployments' => $deployments
             ]
         ]);
     }
@@ -239,11 +242,11 @@ class ReportController extends Controller
     public function customDateReport(Request $request){
 
         $attrs = $request->validate([
-            'start_year' => 'required|date',
-            'end_year' => 'required|date'
+            'start_date' => 'required|date',
+            'end_date' => 'required|date'
         ]);
 
-        $startOfYear = EthiopianDateCustom::input($request->start_year);
+        $startOfYear = EthiopianDateCustom::input($request->start_date);
         $endOfYear = EthiopianDateCustom::input($request->start_year);
 
         // Count the number of tickets sold this month
@@ -272,6 +275,9 @@ class ReportController extends Controller
         ->whereBetween('created_at',[$startOfYear, $endOfYear])
         ->count();
 
+        $stations = Station::whereBetween('created_at',[$startOfYear, $endOfYear])->count();
+        $deployments = DeploymentLine::whereBetween('created_at',[$startOfYear, $endOfYear])->count();
+
         return response()->json([
             'status' => true,
             'data' => [
@@ -281,8 +287,11 @@ class ReportController extends Controller
                 'ticket_sellers' => $ticketSellersCount,
                 'admins' => $adminsCount,
                 'associations_number' => $associations,
+                'stations'=> $stations,
+                'deployments' => $deployments
             ]
         ]);
     }
+
 
 }

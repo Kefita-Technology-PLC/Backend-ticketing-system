@@ -61,7 +61,10 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
 
 
     Route::get('/monthly-report', [ReportController::class, 'monthlyReport'])->middleware(['role:admin']);
+
     Route::get('/yearly-report', [ReportController::class, 'yearlyReport'])->middleware(['role:admin']);
+
+    Route::get('/custom-report', [ReportController::class, 'customDateReport'])->middleware(['role:admin']);
 });
 
 
