@@ -55,8 +55,11 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
 
     Route::get('/daily-report', [ReportController::class, 'dailyReport'])->middleware(['role:admin']);
 
-    
+    Route::get('/general-report', [ReportController::class, 'generalReport'])->middleware(['role:admin']);
+
     Route::get('/weekly-report', [ReportController::class, 'weeklyReport'])->middleware(['role:admin']);
+
+    
     Route::get('/monthly-report', [ReportController::class, 'monthlyReport'])->middleware(['role:admin']);
     Route::get('/yearly-report', [ReportController::class, 'yearlyReport'])->middleware(['role:admin']);
 });

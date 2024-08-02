@@ -9,10 +9,54 @@ use App\Models\User;
 use App\Models\Vehicle;
 use Carbon\Carbon;
 use App\Custom\EthiopianDateCustom;
-use Illuminate\Http\Requesst;
+use App\Models\Station;
+use App\Models\DeploymentLine;
+use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
+
+    public function generalReport() {
+        // Get the total number of tickets
+        $ticket_numbers = Ticket::all()->count();
+    
+        // Get the total number of vehicles
+        $vehicles = Vehicle::all()->count();
+    
+        // Get the total price of all tickets
+        $total_price = Ticket::sum('price');
+    
+        // Get the total number of associations
+        $associations = Association::all()->count();
+
+        $stations = Station::all()->count();
+        $deployments = DeploymentLine::all()->count();
+    
+        // Get the total number of users with the role 'ticket seller' and guard name 'api'
+        $ticketSellersCount = User::whereHas('roles', function ($query) {
+            $query->where('name', 'ticket seller')->where('guard_name', 'api');
+        })->count();
+    
+        // Get the total number of users with the role 'admin' and guard name 'api'
+        $adminsCount = User::whereHas('roles', function ($query) {
+            $query->where('name', 'admin')->where('guard_name', 'api');
+        })->count();
+    
+        return response()->json([
+            'status' => true,
+            'data' => [
+                'ticket_numbers' => $ticket_numbers,
+                'vehicles' => $vehicles,
+                'total_price' => $total_price,
+                'ticket_sellers' => $ticketSellersCount,
+                'admins' => $adminsCount,
+                'associations_number' => $associations,
+                'stations' => $stations,
+                'deployment_lines'=> $deployments
+            ]
+        ]);
+    }
+    
     public function dailyReport(){
 
         $today = Carbon::today();
@@ -21,17 +65,17 @@ class ReportController extends Controller
         $total_price = Ticket::where('created_at', $today)->sum('price');
         $associations = Association::where('created_at', $today)->count();
 
-        $ticketSellersCount = User::role('ticket seller')
-        ->whereHas('roles', function ($query) {
-            $query->where('guard_name', 'api');
-        })
-        ->count();
+        // return $associations;
 
-        $adminsCount = User::role('admin')
-        ->whereHas('roles', function ($query) {
-            $query->where('guard_name', 'api');
-        })
-        ->count();
+        $ticketSellersCount = User::whereHas('roles', function ($query) {
+            $query->where('name', 'ticket seller')->where('guard_name', 'api');
+        })->where('created_at', $today)->count();
+
+        // return $ticketSellersCount;
+
+        $adminsCount = User::whereHas('roles', function ($query) {
+            $query->where('name', 'admin')->where('guard_name', 'api')->where('created_at');
+        })->where('created_at', $today)->count();
 
         return response()->json([
             'status' => true,
