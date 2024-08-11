@@ -111,6 +111,9 @@ class SessionController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'The credintials do not match',
+                    'errors' => [
+                        'message'=> 'The credintials do not match'
+                    ]
                 ], 401);
             }
 
