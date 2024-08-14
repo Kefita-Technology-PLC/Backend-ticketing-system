@@ -19,7 +19,7 @@ class SessionController extends Controller
         $attrs = Validator::make($request->all(),[
             'name'=> 'required|string',
             'email'=> 'required|email|unique:users,email',
-           'phone_no' => ['required', 'regex:/^(09|07)[0-9]{8}$/', 'unique:users,phone_no'],
+           'phone_no' => ['required', 'regex:/^\+251[97]\d{8}$/', 'unique:users,phone_no'],
             'password'=> ['required',RulesPassword::min(4), 'confirmed'],
         ]);
 
@@ -95,7 +95,7 @@ class SessionController extends Controller
         try{
             $attrs = Validator::make($request->all(), [
                 //'email'=> 'required|email',
-                'phone_no' => ['required', 'regex:/^(09|07)[0-9]{8}$/'],
+                'phone_no' => ['required', 'regex:/^\+251[97]\d{8}$/'],
                 'password'=> ['required', RulesPassword::min(6)],
             ]);
     
