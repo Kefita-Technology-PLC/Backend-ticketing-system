@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\v1\ReportController;
 use App\Http\Controllers\Api\v1\TariffController;
 use App\Http\Controllers\Api\v1\TicketGeneratorController;
 use App\Http\Controllers\Api\v1\VehicleController;
+use App\Http\Controllers\ForSelectionForm;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -64,6 +65,10 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
     Route::get('/yearly-report', [ReportController::class, 'yearlyReport'])->middleware(['role:admin']);
 
     Route::get('/custom-report', [ReportController::class, 'customDateReport'])->middleware(['role:admin']);
+});
+
+Route::prefix('v1')->group(function(){
+    Route::get('/car-types', [ForSelectionForm::class, 'carType']);
 });
 
 
