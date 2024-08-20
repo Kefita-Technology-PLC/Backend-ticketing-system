@@ -69,6 +69,7 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
 
 Route::prefix('v1')->group(function(){
     Route::get('/car-types', [ForSelectionForm::class, 'carType']);
+    Route::get('/get-stations', [ForSelectionForm::class, 'stationName']);
 });
 
 
