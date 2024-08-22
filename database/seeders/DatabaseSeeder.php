@@ -24,5 +24,6 @@ class DatabaseSeeder extends Seeder
         User::factory()->create();
         Station::factory(10)->create();
         Association::factory(5)->create();
+        
     }
 }
