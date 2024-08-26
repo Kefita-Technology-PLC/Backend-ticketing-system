@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Association;
 use App\Models\Station;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
@@ -22,7 +23,7 @@ class ForSelectionForm extends Controller
         ]);
     }
 
-    public function stationName(){
+    public function stationNames(){
         $stations = Station::select('id', 'name')
         ->orderBy('name', 'asc')
         ->groupBy('name') // Ensure only unique names
@@ -30,6 +31,17 @@ class ForSelectionForm extends Controller
 
         return response()->json([
             'data' => $stations
+        ]);
+    }
+
+    public function associationNames(){
+        $associations = Association::select('id', 'name')
+        ->orderBy('name', 'asc')
+        ->groupBy('name')
+        ->get();
+
+        return response()->json([
+            'data' => $associations
         ]);
     }
 

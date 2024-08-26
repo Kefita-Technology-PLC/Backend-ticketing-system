@@ -46,8 +46,11 @@ Route::post('reset-password', [NewPasswordController::class, 'reset']);
 
 Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
     Route::resource('stations', StationController::class)->middleware(['role:admin']);
+
     Route::resource('associations', AssociationController::class)->middleware(['role:admin']);
+
     Route::resource('vehicles', VehicleController::class)->middleware(['role:admin']);
+    
     Route::resource('deployment-lines', DeploymentLineController::class)->middleware(['role:admin']);
 
     Route::resource('tariffs', TariffController::class)->middleware(['role:admin']);
@@ -60,6 +63,8 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
 
     Route::get('/monthly-report', [ReportController::class, 'monthlyReport'])->middleware(['role:admin']);
 
+    Route::get('/weekly-report', [ReportController::class, 'weeklyReport'])->middleware(['role:admin']);
+
     Route::get('/yearly-report', [ReportController::class, 'yearlyReport'])->middleware(['role:admin']);
 
     Route::get('/custom-report', [ReportController::class, 'customDateReport'])->middleware(['role:admin']);
@@ -67,7 +72,8 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
 
 Route::prefix('v1')->group(function(){
     Route::get('/car-types', [ForSelectionForm::class, 'carType']);
-    Route::get('/get-stations', [ForSelectionForm::class, 'stationName']);
+    Route::get('/get-stations', [ForSelectionForm::class, 'stationNames']);
+    Route::get('/get-associations', [ForSelectionForm::class, 'associationNames']);
 });
 
 

@@ -91,7 +91,7 @@ class ReportController extends Controller
                 'admins' => $adminsCount,
                 'associations_number' => $associations,
                 'stations' => $stations,
-                'deployments' => $deployments
+                'deployment_lines' => $deployments
             ]
         ]);
     }
@@ -134,7 +134,7 @@ class ReportController extends Controller
                 'admins' => $adminsCount,
                 'associations_number' => $associations,
                 'stations' => $stations,
-                'deployments' => $deployments
+                'deployment_lines' => $deployments
             ]
         ]);
       
@@ -181,7 +181,7 @@ class ReportController extends Controller
                 'admins' => $adminsCount,
                 'associations_number' => $associations,
                 'stations'=> $stations,
-                'deployments' => $deployments
+                'deployment_lines' => $deployments
             ]
         ]);
 
@@ -189,13 +189,8 @@ class ReportController extends Controller
 
     public function yearlyReport(Request $request){
 
-        $attrs = $request->validate([
-            'start_year' => 'required|date',
-            'end_year' => 'required|date'
-        ]);
-
-        $startOfYear = EthiopianDateCustom::input($request->start_year);
-        $endOfYear = EthiopianDateCustom::input($request->start_year);
+        $startOfYear = Carbon::now()->startOfYear();
+        $endOfYear = Carbon::now()->endOfYear();
 
         // Count the number of tickets sold this month
         $yearlyTicketNumbers = Ticket::whereBetween('created_at', [$startOfYear, $endOfYear])->count();
@@ -234,7 +229,7 @@ class ReportController extends Controller
                 'admins' => $adminsCount,
                 'associations_number' => $associations,
                 'stations'=> $stations,
-                'deployments' => $deployments
+                'deployment_lines' => $deployments
             ]
         ]);
     }
@@ -243,11 +238,19 @@ class ReportController extends Controller
 
         $attrs = $request->validate([
             'start_date' => 'required|date',
-            'end_date' => 'required|date'
+            'end_date' => 'required|date',
+            'amharic' => ['required', 'boolean']
         ]);
 
-        $startOfYear = EthiopianDateCustom::input($request->start_date);
-        $endOfYear = EthiopianDateCustom::input($request->start_year);
+        // dd($request->start_date);
+
+        $startOfYear = $attrs['start_date'];
+        $endOfYear = $attrs['end_date'];
+
+       if($attrs['amharic']){
+            $startOfYear = EthiopianDateCustom::input($attrs['start_date']);
+            $endOfYear = EthiopianDateCustom::input($attrs['end_date']);
+       }
 
         // Count the number of tickets sold this month
         $yearlyTicketNumbers = Ticket::whereBetween('created_at', [$startOfYear, $endOfYear])->count();
@@ -260,17 +263,14 @@ class ReportController extends Controller
 
         $associations = Association::whereDate('created_at',[$startOfYear, $endOfYear] )->count();
 
-        $ticketSellersCount = User::role('ticket seller')
-        ->whereHas('roles', function ($query) {
-            $query->where('guard_name', 'api');
-        })
-        ->whereBetween('created_at',[$startOfYear, $endOfYear])
+        $ticketSellersCount = User::whereHas('roles', function ($query){
+            $query->where('name', 'ticket seller')->where('guard_name', 'api');
+        })->whereBetween('created_at',[$startOfYear, $endOfYear])
         ->count();
 
 
-        $adminsCount = User::role('admin')
-        ->whereHas('roles', function ($query) {
-            $query->where('guard_name', 'api');
+        $adminsCount = User::whereHas('roles', function ($query) {
+            $query->where('guard_name', 'api')->where('name', 'admin');
         })
         ->whereBetween('created_at',[$startOfYear, $endOfYear])
         ->count();
@@ -288,7 +288,7 @@ class ReportController extends Controller
                 'admins' => $adminsCount,
                 'associations_number' => $associations,
                 'stations'=> $stations,
-                'deployments' => $deployments
+                'deployment_lines' => $deployments
             ]
         ]);
     }
