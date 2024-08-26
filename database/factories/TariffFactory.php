@@ -19,7 +19,7 @@ class TariffFactory extends Factory
     public function definition(): array
     {
         return [
-            'station_id' => Station::factory()->create(),
+            'station_id' => Station::inRandomOrder()->first()->id,
             // 'destination_id' => Destination::factory()->create(),
             'distance'=> fake()->randomElement(['4kms', '1.5kms','2kms', '10kms', '7kms']),
             'destination' => fake()->randomElement(['mexico','megenagna','cmc','goro','taffo', 'kara', 'wesen', 'ural', 'bole', 'wollo-sefer', 'atlas', 'kazanchis','piassa', '22-mazoriya', 'saris', 'lebu', 'kotebe']),

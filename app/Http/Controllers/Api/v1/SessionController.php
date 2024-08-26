@@ -78,6 +78,7 @@ class SessionController extends Controller
         EmailVerificationSend::dispatch($user);
 
         $ticketSeller = Role::where('name', 'ticket seller')->where('guard_name', 'api')->first();
+        
         $user->assignRole($ticketSeller);
         
         return response()->json([

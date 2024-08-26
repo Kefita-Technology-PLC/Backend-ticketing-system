@@ -45,29 +45,29 @@ Route::post('forgot-password', [NewPasswordController::class, 'forgotPassword'])
 Route::post('reset-password', [NewPasswordController::class, 'reset']);
 
 Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
-    Route::resource('stations', StationController::class)->middleware(['role:admin']);
+    Route::resource('stations', StationController::class)->middleware(['role:admin|super admin']);
 
-    Route::resource('associations', AssociationController::class)->middleware(['role:admin']);
+    Route::resource('associations', AssociationController::class)->middleware(['role:admin|super admin']);
 
-    Route::resource('vehicles', VehicleController::class)->middleware(['role:admin']);
+    Route::resource('vehicles', VehicleController::class)->middleware(['role:admin|super admin']);
     
-    Route::resource('deployment-lines', DeploymentLineController::class)->middleware(['role:admin']);
+    Route::resource('deployment-lines', DeploymentLineController::class)->middleware(['role:admin|super admin']);
 
-    Route::resource('tariffs', TariffController::class)->middleware(['role:admin']);
+    Route::resource('tariffs', TariffController::class)->middleware(['role:admin|super admin']);
 
     Route::post('/generate-ticket', TicketGeneratorController::class);
 
-    Route::get('/daily-report', [ReportController::class, 'dailyReport'])->middleware(['role:admin']);
+    Route::get('/daily-report', [ReportController::class, 'dailyReport'])->middleware(['role:admin|super admin']);
 
-    Route::get('/general-report', [ReportController::class, 'generalReport'])->middleware(['role:admin']);
+    Route::get('/general-report', [ReportController::class, 'generalReport'])->middleware(['role:admin|super admin']);
 
-    Route::get('/monthly-report', [ReportController::class, 'monthlyReport'])->middleware(['role:admin']);
+    Route::get('/monthly-report', [ReportController::class, 'monthlyReport'])->middleware(['role:admin|super admin']);
 
-    Route::get('/weekly-report', [ReportController::class, 'weeklyReport'])->middleware(['role:admin']);
+    Route::get('/weekly-report', [ReportController::class, 'weeklyReport'])->middleware(['role:admin|super admin']);
 
-    Route::get('/yearly-report', [ReportController::class, 'yearlyReport'])->middleware(['role:admin']);
+    Route::get('/yearly-report', [ReportController::class, 'yearlyReport'])->middleware(['role:admin|super admin']);
 
-    Route::get('/custom-report', [ReportController::class, 'customDateReport'])->middleware(['role:admin']);
+    Route::get('/custom-report', [ReportController::class, 'customDateReport'])->middleware(['role:admin|super admin']);
 });
 
 Route::prefix('v1')->group(function(){
