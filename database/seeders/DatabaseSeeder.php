@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Seed Roles
-        // $this->call(RoleSeeder::class);
+        $this->call(RoleSeeder::class);
 
         // Create the admin user
         $adminUser = User::factory()->create([
@@ -42,12 +42,13 @@ class DatabaseSeeder extends Seeder
         $ticketSellerUser = User::factory()->create([
             'name' => 'Ticket Seller',
             'email' => 'ticketseller@ticket.com',
-            'password' => bcrypt('ticket1234'), // Ensure the password is hashed
+            'password' =>bcrypt('ticket1234'), // Ensure the password is hashed
             'phone_no' => '+251704512247',
         ]);
 
         // Assign Ticket Seller Role to Ticket Seller User
         $ticketSellerRole = Role::where('name', 'ticket seller')->where('guard_name', 'api')->first();
+
         if ($ticketSellerRole) {
             $ticketSellerUser->assignRole($ticketSellerRole);
         } else {

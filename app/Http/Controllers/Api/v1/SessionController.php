@@ -5,12 +5,12 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Jobs\EmailVerificationSend;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password as RulesPassword;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Log;
 
 class SessionController extends Controller
 {
@@ -55,8 +55,7 @@ class SessionController extends Controller
     {
         $attrs = Validator::make($request->all(),[
             'name'=> 'required',
-            'email'=> 'required|email|unique:users,email',
-            'phone_no' => ['required', 'regex:/^(09|07)[0-9]{8}$/','unique:users,phone_no'],
+            'phone_no' => ['required', 'regex:/^\+251[97]\d{8}$/', 'unique:users,phone_no'],
             'password'=> ['required', RulesPassword::min(4)],
         ]);
 
@@ -76,9 +75,8 @@ class SessionController extends Controller
         ]);
 
         EmailVerificationSend::dispatch($user);
-
         $ticketSeller = Role::where('name', 'ticket seller')->where('guard_name', 'api')->first();
-        
+
         $user->assignRole($ticketSeller);
         
         return response()->json([
@@ -93,45 +91,56 @@ class SessionController extends Controller
 
     public function login(Request $request)
     {
-        try{
+        try {
             $attrs = Validator::make($request->all(), [
-                //'email'=> 'required|email',
                 'phone_no' => ['required', 'regex:/^\+251[97]\d{8}$/'],
-                'password'=> ['required', RulesPassword::min(6)],
+                'password' => ['required', RulesPassword::min(6)],
             ]);
     
-            if($attrs->fails()){
+            if ($attrs->fails()) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Validation Error',
                     'errors' => $attrs->errors()
                 ], 401);
             }
+    
+            // Log request input
+            Log::info('Phone No: ' . $request->phone_no);
+            Log::info('Password: ' . $request->password);
+    
+            $user = User::where('phone_no', $request->phone_no)->first();
+    
+            // Log database password
+            Log::info('Database Password: ' . $user->password);
 
-            if(!Auth::attempt($request->only(['phone_no', 'password']))){
+            // dd($user);
+    
+            if (!$user || !Auth::attempt(['phone_no' => $request->phone_no, 'password' => $request->password])) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'The credintials do not match',
+                    'message' => 'The credentials do not match',
                     'errors' => [
-                        'message'=> 'The credintials do not match'
+                        'message' => 'The credentials do not match'
                     ]
                 ], 401);
             }
-
-            $user = User::where('phone_no', $request->phone_no)->first();
+    
             return response()->json([
-                'status'=> true,
-                'message'=> 'User login successfully',
+                'status' => true,
+                'message' => 'User login successfully',
                 'token' => $user->createToken("API TOKEN")->plainTextToken,
             ]);
-
-        }catch(\Throwable $th){
+    
+        } catch (\Throwable $th) {
             return response()->json([
-                'status'=> false,
-                'message'=> $th->getMessage()
+                'status' => false,
+                'message' => $th->getMessage()
             ], 500);
         }
     }
+    
+
 
     public function update(Request $request)
     {
