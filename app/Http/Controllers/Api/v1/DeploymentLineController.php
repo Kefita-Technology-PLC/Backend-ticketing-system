@@ -13,6 +13,12 @@ class DeploymentLineController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+    public function getAll(){
+        $deployments = DeploymentLine::orderBy('origin', 'asc')->get();
+        return new DeploymentCollection($deployments);
+    }
+
     public function index()
     {
         $deployments = DeploymentLine::latest()->paginate(env('PAGINATION_NUMBER', 15));
@@ -81,7 +87,7 @@ class DeploymentLineController extends Controller
         }
         $deploymentLine->delete();
         return response()->json([
-            'status' => false,
+            'status' => true,
              'message' => 'Deploymnet line deleted successfully.'
         ]);
     }

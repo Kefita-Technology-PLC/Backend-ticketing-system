@@ -15,6 +15,12 @@ class AssociationController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+     public function getAll(){
+        $association = Association::all();
+        return new AssociationCollection($association);
+    }
+
     public function index()
     {
         $associations = Association::latest()->paginate(env('PAGINATION_NUMBER', 15));

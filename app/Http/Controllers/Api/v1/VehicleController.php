@@ -17,6 +17,11 @@ class VehicleController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+     public function getAll(){
+        $vehicle = Vehicle::with(['association', 'station'])->orderBy('plate_number', 'asc')->get();
+        return new VehicleCollection($vehicle);
+    }
     
     public function index()
     {

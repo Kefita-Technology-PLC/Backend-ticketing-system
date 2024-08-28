@@ -15,6 +15,10 @@ class StationController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function getAll(){
+        $station = Station::orderBy('name', 'asc')->get();
+        return new StationCollection($station);
+    }
    
     public function index()
     {

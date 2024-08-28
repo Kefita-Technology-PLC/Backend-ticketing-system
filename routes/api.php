@@ -6,11 +6,13 @@ use App\Http\Controllers\Api\v1\NewPasswordController;
 use App\Http\Controllers\Api\v1\StationController;
 use App\Http\Controllers\Api\v1\AssociationController;
 use App\Http\Controllers\Api\v1\DeploymentLineController;
+use App\Http\Controllers\Api\V1\NumberOfPassengersController;
 use App\Http\Controllers\Api\v1\ReportController;
 use App\Http\Controllers\Api\v1\TariffController;
 use App\Http\Controllers\Api\v1\TicketGeneratorController;
 use App\Http\Controllers\Api\v1\VehicleController;
 use App\Http\Controllers\ForSelectionForm;
+use App\Models\NumberOfPassengers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -55,6 +57,8 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
 
     Route::resource('tariffs', TariffController::class)->middleware(['role:admin|super admin']);
 
+    Route::resource('passengers', NumberOfPassengersController::class)->middleware(['role:admin|super admin']);
+
     Route::post('/generate-ticket', TicketGeneratorController::class);
 
     Route::get('/daily-report', [ReportController::class, 'dailyReport'])->middleware(['role:admin|super admin']);
@@ -68,6 +72,12 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
     Route::get('/yearly-report', [ReportController::class, 'yearlyReport'])->middleware(['role:admin|super admin']);
 
     Route::get('/custom-report', [ReportController::class, 'customDateReport'])->middleware(['role:admin|super admin']);
+
+    Route::get('/stations-all', [StationController::class, 'getAll']);
+    Route::get('/vehicles-all', [VehicleController::class, 'getAll']);
+    Route::get('/associations-all', [AssociationController::class, 'getAll']);
+    Route::get('/deployment-lines-all', [DeploymentLineController::class, 'getAll']);
+
 });
 
 Route::prefix('v1')->group(function(){

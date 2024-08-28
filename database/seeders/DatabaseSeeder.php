@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
     {
         // Seed Roles
         $this->call(RoleSeeder::class);
+        $this->call(NumberOfPassengersSeeder::class);
 
         // Create the admin user
         $adminUser = User::factory()->create([
