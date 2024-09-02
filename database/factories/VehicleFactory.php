@@ -25,7 +25,7 @@ class VehicleFactory extends Factory
             'plate_number' => fake()->unique()->randomNumber(5),
             'level' => fake()->randomElement(['level_1', 'level_2', 'level_3']),
             'number_of_passengers' => fake()->randomElement([24, 12, 15, 20]),
-            'deployment_line_id' => DeploymentLine::factory()->create(),
+            'deployment_line_id' => DeploymentLine::inRandomOrder()->first()->id,
             'code' => fake()->randomElement([1,3]),
             'car_type' => fake()->randomElement(['mini_bus','bus','higer', 'lochin']),
         ];

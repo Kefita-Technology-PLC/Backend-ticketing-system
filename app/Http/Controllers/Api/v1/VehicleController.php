@@ -38,7 +38,7 @@ class VehicleController extends Controller
     public function store(Request $request)
     {
         $attrs = $request->validate([
-            'plate_number' => ['required', 'unique:vehicles,plate_number'],
+            'plate_number' => ['required', 'regex:/^[a-zA-Z]?\d{5}$/'],
             'level' => ['required', 'in:level_1,level_2,level_3'],
             'number_of_passengers' => ['required', 'integer',],
             'car_type' => ['required', 'max:250'],
@@ -89,7 +89,7 @@ class VehicleController extends Controller
     public function update(Request $request, Vehicle $vehicle)
     {
         $attrs = $request->validate([
-            'plate_number' => ['required',],
+            'plate_number' => ['required', 'regex:/^[a-zA-Z]?\d{5}$/'],
             'level' => ['required', 'in:level_1,level_2,level_3'],
             'number_of_passengers' => ['required', 'integer',],
             'car_type' => ['required', 'max:250'],
