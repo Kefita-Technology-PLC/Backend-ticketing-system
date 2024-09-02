@@ -14,13 +14,13 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             // Drop the foreign key constraint
-            $table->dropForeign(['station_id']);
-            
+            // $table->dropForeign(['station_id']);
+
             // Modify the column to be NOT NULL
-            $table->foreignIdFor(Station::class)->nullable(false)->change();
-            
+            // $table->foreignIdFor(Station::class)->nullable(false)->change();
+
             // Re-add the foreign key constraint
-            $table->foreign('station_id')->references('id')->on('stations')->onDelete('cascade');
+            // $table->foreign('station_id')->references('id')->on('stations')->onDelete('cascade');
         });
     }
 
@@ -28,13 +28,13 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             // Drop the modified foreign key constraint
-            $table->dropForeign(['station_id']);
+            // $table->dropForeign(['station_id']);
 
             // Revert the column to be nullable
-            $table->foreignIdFor(Station::class)->nullable()->change();
+            // $table->foreignIdFor(Station::class)->nullable()->change();
 
             // Re-add the original foreign key constraint
-            $table->foreign('station_id')->references('id')->on('stations')->onDelete('cascade');
+            // $table->foreign('station_id')->references('id')->on('stations')->onDelete('cascade');
         });
     }
 };

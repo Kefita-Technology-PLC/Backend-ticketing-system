@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DailyReportResource;
 use App\Http\Resources\TicketResource;
+use App\Models\Association;
+use App\Models\DailyReport;
+use App\Models\DeploymentLine;
 use App\Models\Station;
 use App\Models\Ticket;
 use App\Models\Vehicle;
@@ -15,7 +19,7 @@ class TicketGeneratorController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request)
+    public function ticketWebsite(Request $request)
     {
         $attrs = $request->validate([
             'station_name' => 'required',
@@ -26,13 +30,13 @@ class TicketGeneratorController extends Controller
             'level' => ['required', 'in:level1,level2,level3'],
             'number_of_passengers' => 'required',
             'deployment_line_id' => 'required',
-            'service_price' => '',
+            'price' => 'required',
             'destination_id' => 'required',
         ]);
 
         $vehicles = Vehicle::pluck('id', 'plate_number');
         $stations = Station::pluck('id', 'name');
-        $destinations = Station::pluck('id', 'name');
+        // $destinations = Station::pluck('id', 'name');
         // $deploymentLines = DeploymentLine::pluck('id', 'origin');
 
         $station_id = $stations[$attrs['station_name']] ?? null;
@@ -56,11 +60,49 @@ class TicketGeneratorController extends Controller
             'number_of_passengers' => $request->number_of_passengers,
             'price' => $request->price,
             'service_price' => $request->service_price,
-            'sold_status' => $request->sold_status,
+            // 'sold_status' => $request->sold_status,
         ]);
 
         $ticket->load('user','vehicle','station','deploymentLine', 'destination');
-        
+
         return new TicketResource($ticket);
+    }
+
+    public function ticketPos(Request $request){
+
+        $attrs = $request->validate([
+            'station_name' => 'required',
+            'ticket_count' => 'required',
+            'origin' => 'required',
+            'destination' => 'required',
+            'revenue' => 'required',
+            'association_name' => 'required',
+            'total_sale' => 'required',
+        ]);
+
+
+        $stations = Station::pluck('id', 'name');
+        $associations = Association::pluck('id', 'name');
+
+        $station_id = $stations[$attrs['station_name']] ?? null;
+        $association_id = $associations[$attrs['association_name']] ?? null;
+
+        // Find the deployment line ID that matches both origin and destination
+        $deploymentLine = DeploymentLine::where('origin', $attrs['origin'])
+                                        ->where('destination', $attrs['destination'])
+                                        ->first();
+        $deploymentLine_id = $deploymentLine ? $deploymentLine->id : null;
+
+        $dailyReport = DailyReport::create([
+            'station_id' => $station_id,
+            'deploymentLine_id' => $deploymentLine_id,
+            'association_id' => $association_id,
+            'ticket_count' => $attrs['ticket_count'],
+            'revenue' => $attrs['revenue'],
+            'total_sale' => $attrs['total_sale'],
+        ]);
+
+
+        return new DailyReportResource($dailyReport);
     }
 }

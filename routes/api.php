@@ -52,14 +52,14 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
     Route::resource('associations', AssociationController::class)->middleware(['role:admin|super admin']);
 
     Route::resource('vehicles', VehicleController::class)->middleware(['role:admin|super admin']);
-    
+
     Route::resource('deployment-lines', DeploymentLineController::class)->middleware(['role:admin|super admin']);
 
     Route::resource('tariffs', TariffController::class)->middleware(['role:admin|super admin']);
 
     Route::resource('passengers', NumberOfPassengersController::class)->middleware(['role:admin|super admin']);
 
-    Route::post('/generate-ticket', TicketGeneratorController::class);
+    Route::post('/generate-ticket', [TicketGeneratorController::class, 'ticketWebsite']);
 
     Route::get('/daily-report', [ReportController::class, 'dailyReport'])->middleware(['role:admin|super admin']);
 
@@ -77,6 +77,9 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
     Route::get('/vehicles-all', [VehicleController::class, 'getAll']);
     Route::get('/associations-all', [AssociationController::class, 'getAll']);
     Route::get('/deployment-lines-all', [DeploymentLineController::class, 'getAll']);
+
+    Route::post('/generate-ticket-pos', [TicketGeneratorController::class,'ticketPos']);
+    // Route::post('/daily-ticket-report', ReportControol)
 
 });
 
