@@ -12,7 +12,6 @@ use App\Http\Controllers\Api\v1\TariffController;
 use App\Http\Controllers\Api\v1\TicketGeneratorController;
 use App\Http\Controllers\Api\v1\VehicleController;
 use App\Http\Controllers\ForSelectionForm;
-use App\Models\NumberOfPassengers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
