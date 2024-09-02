@@ -77,7 +77,7 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
     Route::get('/associations-all', [AssociationController::class, 'getAll']);
     Route::get('/deployment-lines-all', [DeploymentLineController::class, 'getAll']);
 
-    Route::post('/generate-ticket-pos', [TicketGeneratorController::class,'ticketPos']);
+    Route::post('/daily-report-pos', [TicketGeneratorController::class,'ticketPos']);
     // Route::post('/daily-ticket-report', ReportControol)
 
 });
