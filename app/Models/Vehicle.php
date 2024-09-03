@@ -24,4 +24,11 @@ class Vehicle extends Model
     public function deploymentLine(){
         return $this->belongsTo(DeploymentLine::class);
     }
+
+    public static function TypeCount(string $type){
+        
+        $vehicleType = Vehicle::where('car_type', $type)->count();
+
+        return $vehicleType;
+    }
 }
