@@ -21,6 +21,13 @@ class AssociationCollection extends ResourceCollection
                 'establishment_date' => $association->establishment_date,
                 'created_at' => $association->created_at,
                 'updated_at' => $association->updated_at,
+                  'stations' => $association->stations->map(function($station) {
+                    return [
+                        'id' => $station->id,
+                        'name' => $station->name,
+                        // Add any other station attributes you need
+                    ];
+                })
             ];
         });
     }

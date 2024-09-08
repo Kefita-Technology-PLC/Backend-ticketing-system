@@ -95,7 +95,6 @@ class ReportController extends Controller
         })->where('created_at', $today)->count();
 
 
-
         return response()->json([
             'status' => true,
             'data' => [

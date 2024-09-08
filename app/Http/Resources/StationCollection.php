@@ -22,7 +22,12 @@ class StationCollection extends ResourceCollection
                 'id' => $station->id,
                 'name' => $station->name,
                 'location' => $station->location,
-                'associations' => new AssociationCollection($station->associations),
+                'associations' => $station->associations->map(function($association){
+                    return [
+                        'id' =>$association->id,
+                        'name' => $association->name,
+                    ];
+                }),
             ];
         });
     }

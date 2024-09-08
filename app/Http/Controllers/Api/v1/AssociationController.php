@@ -17,7 +17,8 @@ class AssociationController extends Controller
      */
 
      public function getAll(){
-        $association = Association::all();
+        $association = Association::with('stations')->get();
+
         return new AssociationCollection($association);
     }
 
