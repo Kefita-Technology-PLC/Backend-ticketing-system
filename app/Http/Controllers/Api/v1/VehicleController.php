@@ -8,6 +8,7 @@ use App\Http\Resources\VehicleResource;
 use App\Models\Association;
 use App\Models\Station;
 use App\Models\Vehicle;
+use App\Traits\Searchable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -17,12 +18,20 @@ class VehicleController extends Controller
     /**
      * Display a listing of the resource.
      */
+    use Searchable;
+
+    public function searchQueries(Request $request){
+        $searchColumns = ["plate_numbers"];
+        $vehicleQuery = Vehicle::query();
+
+        return $this->search($request, $vehicleQuery, $searchColumns);
+    }
 
      public function getAll(){
         $vehicle = Vehicle::with(['association', 'station'])->orderBy('plate_number', 'asc')->get();
         return new VehicleCollection($vehicle);
     }
-    
+
     public function index()
     {
         $vehicles = Vehicle::with(['association', 'station', 'deploymentLine'])
@@ -127,7 +136,7 @@ class VehicleController extends Controller
         try {
             $vehicle = Vehicle::findOrFail($id);
             $vehicle->delete();
-    
+
             return response()->json([
                 'status' => true,
                 'message' => 'Vehicle Deleted Successfully.'

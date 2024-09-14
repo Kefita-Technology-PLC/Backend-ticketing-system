@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\DeploymentCollection;
 use App\Http\Resources\DeploymentResource;
 use App\Models\DeploymentLine;
+use App\Traits\Searchable;
 use Illuminate\Http\Request;
 
 class DeploymentLineController extends Controller
@@ -13,6 +14,15 @@ class DeploymentLineController extends Controller
     /**
      * Display a listing of the resource.
      */
+    use Searchable;
+
+    public function searchQueries(Request $request)
+    {
+        $searchColumns = ['origin','destination'];
+        $deploymentLineQuery = DeploymentLine::query();
+
+        return $this->search($request, $deploymentLineQuery, $searchColumns);
+    }
 
     public function getAll(){
         $deployments = DeploymentLine::orderBy('origin', 'asc')->get();
@@ -38,7 +48,7 @@ class DeploymentLineController extends Controller
         ]);
 
         $deploymentLine = DeploymentLine::create($attrs);
-        return new DeploymentResource($deploymentLine);        
+        return new DeploymentResource($deploymentLine);
 
     }
 
@@ -70,7 +80,7 @@ class DeploymentLineController extends Controller
         ]);
 
         $deploymentLine->update($attrs);
-        return new DeploymentResource($deploymentLine);        
+        return new DeploymentResource($deploymentLine);
     }
 
     /**

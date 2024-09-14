@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\AssociationCollection;
 use App\Http\Resources\AssociationResource;
 use App\Models\Association;
+use App\Traits\Searchable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
@@ -15,6 +16,15 @@ class AssociationController extends Controller
     /**
      * Display a listing of the resource.
      */
+    use Searchable;
+
+    public function searchQueries(Request $request)
+    {
+        $searchColumns = ['name'];
+        $associationQuery = Association::query();
+
+        return $this->search($request, $associationQuery, $searchColumns);
+    }
 
      public function getAll(){
         $association = Association::with('stations')->get();

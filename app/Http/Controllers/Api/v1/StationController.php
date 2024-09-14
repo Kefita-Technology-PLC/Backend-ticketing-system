@@ -7,6 +7,7 @@ use App\Http\Resources\StationCollection;
 use App\Http\Resources\StationResource;
 use App\Models\Association;
 use App\Models\Station;
+use App\Traits\Searchable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
@@ -15,18 +16,28 @@ class StationController extends Controller
     /**
      * Display a listing of the resource.
      */
+    use Searchable;
+
+    public function searchQueries(Request $request)
+    {
+        $searchColumns = ['name', 'location'];
+        $stationQuery = Station::query();
+
+        return $this->search($request, $stationQuery, $searchColumns);
+    }
+
     public function getAll(){
         $station = Station::orderBy('name', 'asc')->get();
         return new StationCollection($station);
     }
-   
+
     public function index()
     {
         $station = Station::latest()->paginate(env('PAGINATION_NUMBER', 15));
 
         return new StationCollection($station);
     }
-    
+
     /**
      * Store a newly created resource in storage.
      */
@@ -41,13 +52,13 @@ class StationController extends Controller
        // return $attrs['associations'];
 
         $station = Station::create(Arr::except($attrs, 'associations'));
-        
+
         foreach($attrs['associations'] as $association){
             $station->association($association);
         }
         return new StationResource($station);
     }
-    
+
 
     /**
      * Display the specified resource.
