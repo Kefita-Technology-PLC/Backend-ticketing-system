@@ -21,7 +21,7 @@ class AssociationController extends Controller
     public function searchQueries(Request $request)
     {
         $searchColumns = ['name'];
-        $associationQuery = Association::query();
+        $associationQuery = Association::with('stations');
 
         return $this->search($request, $associationQuery, $searchColumns);
     }

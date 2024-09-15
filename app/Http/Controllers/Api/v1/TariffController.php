@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TariffCollection;
 use App\Http\Resources\TariffResource;
+use App\Models\DeploymentLine;
 use App\Models\Tariff;
 use App\Rules\UniqueOriginDestination;
+use App\Traits\Searchable;
 use Illuminate\Http\Request;
 
 class TariffController extends Controller
@@ -14,6 +16,15 @@ class TariffController extends Controller
     /**
      * Display a listing of the resource.
      */
+    use Searchable;
+
+    public function searchQueries(Request $request){
+        $searchColumns = ['created_at'];
+        $tariffQuery = Tariff::with('station');
+
+        return $this->search($request, $tariffQuery, $searchColumns);
+    }
+    
     public function index()
     {
         $tariffs = Tariff::with('station')->latest()->paginate(env('PAGINATION_NUMBER', 10));

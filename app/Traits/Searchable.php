@@ -34,7 +34,7 @@ trait Searchable
 
         // Handle pagination or return all results
         if ($isPaginated) {
-            $results = $modelQuery->paginate(10);
+            $results = $modelQuery->paginate(5);
         } else {
             $results = $modelQuery->get();
         }

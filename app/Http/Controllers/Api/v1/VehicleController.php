@@ -21,8 +21,8 @@ class VehicleController extends Controller
     use Searchable;
 
     public function searchQueries(Request $request){
-        $searchColumns = ["plate_numbers"];
-        $vehicleQuery = Vehicle::query();
+        $searchColumns = ["plate_number"];
+        $vehicleQuery = Vehicle::with(['association','station']);
 
         return $this->search($request, $vehicleQuery, $searchColumns);
     }
