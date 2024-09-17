@@ -3,9 +3,11 @@
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\VehicleController;
+use App\Models\User;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Spatie\Permission\Models\Role;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -37,5 +39,18 @@ Route::get('auth/google/callback', [GoogleAuthController::class,'handleGoogleCal
 
 Route::get('auth/google/ticket-seller/redirect', [GoogleAuthController::class,'redirectToGoogleForTicketSeller']);
 Route::get('auth/google/ticket-seller/callback', [GoogleAuthController::class,'handleGoogleCallbackForTicketSeller']);
+
+Route::get('/test', function(){
+    // $adminRoleApi = Role::where('name', 'admin')->where('guard_name', 'api')->first();
+     $adminRoleWeb = Role::where('name', 'admin')->where('guard_name', 'web')->first();
+
+    // for($i=0; $i<5; $i++){
+    //     $user = User::factory()->create();
+    //     $user->assignRole($adminRoleApi);
+    //     $user->assignRole($adminRoleWeb);
+    // }
+
+    return dd(Role::where('name', 'admin')->where('guard_name', 'api')->first());
+});
 
 require __DIR__.'/auth.php';

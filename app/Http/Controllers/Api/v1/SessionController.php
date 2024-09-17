@@ -39,8 +39,12 @@ class SessionController extends Controller
         ]);
 
         EmailVerificationSend::dispatch($user);
-        $adminRole = Role::where('name', 'admin')->where('guard_name', 'api')->first();
-        $user->assignRole($adminRole);
+        $adminRoleApi = Role::where('name', 'admin')->where('guard_name', 'api')->first();
+        $adminRoleWeb = Role::where('name', 'admin')->where('guard_name', 'web')->first();
+
+        $user->assignRole($adminRoleApi);// assigning admin role for the api
+        $user->assignRole($adminRoleWeb); // assigning admin role for the web
+        
         return response()->json([
             'status' => true,
             'message' => 'Admin User Created Successfully. Email Verification link sent',
@@ -78,7 +82,7 @@ class SessionController extends Controller
         $ticketSeller = Role::where('name', 'ticket seller')->where('guard_name', 'api')->first();
 
         $user->assignRole($ticketSeller);
-        
+
         return response()->json([
             'status' => true,
             'message' => 'Ticket Seller User Created Successfully. Email Verification link sent',
@@ -96,7 +100,7 @@ class SessionController extends Controller
                 'phone_no' => ['required', 'regex:/^\+251[97]\d{8}$/'],
                 'password' => ['required', RulesPassword::min(6)],
             ]);
-    
+
             if ($attrs->fails()) {
                 return response()->json([
                     'status' => false,
@@ -104,18 +108,18 @@ class SessionController extends Controller
                     'errors' => $attrs->errors()
                 ], 401);
             }
-    
+
             // Log request input
             Log::info('Phone No: ' . $request->phone_no);
             Log::info('Password: ' . $request->password);
-    
+
             $user = User::where('phone_no', $request->phone_no)->first();
-    
+
             // Log database password
             Log::info('Database Password: ' . $user->password);
 
             // dd($user);
-    
+
             if (!$user || !Auth::attempt(['phone_no' => $request->phone_no, 'password' => $request->password])) {
                 return response()->json([
                     'status' => false,
@@ -125,13 +129,13 @@ class SessionController extends Controller
                     ]
                 ], 401);
             }
-    
+
             return response()->json([
                 'status' => true,
                 'message' => 'User login successfully',
                 'token' => $user->createToken("API TOKEN")->plainTextToken,
             ]);
-    
+
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -139,7 +143,7 @@ class SessionController extends Controller
             ], 500);
         }
     }
-    
+
 
 
     public function update(Request $request)
@@ -167,7 +171,7 @@ class SessionController extends Controller
         ]);
 
         EmailVerificationSend::dispatch($request->user());
-        
+
         return response()->json([
             'status' => true,
             'message' => 'User Credintials Updated Successfully',

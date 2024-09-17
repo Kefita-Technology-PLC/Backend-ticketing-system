@@ -65,4 +65,28 @@ class User extends Authenticatable implements MustVerifyEmail
     public function updatedVehicles(){
         return $this->hasMany(Vehicle::class,'updated_by');
     }
+
+    public function createdStations(){
+        return $this->hasMany(Station::class,'created_by');
+    }
+
+    public function updatedStations(){
+        return $this->hasMany(Station::class,'updated_by');
+    }
+
+    public function createdAssociations(){
+        return $this->hasMany(Association::class,'created_by');
+    }
+
+    public function updatedAssociations(){
+        return $this->hasMany(Association::class,'updated_by');
+    }
+
+    public function createdDeploymentLines(){
+        return $this->hasMany(DeploymentLine::class,'created_by');
+    }
+
+    public function updatedDeploymentLines(){
+        return $this->hasMany(DeploymentLine::class,'updated_by');
+    }
 }

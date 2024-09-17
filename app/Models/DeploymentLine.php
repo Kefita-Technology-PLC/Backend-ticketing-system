@@ -16,4 +16,12 @@ class DeploymentLine extends Model
     public function vehicles(){
         return $this->hasMany(Vehicle::class);
     }
+
+    public function creator(){
+        return $this->belongsTo(User::class,'created_by');
+    }
+
+    public function updator(){
+        return $this->belongsTo(User::class,'updated_by');
+    }
 }

@@ -49,8 +49,12 @@ class RegisteredUserController extends Controller
         // event(new Registered($user));
         EmailVerificationSend::dispatch($user);
 
-        $adminRole = Role::where('name', 'admin')->where('guard_name', 'api')->first();
-        $user->assignRole($adminRole);
+        $adminRoleApi = Role::where('name', 'admin')->where('guard_name', 'api')->first();
+        $adminRoleWeb = Role::where('name', 'admin')->where('guard_name', 'web')->first();
+
+        $user->assignRole($adminRoleApi); // assigning admin role for the api
+        $user->assignRole($adminRoleWeb); // assigning admin role for the web
+        
         Auth::login($user);
 
         return redirect(route('dashboard', absolute: false));

@@ -33,6 +33,17 @@ class UserFactory extends Factory
             'phone_no' => '+251704512247'
         ];
     }
+    /**
+     * This function returns the fake number.
+     */
+
+    protected function generatePhoneNumber(): string
+    {
+        $prefix = '+251';
+        $startDigit = $this->faker->randomElement(['7', '9']);
+        $number = $this->faker->numerify('########'); // 8 random digits
+        return $prefix . $startDigit . $number;
+    }
 
     /**
      * Indicate that the model's email address should be unverified.
