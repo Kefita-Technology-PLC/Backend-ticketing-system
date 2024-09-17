@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\TariffCollection;
-use App\Http\Resources\TariffResource;
+use App\Http\Resources\Api\TariffCollection;
+use App\Http\Resources\Api\TariffResource;
 use App\Models\DeploymentLine;
 use App\Models\Tariff;
 use App\Rules\UniqueOriginDestination;
@@ -24,7 +24,7 @@ class TariffController extends Controller
 
         return $this->search($request, $tariffQuery, $searchColumns);
     }
-    
+
     public function index()
     {
         $tariffs = Tariff::with('station')->latest()->paginate(env('PAGINATION_NUMBER', 10));

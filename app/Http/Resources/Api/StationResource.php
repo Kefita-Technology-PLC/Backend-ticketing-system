@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -20,7 +20,9 @@ class StationResource extends JsonResource
             'location' => $this->location,
             'associations' => new AssociationCollection($this->associations),
             'created_at'=> $this->created_at,
-            'updated_at'=>$this->updated_at
+            'updated_at'=>$this->updated_at,
+            'created_by' => new UserResource($this->creator),
+            'updated_by' => new UserResource($this->updater),
         ];
     }
 }

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\StationCollection;
-use App\Http\Resources\StationResource;
+use App\Http\Resources\Api\StationCollection;
+use App\Http\Resources\Api\StationResource;
 use App\Models\Association;
 use App\Models\Station;
 use App\Traits\Searchable;

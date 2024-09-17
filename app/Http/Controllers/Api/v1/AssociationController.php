@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Custom\EthiopianDateCustom;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\AssociationCollection;
-use App\Http\Resources\AssociationResource;
+use App\Http\Resources\Api\AssociationCollection;
+use App\Http\Resources\Api\AssociationResource;
 use App\Models\Association;
 use App\Traits\Searchable;
 use Illuminate\Http\Request;

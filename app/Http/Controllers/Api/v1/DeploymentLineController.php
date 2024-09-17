@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\DeploymentCollection;
-use App\Http\Resources\DeploymentResource;
+use App\Http\Resources\Api\DeploymentCollection;
+use App\Http\Resources\Api\DeploymentResource;
 use App\Models\DeploymentLine;
 use App\Traits\Searchable;
 use Illuminate\Http\Request;

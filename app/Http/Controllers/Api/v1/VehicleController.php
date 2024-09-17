@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\VehicleResource as ApiVehicleResource;
-use App\Http\Resources\VehicleCollection;
-use App\Http\Resources\VehicleResource;
+use App\Http\Resources\Api\VehicleCollection;
+// use App\Http\Resources\VehicleResource;
 use App\Models\Association;
 use App\Models\Station;
 use App\Models\Vehicle;

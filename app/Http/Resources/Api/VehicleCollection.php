@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Api;
 
+use App\Http\Resources\Api\VehicleResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -12,10 +13,11 @@ class VehicleCollection extends ResourceCollection
      *
      * @return array<int|string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray(Request $request)
     {
-        return [
-            'data' => $this->collection
-        ];
+        return $this->collection->transform(function ($vehicle) {
+            return new VehicleResource($vehicle);
+        });
+
     }
 }
