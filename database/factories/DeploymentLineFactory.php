@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,6 +20,8 @@ class DeploymentLineFactory extends Factory
         return [
             'origin' => fake()->randomElement(['megenagna', 'mexico', 'ayertena', 'kotebe', 'yekabado']),
             'destination' => fake()->randomElement(['megenagna', 'mexico', 'ayertena', 'kotebe', 'yekabado']),
+            'created_by' => User::role(['admin', 'super admin'])->inRandomOrder()->first()->id,
+            'updated_by' => User::role(['admin', 'super admin'])->inRandomOrder()->first()->id,
         ];
     }
 }

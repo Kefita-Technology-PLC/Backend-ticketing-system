@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -13,7 +14,9 @@ class VehicleController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Vehicles/Index');
+        return Inertia::render('Vehicles/Index',[
+            'vehicles' => Vehicle::with('station', 'association', 'deploymentLine')->paginate(10),
+        ]);
     }
 
     /**

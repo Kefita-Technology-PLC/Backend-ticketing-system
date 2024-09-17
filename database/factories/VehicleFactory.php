@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Association;
 use App\Models\DeploymentLine;
 use App\Models\Station;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -28,6 +29,8 @@ class VehicleFactory extends Factory
             'deployment_line_id' => DeploymentLine::inRandomOrder()->first()->id,
             'code' => fake()->randomElement([1,3]),
             'car_type' => fake()->randomElement(['mini_bus','bus','higer', 'lochin']),
+            'created_by' => User::role(['admin', 'super admin'])->inRandomOrder()->first()->id,
+            'updated_by' => User::role(['admin', 'super admin'])->inRandomOrder()->first()->id,
         ];
     }
 }

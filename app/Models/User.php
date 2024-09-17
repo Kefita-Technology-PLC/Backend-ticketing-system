@@ -53,9 +53,16 @@ class User extends Authenticatable implements MustVerifyEmail
 
         $this->notify(new ResetPasswordNotification
         ($url));
-    } 
+    }
 
     public function tickets(){
         return $this->hasMany(Ticket::class);
+    }
+
+    public function createdVehicles(){
+        return $this->hasMany(Vehicle::class, 'created_by');
+    }
+    public function updatedVehicles(){
+        return $this->hasMany(Vehicle::class,'updated_by');
     }
 }

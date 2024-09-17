@@ -15,7 +15,14 @@ class RoleSeeder extends Seeder
     {
         $names = ['admin', 'super admin', 'ticket seller'];
         foreach($names as $name){
-            Role::factory()->create(['name' => $name]);
+            Role::factory()->create([
+                'name' => $name,
+                'guard_name' => 'api',
+            ]);
+            Role::factory()->create([
+                'name' => $name,
+                'guard_name' => 'web',
+            ]);
         }
     }
 }

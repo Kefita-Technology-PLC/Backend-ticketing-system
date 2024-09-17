@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,7 @@ class StationFactory extends Factory
     public function definition(): array
     {
         return [
-            
+
             'name' => fake()->randomElement([
                 'megenagna-station', 'mexico-station', 'tuludimtu-station', 'goro-station', 'ayertena-station', 'yekabado-station', 'koyefiche-station', 'addisugebeya-station','merkato-station', 'torhayloch-station', 'piassa-station', '4kilo-station', 'bole-station'
             ]),
@@ -25,6 +26,8 @@ class StationFactory extends Factory
             'location' => fake()->randomElement([
                 'megenagna', 'mexico', 'tuludimtu', 'goro', 'ayertena', 'yekabado', 'koyefiche', 'addisugebeya','merkato', 'torhayloch', 'piassa', '4kilo', 'bole'
             ]),
+            'created_by' => User::role(['admin', 'super admin'])->inRandomOrder()->first()->id,
+            'updated_by' => User::role(['admin', 'super admin'])->inRandomOrder()->first()->id,
         ];
     }
 }
