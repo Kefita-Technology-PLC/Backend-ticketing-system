@@ -21,19 +21,19 @@ class StationController extends Controller
     public function searchQueries(Request $request)
     {
         $searchColumns = ['name', 'location'];
-        $stationQuery = Station::query();
+        $stationQuery = Station::with(['updater','creator']);
 
         return $this->search($request, $stationQuery, $searchColumns);
     }
 
     public function getAll(){
-        $station = Station::orderBy('name', 'asc')->get();
+        $station = Station::orderBy('name', 'asc')->with(['updater', 'creator'])->get();
         return new StationCollection($station);
     }
 
     public function index()
     {
-        $station = Station::latest()->paginate(env('PAGINATION_NUMBER', 15));
+        $station = Station::latest()->with(['updater','creator'])->paginate(env('PAGINATION_NUMBER', 15));
 
         return new StationCollection($station);
     }

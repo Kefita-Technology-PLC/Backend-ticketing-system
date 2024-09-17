@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\VehicleResource as ApiVehicleResource;
 use App\Http\Resources\VehicleCollection;
 use App\Http\Resources\VehicleResource;
 use App\Models\Association;
@@ -22,19 +23,19 @@ class VehicleController extends Controller
 
     public function searchQueries(Request $request){
         $searchColumns = ["plate_number"];
-        $vehicleQuery = Vehicle::with(['association','station']);
+        $vehicleQuery = Vehicle::with(['association','station','creator','updater']);
 
         return $this->search($request, $vehicleQuery, $searchColumns);
     }
 
      public function getAll(){
-        $vehicle = Vehicle::with(['association', 'station'])->orderBy('plate_number', 'asc')->get();
+        $vehicle = Vehicle::with(['association', 'station', 'creator', 'updater'])->orderBy('plate_number', 'asc')->get();
         return new VehicleCollection($vehicle);
     }
 
     public function index()
     {
-        $vehicles = Vehicle::with(['association', 'station', 'deploymentLine'])
+        $vehicles = Vehicle::with(['association', 'station', 'deploymentLine','creator', 'updater'])
         ->latest()
         ->paginate(env("PAGINATION_NUMBER", 15));
 
@@ -73,7 +74,7 @@ class VehicleController extends Controller
             ...Arr::except($attrs, ['station_name', 'association_name']),
         ]);
 
-        return new VehicleResource($vehicle);
+        return new ApiVehicleResource($vehicle);
     }
 
     /**
@@ -89,7 +90,7 @@ class VehicleController extends Controller
             ]);
         }
         $vehicle->load(['station', 'association','deploymentLine']);
-        return new VehicleResource($vehicle);
+        return new ApiVehicleResource($vehicle);
     }
 
     /**
@@ -125,7 +126,7 @@ class VehicleController extends Controller
         ]);
 
         $vehicle->load(['station', 'association','deploymentLine']);
-        return new VehicleResource($vehicle);
+        return new ApiVehicleResource($vehicle);
     }
 
     /**

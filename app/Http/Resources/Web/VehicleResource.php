@@ -17,12 +17,13 @@ class VehicleResource extends JsonResource
         return [
             'id' => $this->id,
             'plate_number' => $this->plate_number,
-            // 'station' => 
+            // 'station' =>
             'code' => $this->code,
             'level' => $this->level,
             'number_of_passengers' => $this->number_of_passengers,
             'car_type' => $this->car_type,
-
+            'created_by' => new UserResource($this->created_by),
+            'updated-by' => new UserResource($this->updated_by),
         ];
     }
 }

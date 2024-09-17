@@ -21,20 +21,20 @@ class AssociationController extends Controller
     public function searchQueries(Request $request)
     {
         $searchColumns = ['name'];
-        $associationQuery = Association::with('stations');
+        $associationQuery = Association::with(['stations','creator','updater']);
 
         return $this->search($request, $associationQuery, $searchColumns);
     }
 
      public function getAll(){
-        $association = Association::with('stations')->get();
+        $association = Association::with('stations')->with(['creator','updator'])->get();
 
         return new AssociationCollection($association);
     }
 
     public function index()
     {
-        $associations = Association::latest()->paginate(env('PAGINATION_NUMBER', 15));
+        $associations = Association::latest()->with(['creator', 'updator'])->paginate(env('PAGINATION_NUMBER', 15));
         return new AssociationCollection($associations);
     }
 
