@@ -1,39 +1,36 @@
 <?php
 
 use App\Http\Controllers\GoogleAuthController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::get('/', function () {
-    return view('welcome');
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'laravelVersion' => Application::VERSION,
+        'phpVersion' => PHP_VERSION,
+    ]);
 });
 
-Route::get('auth/google/redirect', [GoogleAuthController::class, 'redirectToGoogle']);
-Route::get('auth/google/callback',[GoogleAuthController::class, 'handleGoogleCallback']);
+Route::get('/dashboard', function () {
+    return Inertia::render('Dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('auth/google/ticket-seller/redirect', [GoogleAuthController::class, 'redirectToGoogleForTicketSeller']);
-Route::get('auth/google/ticket-seller/callback', [GoogleAuthController::class, 'handleGoogleCallbackForTicketSeller']);
-
-
-Route::get('/dummyapi', function(Request $request){
-    // $to ='0944055361';
-    // $otp = '4875';
-    // $domain = 'biruklemma.com';
-    // $id = '24516';
-     
-    // $server = 'https://sms.yegara.com/api3/send';
-    // $postData = array('to' => $to, 'otp' => $otp,  'id' =>$id,  'domain' => $domain );
-    // $content = json_encode($postData);
-    // $curl = curl_init($server);
-    // curl_setopt($curl, CURLOPT_HEADER, false);
-    // curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-    // curl_setopt($curl, CURLOPT_HTTPHEADER,  array("Content-type: application/json"));
-    // curl_setopt($curl, CURLOPT_POST, true);
-    // curl_setopt($curl, CURLOPT_POSTFIELDS, $content);
-    // $json_response = curl_exec($curl);
-    // $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-    // curl_close($curl);
-    
-    // return $json_response; 
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+
+
+Route::get('auth/google/redirect',[GoogleAuthController::class,'redirectToGoogle']);
+Route::get('auth/google/callback', [GoogleAuthController::class,'handleGoogleCallback']);
+
+Route::get('auth/google/ticket-seller/redirect', [GoogleAuthController::class,'redirectToGoogleForTicketSeller']);
+Route::get('auth/google/ticket-seller/callback', [GoogleAuthController::class,'handleGoogleCallbackForTicketSeller']);
+
+require __DIR__.'/auth.php';
