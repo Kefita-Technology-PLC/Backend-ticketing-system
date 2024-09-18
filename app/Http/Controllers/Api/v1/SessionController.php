@@ -44,10 +44,10 @@ class SessionController extends Controller
 
         $user->assignRole($adminRoleApi);// assigning admin role for the api
         $user->assignRole($adminRoleWeb); // assigning admin role for the web
-        
+
         return response()->json([
             'status' => true,
-            'message' => 'Admin User Created Successfully. Email Verification link sent',
+            'message' => 'Admin User Registered Successfully. Email Verification link sent',
             'token' => $user->createToken("API TOKEN")->plainTextToken,
             'data'=>[
                 'user'=> $user,
@@ -170,7 +170,7 @@ class SessionController extends Controller
             'password'=> $request->password,
         ]);
 
-        EmailVerificationSend::dispatch($request->user());
+        // EmailVerificationSend::dispatch($request->user());
 
         return response()->json([
             'status' => true,

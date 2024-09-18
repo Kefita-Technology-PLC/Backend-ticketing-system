@@ -21,7 +21,7 @@ class NewPasswordController extends Controller
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json([
                 'status' => 'error',
@@ -29,10 +29,10 @@ class NewPasswordController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
-    
+
         // Check if the email exists in the database
         $user = User::where('email', $request->email)->first();
-    
+
         if (!$user) {
             return response()->json([
                 'status' => 'error',
@@ -42,12 +42,12 @@ class NewPasswordController extends Controller
                 ]
             ], 404);
         }
-    
+
         // Send the password reset link
         Password::sendResetLink(
             $request->only('email')
         );
-    
+
         return response()->json([
             'status' => 'success',
             'message' => 'You will receive a password reset link shortly.'
@@ -72,7 +72,10 @@ class NewPasswordController extends Controller
 
                 $user->tokens()->delete();
 
-                event(new PasswordReset($user));
+                dispatch(function()use($user){
+                    event(new PasswordReset($user));
+                });
+
             }
         );
 
