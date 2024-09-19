@@ -46,14 +46,14 @@ If you want to enable Google OAuth for authenticating admins and ticket sellers 
 ## 5. Run Migrations
 This will set up the database schema and tables.
         
-        php artisan migrate
+    php artisan migrate
 
 ## 6. Seed the database
 To populate the database with essential roles and permissions, run the seeder:
 
     php artisan db:seed
 
-## 7. Serve teh application
+## 7. Serve the application
 To start the application, use:
 
     php artisan serve
