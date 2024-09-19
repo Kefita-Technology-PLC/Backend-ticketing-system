@@ -28,6 +28,9 @@ class NumberOfPassengersSeeder extends Seeder
     public function run(): void
     {
         // Insert the passenger numbers into the database
-        DB::table('number_of_passengers')->insert($this->array);
+        if(DB::table('number_of_passengers')->count() == 0){
+            DB::table('number_of_passengers')->insert($this->array);
+        }
+
     }
 }

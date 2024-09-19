@@ -1,11 +1,6 @@
 <?php
 
 namespace Database\Seeders;
-
-use App\Models\Association;
-use App\Models\Station;
-use App\Models\Tariff;
-use App\Models\Vehicle;
 use Illuminate\Database\Seeder;
 
 
@@ -20,7 +15,9 @@ class DatabaseSeeder extends Seeder
         $this->callOnce(RoleSeeder::class);
         $this->callOnce(NumberOfPassengersSeeder::class);
 
+
         $this->callOnce(CustomSeeder::class);
+        $this->callOnce(DeploymentLineSeeder::class);
 
         $this->callOnce(StationAndAssociationSeeder::class);
         // Seed Vehicles and Tariffs

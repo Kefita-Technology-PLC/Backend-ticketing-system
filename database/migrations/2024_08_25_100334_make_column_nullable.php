@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('associations', function (Blueprint $table) {
-            $table->date('establishment_date')->nullable(false)->change();
+            $table->date('establishment_date')->nullable()->change();
         });
     }
 };
