@@ -37,16 +37,31 @@ class TicketFactory extends Factory
                         ->where('car_type', $vehicle->car_type)
                         ->first();
 
+        // echo($tariff);
+
+        // Debugging: Check if $tariff is found
+        if (!$tariff) {
+            echo "No tariff found for origin: {$station->name}, destination: {$destination}, car_type: {$vehicle->car_type}\n";
+        } else {
+            echo "Tariff found: " . json_encode($tariff) . "\n";
+            echo "Vehicle level: {$vehicle->level}\n";
+        }
         // Determine the base price based on the vehicle's level
         $basePrice = $tariff ? match ($vehicle->level) {
-            1 => $tariff->level1_price,
-            2 => $tariff->level2_price,
-            3 => $tariff->level3_price,
+            'level_1' => $tariff->level1_price,
+            'level_2' => $tariff->level2_price,
+            'level_3' => $tariff->level3_price,
             default => 0
         } : 0;
 
+
+        echo "Base Price: {$basePrice}\n";
+
         // Multiply the base price by the number of passengers
         $price = $basePrice * $vehicle->number_of_passengers;
+
+        $createdAt = fake()->dateTimeBetween('-1 month', 'now');
+        $updatedAt = fake()->dateTimeBetween($createdAt, 'now');
 
         return [
             'user_id' => 1,
@@ -58,6 +73,8 @@ class TicketFactory extends Factory
             'number_of_passengers'=> $vehicle->number_of_passengers,
             'price' => $price,  // Price multiplied by the number of passengers
             'service_price' => 2.00,
+            'created_at' => $createdAt,
+            'updated_at' => $updatedAt,
         ];
     }
 }

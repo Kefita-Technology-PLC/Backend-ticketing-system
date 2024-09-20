@@ -1,7 +1,11 @@
 "use client"
 
+import React from "react"
 import { TrendingUp } from "lucide-react"
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css"
+import { useForm } from "@inertiajs/react"
 
 import {
   Card,
@@ -17,35 +21,77 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/Components/ui/chart"
+import { Button } from "@/Components/ui/button"
 
-export const description = "A linear area chart"
+type TicketSalesData = {
+  month: string;
+  totalSales: number;
+}
 
-const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
-]
+type Props = {
+  initialData: TicketSalesData[];
+}
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  totalSales: {
+    label: "Ticket Sales",
     color: "hsl(var(--chart-1))",
   },
 } satisfies ChartConfig
 
-export function LineGraph() {
+export function TicketSalesChart({ initialData }: Props) {
+  const [chartData, setChartData] = React.useState<TicketSalesData[]>(initialData)
+
+  console.log(chartData)
+
+  const { data, setData, post, processing } = useForm({
+    startDate: null as Date | null,
+    endDate: null as Date | null,
+  })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    post('/api/ticket-sales', {
+      preserveState: true,
+      preserveScroll: true,
+      onSuccess: (page) => {
+        // Type assertion to ensure the received data matches TicketSalesData[]
+        const newData = page.props.ticketSalesData as TicketSalesData[];
+        setChartData(newData);
+      },
+    })
+  }
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Area Chart - Linear</CardTitle>
+        <CardTitle>Ticket Sales Chart</CardTitle>
         <CardDescription>
-          Showing total visitors for the last 6 months
+          Showing total ticket sales for the selected period
         </CardDescription>
       </CardHeader>
       <CardContent>
+        <form onSubmit={handleSubmit} className="mb-4 flex items-end gap-4">
+          <div>
+            <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">Start Date</label>
+            <DatePicker
+              id="startDate"
+              selected={data.startDate}
+              onChange={(date: Date | null) => setData('startDate', date)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+            />
+          </div>
+          <div>
+            <label htmlFor="endDate" className="block text-sm font-medium text-gray-700">End Date</label>
+            <DatePicker
+              id="endDate"
+              selected={data.endDate}
+              onChange={(date: Date | null) => setData('endDate', date)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+            />
+          </div>
+          <Button type="submit" disabled={processing}>Update Chart</Button>
+        </form>
         <ChartContainer config={chartConfig}>
           <AreaChart
             accessibilityLayer
@@ -53,6 +99,8 @@ export function LineGraph() {
             margin={{
               left: 12,
               right: 12,
+              top: 20,
+              bottom: 20,
             }}
           >
             <CartesianGrid vertical={false} />
@@ -63,16 +111,22 @@ export function LineGraph() {
               tickMargin={8}
               tickFormatter={(value) => value.slice(0, 3)}
             />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tickFormatter={(value) => `${value}`}
+            />
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent indicator="dot" hideLabel />}
             />
             <Area
-              dataKey="desktop"
+              dataKey="totalSales"
               type="linear"
-              fill="var(--color-desktop)"
+              fill="var(--color-totalSales)"
               fillOpacity={0.4}
-              stroke="var(--color-desktop)"
+              stroke="var(--color-totalSales)"
             />
           </AreaChart>
         </ChartContainer>
@@ -81,10 +135,10 @@ export function LineGraph() {
         <div className="flex w-full items-start gap-2 text-sm">
           <div className="grid gap-2">
             <div className="flex items-center gap-2 font-medium leading-none">
-              Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+              Trending up by 5.2% this period <TrendingUp className="h-4 w-4" />
             </div>
             <div className="flex items-center gap-2 leading-none text-muted-foreground">
-              January - June 2024
+              {chartData[0]?.month} - {chartData[chartData.length - 1]?.month}
             </div>
           </div>
         </div>

@@ -3,6 +3,7 @@
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\DashboardController;
+use App\Http\Controllers\Web\UserManagementController;
 use App\Http\Controllers\Web\VehicleController;
 use App\Http\Resources\Web\UserResource;
 use App\Models\User;
@@ -31,8 +32,13 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth', 'role:admin|super admin'])->group(function () {
-    Route::resource('vehicles', VehicleController::class);
+    Route::resource('vehicles', VehicleController::class)->middleware(['']);
 });
+
+Route::middleware(['auth','role:super admin'])->group(function () {
+    Route::resource('user-management', UserManagementController::class);
+});
+
 
 
 

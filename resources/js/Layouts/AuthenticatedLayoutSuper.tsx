@@ -30,6 +30,10 @@ export default function AuthenticatedLayoutSuper({ header, children }: PropsWith
                                 <NavLink href={route('vehicles.index')} active={route().current('vehicles.index')}>
                                     Vehicles
                                 </NavLink>
+
+                                <NavLink href={route('user-management.index')} active={route().current('user-management.index')}>
+                                    Add Users
+                                </NavLink>
                             </div>
                         </div>
 
@@ -103,6 +107,10 @@ export default function AuthenticatedLayoutSuper({ header, children }: PropsWith
                         </ResponsiveNavLink>
                         <ResponsiveNavLink href={route('vehicles.index')} active={route().current('vehicles.index')}>
                             Vehicles
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink href={route('user-management.index')} active={route().current('user-management.index')}>
+                            Add Users
                         </ResponsiveNavLink>
                     </div>
 
