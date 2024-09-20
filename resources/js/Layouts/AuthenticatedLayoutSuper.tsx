@@ -5,7 +5,7 @@ import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
 
-export default function Authenticated({ header, children }: PropsWithChildren<{ header?: ReactNode }>) {
+export default function AuthenticatedLayoutSuper({ header, children }: PropsWithChildren<{ header?: ReactNode }>) {
     const user = usePage().props.auth.user;
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
@@ -26,7 +26,7 @@ export default function Authenticated({ header, children }: PropsWithChildren<{ 
                                 <NavLink href={route('dashboard')} active={route().current('dashboard')}>
                                     Dashboard
                                 </NavLink>
-                                
+
                                 <NavLink href={route('vehicles.index')} active={route().current('vehicles.index')}>
                                     Vehicles
                                 </NavLink>

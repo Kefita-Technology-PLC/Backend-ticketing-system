@@ -23,5 +23,8 @@ class DatabaseSeeder extends Seeder
         // Seed Vehicles and Tariffs
         $this->callOnce(VehicleSeeder::class);
         $this->callOnce(TariffSeeder::class);
+
+        $this->callOnce(TicketSeeder::class);
+        $this->callOnce(TariffSeeder::class);
     }
 }

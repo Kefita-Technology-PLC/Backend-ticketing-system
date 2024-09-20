@@ -30,7 +30,7 @@ class VehicleFactory extends Factory
             $query->whereIn('role_id', [$adminRoleWeb->id, $superAdminRoleWeb->id])
                   ->orWhereIn('role_id', [$adminRoleApi->id, $superAdminRoleApi->id]);
         })->inRandomOrder()->get();
-        
+
         return [
             'station_id'=> Station::inRandomOrder()->first()->id,
             'association_id'=> Association::inRandomOrder()->first()->id,
@@ -39,7 +39,7 @@ class VehicleFactory extends Factory
             'number_of_passengers' => fake()->randomElement([24, 12, 15, 20]),
             'deployment_line_id' => DeploymentLine::inRandomOrder()->first()->id,
             'code' => fake()->randomElement([1,3]),
-            'car_type' => fake()->randomElement(['mini_bus','bus','higer', 'lochin']),
+            'car_type' => fake()->randomElement(['mini_bus','bus','higer', 'lonchin','taxi']),
             'created_by' => $usersWithRoles->isNotEmpty() ? $usersWithRoles->first()->id : null,
             'updated_by' => $usersWithRoles->isNotEmpty() ? $usersWithRoles->random()->id : null,
         ];

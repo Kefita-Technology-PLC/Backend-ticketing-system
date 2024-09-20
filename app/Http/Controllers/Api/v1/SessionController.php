@@ -21,6 +21,7 @@ class SessionController extends Controller
             'email'=> 'required|email|unique:users,email',
            'phone_no' => ['required', 'regex:/^\+251[97]\d{8}$/', 'unique:users,phone_no'],
             'password'=> ['required',RulesPassword::min(4), 'confirmed'],
+            'station_id' => ['required',''],
         ]);
 
         if($attrs->fails()){
@@ -36,6 +37,7 @@ class SessionController extends Controller
             'email' => $request->email,
             'phone_no' => $request->phone_no,
             'password'=> $request->password,
+            'station_id' => $request->station_id,
         ]);
 
         EmailVerificationSend::dispatch($user);
@@ -61,6 +63,7 @@ class SessionController extends Controller
             'name'=> 'required',
             'phone_no' => ['required', 'regex:/^\+251[97]\d{8}$/', 'unique:users,phone_no'],
             'password'=> ['required', RulesPassword::min(4)],
+            'station_id' => ['required','',''],
         ]);
 
         if($attrs->fails()){
@@ -76,6 +79,7 @@ class SessionController extends Controller
             'email' => $request->email,
             'phone_no' => $request->phone_no,
             'password'=> $request->password,
+            'station_id' => $request->station_id,
         ]);
 
         EmailVerificationSend::dispatch($user);
@@ -153,6 +157,7 @@ class SessionController extends Controller
             'email'=> 'required|email|unique:users,email',
             'phone_no' => ['required', 'regex:/^(09|07)[0-9]{8}$/'],
             'password'=> ['required', RulesPassword::min(4)],
+            'station_id' => ['required',''],
         ]);
 
         if($attrs->fails()){
@@ -168,6 +173,7 @@ class SessionController extends Controller
             'email' => $request->email,
             'phone_no' => $request->phone_no,
             'password'=> $request->password,
+            'station_id' => $request->station_id,
         ]);
 
         // EmailVerificationSend::dispatch($request->user());
@@ -193,12 +199,12 @@ class SessionController extends Controller
     }
 
     public function profile(){
-        $user = auth()->user();
+        $user = Auth::user();
         return response()->json([
             'status'=> true,
             'message'=> 'Profile Information',
             'data'=> $user,
-            'id'=> auth()->user()->id
+            'id'=> Auth::user()->id
         ]);
     }
 

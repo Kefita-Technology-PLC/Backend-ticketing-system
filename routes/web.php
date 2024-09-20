@@ -2,12 +2,16 @@
 
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\VehicleController;
+use App\Http\Resources\Web\UserResource;
 use App\Models\User;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -18,9 +22,7 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -28,7 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth', 'role:admin|super'])->group(function () {
+Route::middleware(['auth', 'role:admin|super admin'])->group(function () {
     Route::resource('vehicles', VehicleController::class);
 });
 

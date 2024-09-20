@@ -3,7 +3,6 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -88,5 +87,9 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function updatedDeploymentLines(){
         return $this->hasMany(DeploymentLine::class,'updated_by');
+    }
+
+    public function station(){
+        return $this->belongsTo(Station::class,);
     }
 }

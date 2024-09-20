@@ -14,6 +14,7 @@ class VehicleController extends Controller
      */
     public function index()
     {
+        
         return Inertia::render('Vehicles/Index',[
             'vehicles' => Vehicle::with('station', 'association', 'deploymentLine')->paginate(10),
         ]);
