@@ -80,7 +80,6 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
 
     Route::post('/generate-ticket-pos', [TicketGeneratorController::class,'ticketPos']);
     // Route::post('/daily-ticket-report', ReportControol)
-
 });
 
 Route::prefix('v1')->group(function(){

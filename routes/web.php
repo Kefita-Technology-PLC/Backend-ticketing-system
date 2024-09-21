@@ -20,7 +20,7 @@ Route::get('/dummyapi', function(Request $request){
     // $otp = '4875';
     // $domain = 'biruklemma.com';
     // $id = '24516';
-     
+
     // $server = 'https://sms.yegara.com/api3/send';
     // $postData = array('to' => $to, 'otp' => $otp,  'id' =>$id,  'domain' => $domain );
     // $content = json_encode($postData);
@@ -33,7 +33,7 @@ Route::get('/dummyapi', function(Request $request){
     // $json_response = curl_exec($curl);
     // $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
     // curl_close($curl);
-    
-    // return $json_response; 
+
+    // return $json_response;
 });
 

@@ -19,29 +19,43 @@ class ReportController extends Controller
     public function generalReport() {
         // Get the total number of tickets
         $ticket_numbers = Ticket::all()->count();
-    
+
         // Get the total number of vehicles
         $vehicles = Vehicle::all()->count();
-    
+
         // Get the total price of all tickets
         $total_price = Ticket::sum('price');
-    
+
         // Get the total number of associations
         $associations = Association::all()->count();
-
         $stations = Station::all()->count();
         $deployments = DeploymentLine::all()->count();
-    
+
         // Get the total number of users with the role 'ticket seller' and guard name 'api'
         $ticketSellersCount = User::whereHas('roles', function ($query) {
             $query->where('name', 'ticket seller')->where('guard_name', 'api');
         })->count();
-    
+
         // Get the total number of users with the role 'admin' and guard name 'api'
         $adminsCount = User::whereHas('roles', function ($query) {
             $query->where('name', 'admin')->where('guard_name', 'api');
         })->count();
-    
+
+        $carTypesCount = Vehicle:: // Optional if you want to filter by a relationship
+        selectRaw('car_type, COUNT(*) as count')
+        ->groupBy('car_type')
+        ->get()
+        ->map(function ($item) {
+            return [
+                'type' => $item->car_type,
+                'count' => $item->count,
+            ];
+        })
+        ->toArray();
+
+
+
+
         return response()->json([
             'status' => true,
             'data' => [
@@ -52,11 +66,12 @@ class ReportController extends Controller
                 'admins' => $adminsCount,
                 'associations_number' => $associations,
                 'stations' => $stations,
-                'deployment_lines'=> $deployments
+                'deployment_lines'=> $deployments,
+                'count_data' => $carTypesCount,
             ]
         ]);
     }
-    
+
     public function dailyReport(){
 
         $today = Carbon::today();
@@ -79,7 +94,7 @@ class ReportController extends Controller
             $query->where('name', 'admin')->where('guard_name', 'api');
         })->where('created_at', $today)->count();
 
-        
+
 
         return response()->json([
             'status' => true,
@@ -97,7 +112,7 @@ class ReportController extends Controller
     }
 
     public function weeklyReport(){
-        $startOfWeek = Carbon::now()->startOfWeek();    
+        $startOfWeek = Carbon::now()->startOfWeek();
         $endOfWeek = Carbon::now()->endOfWeek();
 
         $weeklyTicketNumbers = Ticket::whereBetween('created_at', [$startOfWeek, $endOfWeek])->count();
@@ -112,7 +127,7 @@ class ReportController extends Controller
             $query->where('name', 'ticket seller')->where('guard_name', 'api');
         })->whereBetween('created_at',[$startOfWeek, $endOfWeek])
         ->count();
-       
+
 
         $adminsCount = User::whereHas('roles', function ($query) {
             $query->where('guard_name', 'api')->where('name', 'admin');
@@ -137,7 +152,7 @@ class ReportController extends Controller
                 'deployment_lines' => $deployments
             ]
         ]);
-      
+
     }
 
     public function monthlyReport(){
@@ -159,7 +174,7 @@ class ReportController extends Controller
             $query->where('name', 'ticket seller')->where('guard_name', 'api');
         })->whereBetween('created_at',[$startOfMonth, $endOfMonth])
         ->count();
-       
+
 
         $adminsCount = User::whereHas('roles', function ($query) {
             $query->where('guard_name', 'api')->where('name', 'admin');
@@ -167,7 +182,7 @@ class ReportController extends Controller
         ->whereBetween('created_at',[$startOfMonth, $endOfMonth])
         ->count();
 
-        
+
         $stations = Station::whereBetween('created_at',[$startOfMonth, $endOfMonth])->count();
         $deployments = DeploymentLine::whereBetween('created_at',[$startOfMonth, $endOfMonth])->count();
 
@@ -207,7 +222,7 @@ class ReportController extends Controller
             $query->where('name', 'ticket seller')->where('guard_name', 'api');
         })->whereBetween('created_at',[$startOfYear, $endOfYear])
         ->count();
-       
+
 
         $adminsCount = User::whereHas('roles', function ($query) {
             $query->where('guard_name', 'api')->where('name', 'admin');
@@ -215,7 +230,7 @@ class ReportController extends Controller
         ->whereBetween('created_at',[$startOfYear, $endOfYear])
         ->count();
 
-        
+
         $stations = Station::whereBetween('created_at',[$startOfYear, $endOfYear])->count();
         $deployments = DeploymentLine::whereBetween('created_at',[$startOfYear, $endOfYear])->count();
 
