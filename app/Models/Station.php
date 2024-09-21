@@ -28,7 +28,7 @@ class Station extends Model
 
         $this->associations()->detach($association);
     }
-    
+
     public function associations(){
         return $this->belongsToMany(Association::class);
     }
@@ -39,5 +39,17 @@ class Station extends Model
 
     public function tariffs(){
         return $this->hasMany(Tariff::class);
+    }
+
+    public function creator(){
+        return $this->belongsTo(User::class,'created_by');
+    }
+
+    public function updater(){
+        return $this->belongsTo(User::class,'updated_by');
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
     }
 }

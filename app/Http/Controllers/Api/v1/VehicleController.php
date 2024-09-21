@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\VehicleCollection;
-use App\Http\Resources\VehicleResource;
+use App\Http\Resources\Api\VehicleResource as ApiVehicleResource;
+use App\Http\Resources\Api\VehicleCollection;
+// use App\Http\Resources\VehicleResource;
 use App\Models\Association;
 use App\Models\Station;
 use App\Models\Vehicle;
+use App\Traits\Searchable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -17,15 +19,23 @@ class VehicleController extends Controller
     /**
      * Display a listing of the resource.
      */
+    use Searchable;
+
+    public function searchQueries(Request $request){
+        $searchColumns = ["plate_number"];
+        $vehicleQuery = Vehicle::with(['association','station','creator','updater']);
+
+        return $this->search($request, $vehicleQuery, $searchColumns);
+    }
 
      public function getAll(){
-        $vehicle = Vehicle::with(['association', 'station'])->orderBy('plate_number', 'asc')->get();
+        $vehicle = Vehicle::with(['association', 'station', 'creator', 'updater'])->orderBy('plate_number', 'asc')->get();
         return new VehicleCollection($vehicle);
     }
-    
+
     public function index()
     {
-        $vehicles = Vehicle::with(['association', 'station', 'deploymentLine'])
+        $vehicles = Vehicle::with(['association', 'station', 'deploymentLine','creator', 'updater'])
         ->latest()
         ->paginate(env("PAGINATION_NUMBER", 15));
 
@@ -64,7 +74,7 @@ class VehicleController extends Controller
             ...Arr::except($attrs, ['station_name', 'association_name']),
         ]);
 
-        return new VehicleResource($vehicle);
+        return new ApiVehicleResource($vehicle);
     }
 
     /**
@@ -80,7 +90,7 @@ class VehicleController extends Controller
             ]);
         }
         $vehicle->load(['station', 'association','deploymentLine']);
-        return new VehicleResource($vehicle);
+        return new ApiVehicleResource($vehicle);
     }
 
     /**
@@ -116,7 +126,7 @@ class VehicleController extends Controller
         ]);
 
         $vehicle->load(['station', 'association','deploymentLine']);
-        return new VehicleResource($vehicle);
+        return new ApiVehicleResource($vehicle);
     }
 
     /**
@@ -127,7 +137,7 @@ class VehicleController extends Controller
         try {
             $vehicle = Vehicle::findOrFail($id);
             $vehicle->delete();
-    
+
             return response()->json([
                 'status' => true,
                 'message' => 'Vehicle Deleted Successfully.'

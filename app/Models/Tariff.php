@@ -16,4 +16,12 @@ class Tariff extends Model
     public function deploymentLines(){
         return $this->belongsTo(DeploymentLine::class);
     }
+
+    public function createdBy(){
+        return $this->belongsTo(User::class);
+    }
+
+    public function updatedBy(){
+        return $this->belongsTo(User::class);
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Vehicle extends Model
 {
@@ -23,5 +24,21 @@ class Vehicle extends Model
 
     public function deploymentLine(){
         return $this->belongsTo(DeploymentLine::class);
+    }
+
+    public static function TypeCount(string $type){
+
+        $vehicleType = Vehicle::where('car_type', $type)->count();
+
+        return $vehicleType;
+    }
+
+    public function creator(){
+        return $this->belongsTo(User::class, 'created_by');
+
+    }
+    public function updater(){
+        return $this->belongsTo(User::class, 'updated_by');
+
     }
 }

@@ -12,7 +12,6 @@ use App\Http\Controllers\Api\v1\TariffController;
 use App\Http\Controllers\Api\v1\TicketGeneratorController;
 use App\Http\Controllers\Api\v1\VehicleController;
 use App\Http\Controllers\ForSelectionForm;
-use App\Models\NumberOfPassengers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -49,11 +48,19 @@ Route::post('reset-password', [NewPasswordController::class, 'reset']);
 Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
     Route::resource('stations', StationController::class)->middleware(['role:admin|super admin']);
 
+    Route::get('/stations-search', [StationController::class,'searchQueries']);
+
     Route::resource('associations', AssociationController::class)->middleware(['role:admin|super admin']);
+
+    Route::get('/associations-search',[AssociationController::class,'searchQueries']);
 
     Route::resource('vehicles', VehicleController::class)->middleware(['role:admin|super admin']);
 
+    Route::get('/vehicles-search',[VehicleController::class,'searchQueries']);
+
     Route::resource('deployment-lines', DeploymentLineController::class)->middleware(['role:admin|super admin']);
+
+    Route::get('/deployment-lines', [DeploymentLineController::class,'searchQueries']);
 
     Route::resource('tariffs', TariffController::class)->middleware(['role:admin|super admin']);
 
@@ -78,7 +85,7 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
     Route::get('/associations-all', [AssociationController::class, 'getAll']);
     Route::get('/deployment-lines-all', [DeploymentLineController::class, 'getAll']);
 
-    Route::post('/generate-ticket-pos', [TicketGeneratorController::class,'ticketPos']);
+    Route::post('/daily-report-pos', [TicketGeneratorController::class,'ticketPos']);
     // Route::post('/daily-ticket-report', ReportControol)
 });
 

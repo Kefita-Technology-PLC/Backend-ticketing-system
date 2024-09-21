@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\DeploymentCollection;
-use App\Http\Resources\DeploymentResource;
+use App\Http\Resources\Api\DeploymentCollection;
+use App\Http\Resources\Api\DeploymentResource;
 use App\Models\DeploymentLine;
+use App\Traits\Searchable;
 use Illuminate\Http\Request;
 
 class DeploymentLineController extends Controller
@@ -13,15 +14,24 @@ class DeploymentLineController extends Controller
     /**
      * Display a listing of the resource.
      */
+    use Searchable;
+
+    public function searchQueries(Request $request)
+    {
+        $searchColumns = ['origin','destination'];
+        $deploymentLineQuery = DeploymentLine::with(['updater','creator']);
+
+        return $this->search($request, $deploymentLineQuery, $searchColumns);
+    }
 
     public function getAll(){
-        $deployments = DeploymentLine::orderBy('origin', 'asc')->get();
+        $deployments = DeploymentLine::orderBy('origin', 'asc')->with(['updater','creator'])->get();
         return new DeploymentCollection($deployments);
     }
 
     public function index()
     {
-        $deployments = DeploymentLine::latest()->paginate(env('PAGINATION_NUMBER', 15));
+        $deployments = DeploymentLine::latest()->with(['updater','creator'])->paginate(env('PAGINATION_NUMBER', 15));
 
         return new DeploymentCollection($deployments);
     }
@@ -38,7 +48,7 @@ class DeploymentLineController extends Controller
         ]);
 
         $deploymentLine = DeploymentLine::create($attrs);
-        return new DeploymentResource($deploymentLine);        
+        return new DeploymentResource($deploymentLine);
 
     }
 
@@ -70,7 +80,7 @@ class DeploymentLineController extends Controller
         ]);
 
         $deploymentLine->update($attrs);
-        return new DeploymentResource($deploymentLine);        
+        return new DeploymentResource($deploymentLine);
     }
 
     /**

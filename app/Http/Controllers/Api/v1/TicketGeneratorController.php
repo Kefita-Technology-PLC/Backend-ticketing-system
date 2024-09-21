@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\DailyReportResource;
+
+use App\Http\Resources\DailyReportResource as ResourcesDailyReportResource;
 use App\Http\Resources\TicketResource;
 use App\Models\Association;
 use App\Models\DailyReport;
@@ -95,7 +96,7 @@ class TicketGeneratorController extends Controller
 
         $dailyReport = DailyReport::create([
             'station_id' => $station_id,
-            'deploymentLine_id' => $deploymentLine_id,
+            'deployment_line_id' => $deploymentLine_id,
             'association_id' => $association_id,
             'ticket_count' => $attrs['ticket_count'],
             'revenue' => $attrs['revenue'],
@@ -103,6 +104,6 @@ class TicketGeneratorController extends Controller
         ]);
 
 
-        return new DailyReportResource($dailyReport);
+        return new ResourcesDailyReportResource($dailyReport);
     }
 }

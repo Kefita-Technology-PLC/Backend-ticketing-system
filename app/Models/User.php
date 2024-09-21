@@ -3,7 +3,6 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -53,9 +52,44 @@ class User extends Authenticatable implements MustVerifyEmail
 
         $this->notify(new ResetPasswordNotification
         ($url));
-    } 
+    }
 
     public function tickets(){
         return $this->hasMany(Ticket::class);
+    }
+
+    public function createdVehicles(){
+        return $this->hasMany(Vehicle::class, 'created_by');
+    }
+    public function updatedVehicles(){
+        return $this->hasMany(Vehicle::class,'updated_by');
+    }
+
+    public function createdStations(){
+        return $this->hasMany(Station::class,'created_by');
+    }
+
+    public function updatedStations(){
+        return $this->hasMany(Station::class,'updated_by');
+    }
+
+    public function createdAssociations(){
+        return $this->hasMany(Association::class,'created_by');
+    }
+
+    public function updatedAssociations(){
+        return $this->hasMany(Association::class,'updated_by');
+    }
+
+    public function createdDeploymentLines(){
+        return $this->hasMany(DeploymentLine::class,'created_by');
+    }
+
+    public function updatedDeploymentLines(){
+        return $this->hasMany(DeploymentLine::class,'updated_by');
+    }
+
+    public function station(){
+        return $this->belongsTo(Station::class,);
     }
 }
