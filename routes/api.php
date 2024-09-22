@@ -87,7 +87,6 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
 
     Route::post('/daily-report-pos', [TicketGeneratorController::class,'ticketPos']);
     // Route::post('/daily-ticket-report', ReportControol)
-
 });
 
 Route::prefix('v1')->group(function(){

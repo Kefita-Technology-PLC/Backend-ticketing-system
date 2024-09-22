@@ -31,7 +31,6 @@ class ReportController extends Controller
 
         // Get the total number of associations
         $associations = Association::all()->count();
-
         $stations = Station::all()->count();
         $deployments = DeploymentLine::all()->count();
 
@@ -45,6 +44,22 @@ class ReportController extends Controller
             $query->where('name', 'admin')->where('guard_name', 'api');
         })->count();
 
+<<<<<<< HEAD
+        $carTypesCount = Vehicle:: // Optional if you want to filter by a relationship
+        selectRaw('car_type, COUNT(*) as count')
+        ->groupBy('car_type')
+        ->get()
+        ->map(function ($item) {
+            return [
+                'type' => $item->car_type,
+                'count' => $item->count,
+            ];
+        })
+        ->toArray();
+
+
+
+=======
         $countForVehicleTypes = [];
         $types = Vehicle::distinct()->pluck('car_type');
         foreach($types as $type) {
@@ -55,6 +70,7 @@ class ReportController extends Controller
         }
 
         // return $countForVehicleTypes;
+>>>>>>> 30c57c215afd813bd8e5accc29225f0941c8f3bb
 
         return response()->json([
             'status' => true,
@@ -67,7 +83,11 @@ class ReportController extends Controller
                 'associations_number' => $associations,
                 'stations' => $stations,
                 'deployment_lines'=> $deployments,
+<<<<<<< HEAD
+                'count_data' => $carTypesCount,
+=======
                 'carTypesCount' => $countForVehicleTypes
+>>>>>>> 30c57c215afd813bd8e5accc29225f0941c8f3bb
             ]
         ]);
     }
@@ -94,6 +114,10 @@ class ReportController extends Controller
             $query->where('name', 'admin')->where('guard_name', 'api');
         })->where('created_at', $today)->count();
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> 30c57c215afd813bd8e5accc29225f0941c8f3bb
 
         return response()->json([
             'status' => true,
