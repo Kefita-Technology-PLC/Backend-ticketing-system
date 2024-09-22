@@ -16,6 +16,7 @@ use Inertia\Inertia;
 class DashboardController extends Controller
 {
     public function index(Request $request){
+      
         $vehicleData = Cache::remember('vehicleData', 60 * 10, function () {
             return Vehicle::select('car_type', DB::raw('count(*) as registeredVehicles'))
                 ->groupBy('car_type')

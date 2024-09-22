@@ -7,8 +7,8 @@ export default function NavLink({ active = false, className = '', children, ...p
             className={
                 'inline-flex items-center px-3 py-2 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out focus:outline-none ' +
                 (active
-                    ? 'border-primary text-primary-foreground dark:text-white focus:border-primary-dark ' // Active state: light and dark mode (ShadCN compatible classes)
-                    : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted focus:text-foreground focus:border-muted-foreground dark:hover:text-muted-foreground ') + // Inactive state: light and dark mode (ShadCN compatible classes)
+                  ? 'border-primary text-black dark:text-white focus:border-primary-dark ' // Active state: light and dark mode
+                    : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted focus:text-foreground focus:border-muted-foreground dark:hover:text-muted-foreground ') + // Inactive state: light and dark mode
                 className
             }
         >

@@ -15,7 +15,7 @@ class StationResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            "id"=> $this->id,
+            'id'=>(int) $this->id,
             'name' => $this->name,
             'location' => $this->location,
             'created_at' => $this->created_at,

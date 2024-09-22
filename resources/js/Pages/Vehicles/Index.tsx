@@ -1,4 +1,7 @@
 import Pagination from '@/Components/Pagination';
+import PrimaryLink from '@/Components/PrimaryLink';
+import SelectInput from '@/Components/SelectInput';
+import TextInput from '@/Components/TextInput';
 import {
   Table,
   TableBody,
@@ -8,17 +11,71 @@ import {
   TableHeader,
   TableRow,
 } from '@/Components/ui/table';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Head } from '@inertiajs/react';
+import AuthenticatedLayoutSuper from '@/Layouts/AuthenticatedLayoutSuper';
+import { ChevronUpIcon, ChevronDownIcon } from '@radix-ui/react-icons';
+import { Head, Link, router } from '@inertiajs/react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { SelectGroup, SelectLabel } from '@radix-ui/react-select';
+import { SelectItem } from '@/Components/ui/select';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 
 dayjs.extend(relativeTime);
 
-function Index({ vehicles }: { vehicles: any }) {
-  const codeColor = (code: any) => {
+interface Vehicle {
+  id: number;
+  code: number;
+  region: string;
+  plate_number: string;
+  level: string;
+  car_type: string;
+  created_at: string;
+  updated_at: string;
+  creator?: { name: string };
+  updater?: { name: string };
+}
+
+interface VehiclesResponse {
+  data: Vehicle[];
+  links: any;
+  meta: { links: any[] }; // Adjust according to your API response
+}
+
+interface IndexProps {
+  vehicles: VehiclesResponse;
+  queryParams?: any;
+}
+
+function Index({ vehicles, queryParams = {} }: IndexProps) {
+
+  queryParams = queryParams || {}
+
+  const searchFieldChanged = (name: string, value: any) => {
+    if (value) {
+      queryParams[name] = value;
+    } else {
+      delete queryParams[name];
+    }
+    router.get(route('vehicles.index'), queryParams);
+  };
+
+  const onKeyDown = (name: string, e: any) => {
+    if (e.key !== 'Enter') return;
+    searchFieldChanged(name, e.target.value);
+  };
+
+  const sortChanged = (name: string) => {
+    if (name === queryParams.sort_field) {
+      queryParams.sort_direction = queryParams.sort_direction === 'asc' ? 'desc' : 'asc';
+    } else {
+      queryParams.sort_field = name;
+      queryParams.sort_direction = 'asc';
+    }
+    router.get(route('vehicles.index'), queryParams);
+  };
+
+  const codeColor = (code: number) => {
     switch (code) {
       case 1:
         return 'text-red-500';
@@ -27,12 +84,17 @@ function Index({ vehicles }: { vehicles: any }) {
       case 3:
         return 'text-green-500';
       default:
-        return 'text-gray-500'; // Default color for undefined codes
+        return 'text-gray-500';
     }
   };
 
   return (
-    <AuthenticatedLayout header={'Vehicles'}>
+    <AuthenticatedLayoutSuper header={
+      <div className='flex justify-between'>
+        <h1>Vehicles</h1>
+        <PrimaryLink href={route('vehicles.create')}>Add Vehicle</PrimaryLink>
+      </div>
+    }>
       <Head title="Vehicles" />
 
       <div className="py-12">
@@ -44,44 +106,115 @@ function Index({ vehicles }: { vehicles: any }) {
 
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="whitespace-nowrap">#No</TableHead>
-                    <TableHead className="whitespace-nowrap">Code</TableHead>
-                    <TableHead className="whitespace-nowrap">Plate Number</TableHead>
-                    <TableHead className="whitespace-nowrap">Level</TableHead>
-                    <TableHead className="whitespace-nowrap">Car Type</TableHead>
-                    <TableHead className="whitespace-nowrap">Registered At</TableHead>
-                    <TableHead className="whitespace-nowrap">Edited</TableHead>
-                    <TableHead className="whitespace-nowrap">Created By</TableHead>
-                    <TableHead className="whitespace-nowrap">Updated By</TableHead>
+                    {/* Column Headers with Sorting */}
+                    <TableHead onClick={() => sortChanged('id')}>#No</TableHead>
+                    <TableHead onClick={() => sortChanged('code')}>
+                      <div className='flex items-center gap-x-1'>
+                        Code
+                        <div>
+                          <ChevronUpIcon className='w-4' />
+                          <ChevronDownIcon className='w-4 -mt-2' />
+                        </div>
+                      </div>
+                    </TableHead>
+                    <TableHead onClick={() => sortChanged('plate_number')}>
+                      <div className='flex items-center gap-x-1'>
+                        <span className='text-nowrap'>Plate Number</span>
+                        <div>
+                          <ChevronUpIcon className='w-4' />
+                          <ChevronDownIcon className='w-4 -mt-2' />
+                        </div>
+                      </div>
+                    </TableHead>
+                    <TableHead>Level</TableHead>
+                    <TableHead>Car Type</TableHead>
+                    <TableHead onClick={()=> sortChanged('created_at')}>
+                      <div className='flex items-center gap-x-1'>
+                        <span className='text-nowrap'>Registerd At</span>
+                        <div>
+                          <ChevronUpIcon className='w-4' />
+                          <ChevronDownIcon className='w-4 -mt-2' />
+                        </div>
+                      </div>
+                    </TableHead>
+                    <TableHead className=' text-nowrap'>Edited</TableHead>
+                    <TableHead className=' text-nowrap'>Created By</TableHead>
+                    <TableHead className=' text-nowrap'>Updated By</TableHead>
+                  </TableRow>
+                </TableHeader>
+
+                <TableHeader>
+                  <TableRow>
+                    {/* Search Inputs */}
+                    <TableHead></TableHead>
+                    <TableHead></TableHead>
+                    <TableHead>
+                      <TextInput
+                        className="w-full"
+                        placeholder="Plate Number"
+                        defaultValue={queryParams.plate_number}
+                        onBlur={(e) => searchFieldChanged('plate_number', e.target.value)}
+                        onKeyDown={(e) => onKeyDown('plate_number', e)}
+                      />
+                    </TableHead>
+                    <TableHead>
+                      <SelectInput
+                        value={queryParams.level}
+                        onChange={(value) => searchFieldChanged('level', value)}
+                      >
+                        <SelectGroup>
+                          <SelectLabel>Levels</SelectLabel>
+                          <SelectItem value="level_1">Level 1</SelectItem>
+                          <SelectItem value="level_2">Level 2</SelectItem>
+                          <SelectItem value="level_3">Level 3</SelectItem>
+                          <SelectItem value="level_4">Level 4</SelectItem>
+                        </SelectGroup>
+                      </SelectInput>
+                    </TableHead>
+                    <TableHead>
+                      <SelectInput
+                        value={queryParams.car_type}
+                        onChange={(value) => searchFieldChanged('car_type', value)}
+                      >
+                        <SelectGroup>
+                          <SelectLabel>Car Types</SelectLabel>
+                          <SelectItem value="bus">Bus</SelectItem>
+                          <SelectItem value="mini_bus">Mini Bus</SelectItem>
+                          <SelectItem value="lonchin">Lonchin</SelectItem>
+                          <SelectItem value="higer">Higer</SelectItem>
+                        </SelectGroup>
+                      </SelectInput>
+                    </TableHead>
+                    <TableHead></TableHead>
+                    <TableHead></TableHead>
+                    <TableHead></TableHead>
                   </TableRow>
                 </TableHeader>
 
                 <TableBody>
-                  {vehicles.data.map((vehicle: any, index: number) => (
+                  {vehicles.data.map((vehicle, index) => (
                     <TableRow key={vehicle.id}>
                       <TableCell>{index + 1}</TableCell>
-                      <TableCell className={codeColor(vehicle.code)}>
-                        {vehicle.code}
+                      <TableCell className={codeColor(vehicle.code)}>{vehicle.code}</TableCell>
+                      <TableCell>
+                        <Link href={route('vehicles.show', vehicle.id)} className='hover:underline'>
+                          {vehicle.region + '-' + vehicle.plate_number}
+                        </Link>
                       </TableCell>
-                      <TableCell>{vehicle.plate_number}</TableCell>
-                      <TableCell className="capitalize">
-                        {vehicle.level.replace('_', ' ')}
-                      </TableCell>
-                      <TableCell className="capitalize">
-                        {vehicle.car_type.replace('_', ' ')}
-                      </TableCell>
-                      <TableCell>{dayjs(vehicle.created_at).fromNow()}</TableCell>
+                      <TableCell>{vehicle.level ? vehicle.level.replace('_', ' ') : ''}</TableCell>
+                      <TableCell>{vehicle.car_type ? vehicle.car_type.replace('_', ' ') : ''}</TableCell>
+                      <TableCell className='text-nowrap'>{dayjs(vehicle.created_at).fromNow()}</TableCell>
                       <TableCell>
                         {vehicle.created_at !== vehicle.updated_at ? (
                           'No'
                         ) : (
                           <span className="flex items-center">
-                            Edited <FontAwesomeIcon icon={faCheckCircle} className="ml-1" />
+                            Edited <FontAwesomeIcon icon={faCheckCircle} className="ml-1 w-4" />
                           </span>
                         )}
                       </TableCell>
-                      <TableCell>{vehicle.creator?.name || 'N/A'}</TableCell>
-                      <TableCell>{vehicle.updater?.name || 'N/A'}</TableCell>
+                      <TableCell className='text-nowrap'>{vehicle.creator?.name || 'N/A'}</TableCell>
+                      <TableCell className='text-nowrap'>{vehicle.updater?.name || 'N/A'}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -90,8 +223,8 @@ function Index({ vehicles }: { vehicles: any }) {
           </div>
         </div>
       </div>
-      <Pagination links={vehicles.links} />
-    </AuthenticatedLayout>
+      <Pagination links={vehicles.meta.links} />
+    </AuthenticatedLayoutSuper>
   );
 }
 

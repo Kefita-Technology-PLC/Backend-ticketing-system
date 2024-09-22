@@ -15,15 +15,17 @@ class VehicleResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
+            'id' =>(int) $this->id,
             'plate_number' => $this->plate_number,
             // 'station' =>
             'code' => $this->code,
             'level' => $this->level,
             'number_of_passengers' => $this->number_of_passengers,
-            'car_type' => $this->car_type,
-            'created_by' => new UserResource($this->created_by),
-            'updated-by' => new UserResource($this->updated_by),
+            'car_type' =>
+            $this->car_type,
+            'region' => $this->region,
+            'creator' => new UserResource($this->creator),
+            'updater' => new UserResource($this->updater),
         ];
     }
 }

@@ -49,13 +49,14 @@ class VehicleController extends Controller
     {
         $attrs = $request->validate([
             'plate_number' => ['required', 'regex:/^[a-zA-Z]?\d{5}$/'],
-            'level' => ['required', 'in:level_1,level_2,level_3'],
+            'level' => ['required', 'in:level_1,level_2,level_3,level_4'],
             'number_of_passengers' => ['required', 'integer',],
             'car_type' => ['required', 'max:250'],
             'station_name' => ['required'],
             'association_name'=> ['required'],
             'deployment_line_id' => ['required'],
-            'code' => ['required','in:1,2,3']
+            'code' => ['required','in:1,2,3'],
+            'region' => ['required','in:TG,AF,AA,SN,DR,SD,AM,OR,SM,BN,HR,SW,ET'],
         ]);
 
         $stations = Station::pluck('id', 'name');

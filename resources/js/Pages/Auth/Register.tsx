@@ -9,8 +9,8 @@ import { Eye } from 'lucide-react';
 import { EyeClosedIcon } from '@radix-ui/react-icons';
 
 export default function Register() {
-    const [showPassword, setShowPassword] = useState(false)
-    const [showPassword2, setShowPassword2] = useState(false)
+    const [showPassword, setShowPassword] = useState(false);
+    const [showPassword2, setShowPassword2] = useState(false);
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
@@ -21,18 +21,18 @@ export default function Register() {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-
         post(route('register'), {
             onFinish: () => reset('password', 'password_confirmation'),
         });
     };
 
-    const togglePasswordVisibility =()=>{
-        setShowPassword(!showPassword)
-    }
-    const togglePasswordVisibility2 =()=>{
-        setShowPassword2(!showPassword2)
-    }
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const togglePasswordVisibility2 = () => {
+        setShowPassword2(!showPassword2);
+    };
 
     return (
         <GuestLayout>
@@ -77,13 +77,6 @@ export default function Register() {
                     <InputLabel htmlFor="phone_no" value="Phone Number" />
 
                     <div className='flex items-center gap-x-[2px]'>
-                        {/* <TextInput
-                            className='mt-1 w-[60px]'
-                            type='text'
-                            value={'+251'}
-                            disabled
-                        /> */}
-
                         <TextInput
                             id="phone_no"
                             type="text"
@@ -91,7 +84,7 @@ export default function Register() {
                             value={data.phone_no}
                             className="mt-1 block w-full"
                             autoComplete="current-password"
-                            onChange={(e) => setData('phone_no',e.target.value)}
+                            onChange={(e) => setData('phone_no', e.target.value)}
                         />
                     </div>
 
@@ -104,7 +97,7 @@ export default function Register() {
                     <div className='relative'>
                         <TextInput
                             id="password"
-                            type={showPassword ? "text":"password"}
+                            type={showPassword ? "text" : "password"}
                             name="password"
                             value={data.password}
                             className="mt-1 block w-full"
@@ -121,7 +114,6 @@ export default function Register() {
                         </span>
                     </div>
 
-
                     <InputError message={errors.password} className="mt-2" />
                 </div>
 
@@ -131,7 +123,7 @@ export default function Register() {
                     <div className='relative'>
                         <TextInput
                             id="password_confirmation"
-                            type={showPassword2 ? "text":  "password"}
+                            type={showPassword2 ? "text" : "password"}
                             name="password_confirmation"
                             value={data.password_confirmation}
                             className="mt-1 block w-full"
@@ -154,7 +146,7 @@ export default function Register() {
                 <div className="flex items-center justify-end mt-4">
                     <Link
                         href={route('login')}
-                        className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        className="underline text-sm text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
                         Already registered?
                     </Link>
