@@ -10,22 +10,18 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import { Eye } from 'lucide-react';
 import { EyeClosedIcon } from '@radix-ui/react-icons';
 
-// Import FontAwesome icons for eye visibility
-// import { FaEye, FaEyeSlash } from 'react-icons/fa';
-
 export default function Login({ status, canResetPassword }: { status?: string, canResetPassword: boolean }) {
-    // State to toggle password visibility
     const [showPassword, setShowPassword] = useState(false);
 
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
         password: '',
-        phone_no: '+251',  // Phone number without the +251 prefix
+        phone_no: '+251',
         remember: false,
     });
 
     const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword);  // Toggle between true and false
+        setShowPassword(!showPassword);
     };
 
     const submit: FormEventHandler = (e) => {
@@ -40,53 +36,48 @@ export default function Login({ status, canResetPassword }: { status?: string, c
         <GuestLayout>
             <Head title="Log in" />
 
-            {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
+            {status && <div className="mb-4 font-medium text-sm text-green-600 dark:text-green-400">{status}</div>}
 
             <form onSubmit={submit}>
                 <div className="mt-4">
-                    <InputLabel htmlFor="phone_no" value="Phone Number" />
+                    <InputLabel htmlFor="phone_no" value="Phone Number" className="dark:text-gray-300" />
 
-                    {/* Phone number input without +251 prefix */}
                     <TextInput
                         id="phone_no"
                         type="text"
                         name="phone_no"
-                        value={data.phone_no}  // Show the number without +251
-                        className="mt-1 block w-full"
+                        value={data.phone_no}
+                        className="mt-1 block w-full dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700"
                         autoComplete="current-password"
-                        onChange={(e) => {
-                            return setData('phone_no', e.target.value);  // Update the phone number
-                        }}
+                        onChange={(e) => setData('phone_no', e.target.value)}
                     />
 
-                    <InputError message={errors.phone_no} className="mt-2" />
+                    <InputError message={errors.phone_no} className="mt-2 dark:text-red-400" />
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
+                    <InputLabel htmlFor="password" value="Password" className="dark:text-gray-300" />
 
                     <div className="relative">
-                        {/* Password input with toggle */}
                         <TextInput
                             id="password"
-                            type={showPassword ? "text" : "password"}  // Conditionally set the input type
+                            type={showPassword ? "text" : "password"}
                             name="password"
                             value={data.password}
-                            className="mt-1 block w-full"
+                            className="mt-1 block w-full dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700"
                             autoComplete="current-password"
                             onChange={(e) => setData('password', e.target.value)}
                         />
 
-                        {/* Eye icon for password visibility toggle */}
                         <span
                             className="absolute inset-y-0 right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
                             onClick={togglePasswordVisibility}
                         >
-                            {showPassword ? <Eye size={20} /> : <EyeClosedIcon />}
+                            {showPassword ? <Eye size={20} className="dark:text-gray-400" /> : <EyeClosedIcon />}
                         </span>
                     </div>
 
-                    <InputError message={errors.password} className="mt-2" />
+                    <InputError message={errors.password} className="mt-2 dark:text-red-400" />
                 </div>
 
                 <div className="block mt-4">
@@ -95,8 +86,9 @@ export default function Login({ status, canResetPassword }: { status?: string, c
                             name="remember"
                             checked={data.remember}
                             onChange={(e) => setData('remember', e.target.checked)}
+                            className="dark:text-gray-300 dark:bg-gray-800 dark:border-gray-700"
                         />
-                        <span className="ms-2 text-sm text-gray-600">Remember me</span>
+                        <span className="ms-2 text-sm text-gray-600 dark:text-gray-300">Remember me</span>
                     </label>
                 </div>
 
@@ -104,13 +96,16 @@ export default function Login({ status, canResetPassword }: { status?: string, c
                     {canResetPassword && (
                         <Link
                             href={route('password.request')}
-                            className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            className="underline text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-300"
                         >
                             Forgot your password?
                         </Link>
                     )}
 
-                    <Link href={route('register')} className='inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150 cursor-pointer ms-4'>
+                    <Link
+                        href={route('register')}
+                        className="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-700 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-gray-600 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-300 focus:ring-offset-2 transition ease-in-out duration-150 cursor-pointer ms-4"
+                    >
                         Register
                     </Link>
 

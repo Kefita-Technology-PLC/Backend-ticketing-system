@@ -14,9 +14,11 @@ class VehicleController extends Controller
      */
     public function index()
     {
-        
+
+      // dd('here is the error');
+        $vehicles = Vehicle::with('station','association','creator','updater')->paginate(10);
         return Inertia::render('Vehicles/Index',[
-            'vehicles' => Vehicle::with('station', 'association', 'deploymentLine')->paginate(10),
+            'vehicles' => $vehicles,
         ]);
     }
 

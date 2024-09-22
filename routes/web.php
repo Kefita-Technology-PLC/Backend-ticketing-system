@@ -5,14 +5,11 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\UserManagementController;
 use App\Http\Controllers\Web\VehicleController;
-use App\Http\Resources\Web\UserResource;
-use App\Models\User;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -32,7 +29,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth', 'role:admin|super admin'])->group(function () {
-    Route::resource('vehicles', VehicleController::class)->middleware(['']);
+    Route::resource('vehicles', VehicleController::class);
 });
 
 Route::middleware(['auth','role:super admin'])->group(function () {
