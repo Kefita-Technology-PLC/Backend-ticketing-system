@@ -34,7 +34,7 @@ Route::middleware(['auth', 'role:admin|super admin'])->group(function () {
 });
 
 Route::middleware(['auth','role:super admin'])->group(function () {
-    Route::resource('user-management', UserManagementController::class);
+    Route::resource('user-managements', UserManagementController::class);
 });
 
 

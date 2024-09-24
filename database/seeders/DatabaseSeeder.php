@@ -13,12 +13,13 @@ class DatabaseSeeder extends Seeder
     {
         // Seed Roles
         $this->callOnce(RoleSeeder::class);
-        $this->callOnce(NumberOfPassengersSeeder::class);
+        $this->callOnce(PermissionSeeder::class);
 
+        $this->callOnce(NumberOfPassengersSeeder::class);
 
         $this->callOnce(CustomSeeder::class);
         $this->callOnce(DeploymentLineSeeder::class);
-
+        
         $this->callOnce(StationAndAssociationSeeder::class);
         // Seed Vehicles and Tariffs
         $this->callOnce(VehicleSeeder::class);

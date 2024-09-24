@@ -33,8 +33,8 @@ export default function AuthenticatedLayoutSuper({ header, children }: PropsWith
                                     Vehicles
                                 </NavLink>
                                 <NavLink
-                                    href={route('user-management.index')}
-                                    active={route().current('user-management.index')}
+                                    href={route('user-managements.index')}
+                                    active={route().current('user-managements.index')}
                                 >
                                     Add Users
                                 </NavLink>
@@ -113,7 +113,7 @@ export default function AuthenticatedLayoutSuper({ header, children }: PropsWith
                             Vehicles
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
-                            href={route('user-management.index')}
+                            href={route('user-managements.index')}
                             active={route().current('user-management.index')}
                         >
                             Add Users

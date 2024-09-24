@@ -92,4 +92,24 @@ class User extends Authenticatable implements MustVerifyEmail
     public function station(){
         return $this->belongsTo(Station::class,);
     }
+
+    // Relationship for the user who created this user
+    public function creator(){
+        return $this->belongsTo(User::class,'created_by');
+    }
+
+    // Relationship for the user who last updated this user
+    public function updater(){
+        return $this->belongsTo(User::class,'updated_by');
+    }
+
+    // Relationship for the users created by this user
+    public function createdUsers(){
+        return $this->hasMany(User::class,'created_by');
+    }
+
+    // Relationship for the users updated by this user
+    public function updatedUsers(){
+        return $this->hasMany(User::class,'updated_by');
+    }
 }
