@@ -5,6 +5,7 @@ import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
 import { ModeToggle } from '@/Components/mode-toggle';
+import { Toaster } from '@/Components/ui/sonner';
 
 export default function AuthenticatedLayoutSuper({ header, children }: PropsWithChildren<{ header?: ReactNode }>) {
     const user = usePage().props.auth.user;
@@ -144,6 +145,7 @@ export default function AuthenticatedLayoutSuper({ header, children }: PropsWith
             )}
 
             <main>{children}</main>
+            <Toaster />
         </div>
     );
 }

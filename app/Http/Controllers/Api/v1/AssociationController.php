@@ -6,6 +6,7 @@ use App\Custom\EthiopianDateCustom;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\AssociationCollection;
 use App\Http\Resources\Api\AssociationResource;
+use App\Http\Resources\Api\AssociationSearchResource;
 use App\Models\Association;
 use App\Traits\Searchable;
 use Illuminate\Http\Request;
@@ -23,7 +24,7 @@ class AssociationController extends Controller
         $searchColumns = ['name'];
         $associationQuery = Association::with(['stations','creator','updater']);
 
-        return $this->search($request, $associationQuery, $searchColumns);
+        return $this->search($request, $associationQuery, $searchColumns, AssociationSearchResource::class);
     }
 
      public function getAll(){

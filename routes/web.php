@@ -3,6 +3,7 @@
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\DashboardController;
+use App\Http\Controllers\Web\StationAndAssociationFetch;
 use App\Http\Controllers\Web\UserManagementController;
 use App\Http\Controllers\Web\VehicleController;
 use Illuminate\Foundation\Application;
@@ -45,17 +46,11 @@ Route::get('auth/google/callback', [GoogleAuthController::class,'handleGoogleCal
 Route::get('auth/google/ticket-seller/redirect', [GoogleAuthController::class,'redirectToGoogleForTicketSeller']);
 Route::get('auth/google/ticket-seller/callback', [GoogleAuthController::class,'handleGoogleCallbackForTicketSeller']);
 
-// Route::get('/test', function(){
-//     // $adminRoleApi = Role::where('name', 'admin')->where('guard_name', 'api')->first();
-//      $adminRoleWeb = Role::where('name', 'admin')->where('guard_name', 'web')->first();
 
-//     // for($i=0; $i<5; $i++){
-//     //     $user = User::factory()->create();
-//     //     $user->assignRole($adminRoleApi);
-//     //     $user->assignRole($adminRoleWeb);
-//     // }
+Route::middleware('auth')->prefix('v1')->group(function () {
+    Route::get('stations/{station}', [StationAndAssociationFetch::class, 'station']);
 
-//     return dd(Role::where('name', 'admin')->where('guard_name', 'api')->first());
-// });
+    Route::get('associations/{association}', [StationAndAssociationFetch::class, 'association']);
+});
 
 require __DIR__.'/auth.php';

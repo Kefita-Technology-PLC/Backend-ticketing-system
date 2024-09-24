@@ -35,7 +35,7 @@ class VehicleFactory extends Factory
             'station_id'=> Station::inRandomOrder()->first()->id,
             'association_id'=> Association::inRandomOrder()->first()->id,
             'plate_number' => fake()->unique()->randomNumber(5),
-            'level' => fake()->randomElement(['level_1', 'level_2', 'level_3', 'level_4']),
+            'level' => fake()->randomElement(['level_1', 'level_2', 'level_3', 'level_4','level_5']),
             'number_of_passengers' => fake()->randomElement([24, 12, 15, 20]),
             'deployment_line_id' => DeploymentLine::inRandomOrder()->first()->id,
             'code' => fake()->randomElement([1,3]),
@@ -43,6 +43,8 @@ class VehicleFactory extends Factory
             'region' => fake()->randomElement(['TG','AF','AA','SN','DR','SD','AM','OR','SM','BN','HR','SW','ET']),
             'created_by' => $usersWithRoles->isNotEmpty() ? $usersWithRoles->first()->id : null,
             'updated_by' => $usersWithRoles->isNotEmpty() ? $usersWithRoles->random()->id : null,
+            'origin'=> fake()->city(),
+            'destination' => fake()->city(),
         ];
     }
 }

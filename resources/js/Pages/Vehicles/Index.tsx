@@ -20,6 +20,9 @@ import { SelectGroup, SelectLabel } from '@radix-ui/react-select';
 import { SelectItem } from '@/Components/ui/select';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { useEffect } from 'react';
+import {toast} from 'sonner'
+import Dropdown from '@/Components/Dropdown';
 
 dayjs.extend(relativeTime);
 
@@ -45,9 +48,10 @@ interface VehiclesResponse {
 interface IndexProps {
   vehicles: VehiclesResponse;
   queryParams?: any;
+  success: string
 }
 
-function Index({ vehicles, queryParams = {} }: IndexProps) {
+function Index({ vehicles, queryParams = {}, success}: IndexProps) {
 
   queryParams = queryParams || {}
 
@@ -88,6 +92,10 @@ function Index({ vehicles, queryParams = {} }: IndexProps) {
     }
   };
 
+  useEffect(()=>{
+    success ? toast(success): ''
+  },[])
+
   return (
     <AuthenticatedLayoutSuper header={
       <div className='flex justify-between'>
@@ -98,8 +106,8 @@ function Index({ vehicles, queryParams = {} }: IndexProps) {
       <Head title="Vehicles" />
 
       <div className="py-12">
-        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-          <div className="bg-white dark:bg-gray-900 overflow-hidden shadow sm:rounded-lg">
+        <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+          <div className="overflow-hidden bg-white shadow dark:bg-gray-900 sm:rounded-lg">
             <div className="p-6 text-gray-900 dark:text-gray-100">
               <Table>
                 <TableCaption>A list of vehicles</TableCaption>
@@ -111,7 +119,7 @@ function Index({ vehicles, queryParams = {} }: IndexProps) {
                     <TableHead onClick={() => sortChanged('code')}>
                       <div className='flex items-center gap-x-1'>
                         Code
-                        <div>
+                        <div className=' hover:cursor-pointer'>
                           <ChevronUpIcon className='w-4' />
                           <ChevronDownIcon className='w-4 -mt-2' />
                         </div>
@@ -120,7 +128,7 @@ function Index({ vehicles, queryParams = {} }: IndexProps) {
                     <TableHead onClick={() => sortChanged('plate_number')}>
                       <div className='flex items-center gap-x-1'>
                         <span className='text-nowrap'>Plate Number</span>
-                        <div>
+                        <div className=' hover:cursor-pointer'>
                           <ChevronUpIcon className='w-4' />
                           <ChevronDownIcon className='w-4 -mt-2' />
                         </div>
@@ -131,7 +139,7 @@ function Index({ vehicles, queryParams = {} }: IndexProps) {
                     <TableHead onClick={()=> sortChanged('created_at')}>
                       <div className='flex items-center gap-x-1'>
                         <span className='text-nowrap'>Registerd At</span>
-                        <div>
+                        <div className=' hover:cursor-pointer'>
                           <ChevronUpIcon className='w-4' />
                           <ChevronDownIcon className='w-4 -mt-2' />
                         </div>
@@ -140,6 +148,7 @@ function Index({ vehicles, queryParams = {} }: IndexProps) {
                     <TableHead className=' text-nowrap'>Edited</TableHead>
                     <TableHead className=' text-nowrap'>Created By</TableHead>
                     <TableHead className=' text-nowrap'>Updated By</TableHead>
+                    <TableHead className=' text-nowrap'>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
 
@@ -205,16 +214,40 @@ function Index({ vehicles, queryParams = {} }: IndexProps) {
                       <TableCell>{vehicle.car_type ? vehicle.car_type.replace('_', ' ') : ''}</TableCell>
                       <TableCell className='text-nowrap'>{dayjs(vehicle.created_at).fromNow()}</TableCell>
                       <TableCell>
-                        {vehicle.created_at !== vehicle.updated_at ? (
+                        {vehicle.created_at == vehicle.updated_at ? (
                           'No'
                         ) : (
                           <span className="flex items-center">
-                            Edited <FontAwesomeIcon icon={faCheckCircle} className="ml-1 w-4" />
+                            Edited <FontAwesomeIcon icon={faCheckCircle} className="w-4 ml-1" />
                           </span>
                         )}
                       </TableCell>
                       <TableCell className='text-nowrap'>{vehicle.creator?.name || 'N/A'}</TableCell>
                       <TableCell className='text-nowrap'>{vehicle.updater?.name || 'N/A'}</TableCell>
+                      <TableCell>
+                        <Dropdown>
+                          <Dropdown.Trigger>
+                            <button>
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                  <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                              </svg>
+                            </button>
+                          </Dropdown.Trigger>
+
+                          <Dropdown.Content>
+                            <Dropdown.Link 
+                              as='button'
+                              href={route('vehicles.edit',vehicle.id)}
+                              method='get'
+                            >
+                              Edit
+                            </Dropdown.Link>
+                            <Dropdown.Link as='button' href={route('vehicles.destroy',vehicle.id )} method="delete">
+                              Delete
+                            </Dropdown.Link>
+                          </Dropdown.Content>
+                        </Dropdown>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

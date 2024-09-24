@@ -48,11 +48,7 @@ Route::post('reset-password', [NewPasswordController::class, 'reset']);
 Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
     Route::resource('stations', StationController::class)->middleware(['role:admin|super admin']);
 
-    Route::get('/stations-search', [StationController::class,'searchQueries']);
-
     Route::resource('associations', AssociationController::class)->middleware(['role:admin|super admin']);
-
-    Route::get('/associations-search',[AssociationController::class,'searchQueries']);
 
     Route::resource('vehicles', VehicleController::class)->middleware(['role:admin|super admin']);
 
@@ -93,7 +89,15 @@ Route::prefix('v1')->group(function(){
     Route::get('/car-types', [ForSelectionForm::class, 'carType']);
     Route::get('/get-stations', [ForSelectionForm::class, 'stationNames']);
     Route::get('/get-associations', [ForSelectionForm::class, 'associationNames']);
+    Route::get('/stations-search', [StationController::class,'searchQueries']);
 });
+
+Route::prefix('v1')->group(
+    function(){
+        Route::get('/stations-search', [StationController::class,'searchQueries']);
+        Route::get('/associations-search',[AssociationController::class,'searchQueries']);
+    }
+);
 
 
 

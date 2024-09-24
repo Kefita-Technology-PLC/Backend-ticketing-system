@@ -13,6 +13,7 @@ use App\Traits\Searchable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 
 class VehicleController extends Controller
 {
@@ -49,31 +50,38 @@ class VehicleController extends Controller
     {
         $attrs = $request->validate([
             'plate_number' => ['required', 'regex:/^[a-zA-Z]?\d{5}$/'],
-            'level' => ['required', 'in:level_1,level_2,level_3,level_4'],
+            'level' => ['required', 'in:level_1,level_2,level_3,level_4','level_5'],
             'number_of_passengers' => ['required', 'integer',],
             'car_type' => ['required', 'max:250'],
-            'station_name' => ['required'],
-            'association_name'=> ['required'],
-            'deployment_line_id' => ['required'],
+            'station_id' => ['required'],
+            'association_id'=> ['required'],
+            // 'deployment_line_id' => ['required'],
             'code' => ['required','in:1,2,3'],
             'region' => ['required','in:TG,AF,AA,SN,DR,SD,AM,OR,SM,BN,HR,SW,ET'],
         ]);
 
-        $stations = Station::pluck('id', 'name');
-        $associations = Association::pluck('id', 'name');
+        $attrs['created_by'] = Auth::user()->id;
 
-        $stationId = $stations[$attrs['station_name']] ?? null;
-        $associationId = $associations[$attrs['association_name']] ?? null;
+        $vehicle = Vehicle::create($attrs);
 
-        if (!$stationId || !$associationId) {
-            return response()->json(['error' => 'Station or Association not found'], 404);
-        }
 
-        $vehicle = Vehicle::create([
-            'station_id' => $stationId,
-            'association_id' => $associationId,
-            ...Arr::except($attrs, ['station_name', 'association_name']),
-        ]);
+
+        // $stations = Station::pluck('id', 'name');
+        // $associations = Association::pluck('id', 'name');
+
+        // $stationId = $stations[$attrs['station_name']] ?? null;
+        // $associationId = $associations[$attrs['association_name']] ?? null;
+
+        // if (!$stationId || !$associationId) {
+        //     return response()->json(['error' => 'Station or Association not found'], 404);
+        // }
+
+        // $vehicle = Vehicle::create(
+        //     // 'station_id' => $stationId,
+        //     // 'association_id' => $associationId,
+        //     // ...Arr::except($attrs, ['station_name', 'association_name']),
+        //     $attrs
+        // );
 
         return new ApiVehicleResource($vehicle);
     }
@@ -101,30 +109,29 @@ class VehicleController extends Controller
     {
         $attrs = $request->validate([
             'plate_number' => ['required', 'regex:/^[a-zA-Z]?\d{5}$/'],
-            'level' => ['required', 'in:level_1,level_2,level_3'],
+            'level' => ['required', 'in:level_1,level_2,level_3,level_4','level_5'],
             'number_of_passengers' => ['required', 'integer',],
             'car_type' => ['required', 'max:250'],
-            'station_name' => ['required'],
-            'association_name'=> ['required'],
-            'deployment_line_id' => ['required'],
-            'code' => ['required','in:1,2,3']
+            'station_id' => ['required'],
+            'association_id'=> ['required'],
+            // 'deployment_line_id' => ['required'],
+            'code' => ['required','in:1,2,3'],
+            'region' => ['required','in:TG,AF,AA,SN,DR,SD,AM,OR,SM,BN,HR,SW,ET'],
         ]);
 
-        $stations = Station::pluck('id', 'name');
-        $associations = Association::pluck('id', 'name');
+        // $stations = Station::pluck('id', 'name');
+        // $associations = Association::pluck('id', 'name');
 
-        $stationId = $stations[$attrs['station_name']] ?? null;
-        $associationId = $associations[$attrs['association_name']] ?? null;
+        // $stationId = $stations[$attrs['station_name']] ?? null;
+        // $associationId = $associations[$attrs['association_name']] ?? null;
 
-        if (!$stationId || !$associationId) {
-            return response()->json(['error' => 'Station or Association not found'], 404);
-        }
+        // if (!$stationId || !$associationId) {
+        //     return response()->json(['error' => 'Station or Association not found'], 404);
+        // }
 
-        $vehicle->update([
-            'station_id' => $stationId,
-            'association_id' => $associationId,
-            ...Arr::except($attrs, ['station_name', 'association_name']),
-        ]);
+        $attrs['updated_by'] = Auth::user()->id;
+
+        $vehicle->update($attrs);
 
         $vehicle->load(['station', 'association','deploymentLine']);
         return new ApiVehicleResource($vehicle);

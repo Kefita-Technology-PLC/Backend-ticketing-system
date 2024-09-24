@@ -1,6 +1,6 @@
 import { ButtonHTMLAttributes } from 'react';
 
-export default function PrimaryButton({
+export default function PrimaryButtonOnClick({
     className = '',
     disabled,
     children,
@@ -14,7 +14,7 @@ export default function PrimaryButton({
                 disabled ? 'opacity-25' : ''
             } ` + className}
             disabled={disabled}
-            // onClick={onClick}
+            onClick={onClick}
         >
             {children}
         </button>

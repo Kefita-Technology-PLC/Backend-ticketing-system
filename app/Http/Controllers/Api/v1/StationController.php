@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\StationCollection;
 use App\Http\Resources\Api\StationResource;
+use App\Http\Resources\Api\StationSearchResource;
 use App\Models\Association;
 use App\Models\Station;
 use App\Traits\Searchable;
@@ -23,7 +24,7 @@ class StationController extends Controller
         $searchColumns = ['name', 'location'];
         $stationQuery = Station::with(['updater','creator']);
 
-        return $this->search($request, $stationQuery, $searchColumns);
+        return $this->search($request, $stationQuery, $searchColumns, StationSearchResource::class);
     }
 
     public function getAll(){

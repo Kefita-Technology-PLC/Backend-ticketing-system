@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Web\UserResource;
 use App\Http\Resources\Web\VehicleResource;
 use App\Models\Vehicle;
+use App\Rules\UniqueVehicleCombination;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class VehicleController extends Controller
@@ -51,7 +53,7 @@ class VehicleController extends Controller
      */
     public function create()
     {
-
+      return Inertia::render('Vehicles/Create');
     }
 
     /**
@@ -59,7 +61,26 @@ class VehicleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+      $attrs = $request->validate([
+        'plate_number' => ['required', 'regex:/^[a-zA-Z]?\d{5}$/'],
+        'level' =>['required', 'in:level_1,level_2,level_3,level_4'],
+        'number_of_passengers' => ['required', 'integer',],
+        'car_type' => ['required', 'max:250'],
+        'station_id' => ['required'],
+        'association_id'=> ['required'],
+        // 'deployment_line_id' => ['required'],
+        'code' => ['required','in:1,2,3'],
+        'region' => ['required','in:TG,AF,AA,SN,DR,SD,AM,OR,SM,BN,HR,SW,ET'],
+        'plate_number' => [new UniqueVehicleCombination($request->plate_number, $request->code, $request->region)]
+    ]);
+
+      // dd($attrs);
+      $attrs['created_by'] = Auth::user()->id;
+
+      Vehicle::create($attrs);
+
+      return to_route('vehicles.index')->with('success','A vehicle '.$attrs['plate_number'].' has been created.');
     }
 
     /**
@@ -76,24 +97,46 @@ class VehicleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Vehicle $vehicle)
     {
-        //
+        return Inertia::render('Vehicles/Edit',[
+          'vehicle' => $vehicle,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Vehicle $vehicle)
     {
-        //
+      $attrs = $request->validate([
+        'plate_number' => ['required', 'regex:/^[a-zA-Z]?\d{5}$/'],
+        'level' =>['required', 'in:level_1,level_2,level_3,level_4'],
+        'number_of_passengers' => ['required', 'integer',],
+        'car_type' => ['required', 'max:250'],
+        'station_id' => ['required'],
+        'association_id'=> ['required'],
+        // 'deployment_line_id' => ['required'],
+        'code' => ['required','in:1,2,3'],
+        'region' => ['required','in:TG,AF,AA,SN,DR,SD,AM,OR,SM,BN,HR,SW,ET'],
+        'plate_number' => [new UniqueVehicleCombination($request->plate_number, $request->code, $request->region)]
+    ]);
+        $attrs['updated_by'] = Auth::user()->id;
+
+        $vehicle->update($attrs);
+
+        return to_route('vehicles.index')->with('success','Vechile '.$attrs['plate_number'].' '.'has been updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Vehicle $vehicle)
     {
-        //
+      
+        $plateNumber = $vehicle->plate_number;
+        $vehicle->delete();
+
+        return to_route('vehicles.index')->with('success','Vehicle '.$plateNumber.' Deleted Successfully');
     }
 }
