@@ -5,14 +5,10 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\VehicleResource as ApiVehicleResource;
 use App\Http\Resources\Api\VehicleCollection;
-// use App\Http\Resources\VehicleResource;
-use App\Models\Association;
-use App\Models\Station;
 use App\Models\Vehicle;
 use App\Traits\Searchable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 
 class VehicleController extends Controller
@@ -55,9 +51,12 @@ class VehicleController extends Controller
             'car_type' => ['required', 'max:250'],
             'station_id' => ['required'],
             'association_id'=> ['required'],
+            'origin' => ['required'],
+            'destination' => ['required'],
             // 'deployment_line_id' => ['required'],
             'code' => ['required','in:1,2,3'],
             'region' => ['required','in:TG,AF,AA,SN,DR,SD,AM,OR,SM,BN,HR,SW,ET'],
+            'plate_number' => [new UniqueVehicleCombination($request->plate_number, $request->code, $request->region)]
         ]);
 
         $attrs['created_by'] = Auth::user()->id;
@@ -114,9 +113,12 @@ class VehicleController extends Controller
             'car_type' => ['required', 'max:250'],
             'station_id' => ['required'],
             'association_id'=> ['required'],
+            'origin' => ['required'],
+            'destination' => ['required'],
             // 'deployment_line_id' => ['required'],
             'code' => ['required','in:1,2,3'],
             'region' => ['required','in:TG,AF,AA,SN,DR,SD,AM,OR,SM,BN,HR,SW,ET'],
+            
         ]);
 
         // $stations = Station::pluck('id', 'name');

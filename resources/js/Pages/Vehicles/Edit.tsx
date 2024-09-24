@@ -37,10 +37,12 @@ interface EditProps {
 }
 
 function Edit({ vehicle }: EditProps) {
+  console.log(vehicle)
   const [stations, setStations] = useState<Station[]>([])
   const [associations, setAssociations] = useState<Association[]>([])
   const [stationQuery, setStationQuery] = useState('')
   const [associationQuery, setAssociationQuery] = useState('')
+  const [origin, setOrigin] = useState('')
 
   const { data, setData, put, processing, errors } = useForm({
     station_id: vehicle.station_id.toString(),
@@ -48,7 +50,7 @@ function Edit({ vehicle }: EditProps) {
     plate_number: vehicle.plate_number,
     code: vehicle.code.toString(),
     level: vehicle.level,
-    number_of_passengers: vehicle.number_of_passengers,
+    number_of_passengers: vehicle.number_of_passengers.toString(),
     car_type: vehicle.car_type,
     region: vehicle.region,
     origin: vehicle.origin,
@@ -57,7 +59,7 @@ function Edit({ vehicle }: EditProps) {
 
   const submit: FormEventHandler = (e) => {
     e.preventDefault()
-    console.log('submitting data:', data)
+    // console.log('submitting data:', data)
 
     put(route('vehicles.update', vehicle.id), {
       onSuccess: () => {
@@ -150,13 +152,15 @@ function Edit({ vehicle }: EditProps) {
                     <InputLabel
                       htmlFor='station_id'
                       value='Station Name'
+                      className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'
                     />
+
                     <div className="relative">
                       <input
                         type="text"
                         id="station_id"
                         placeholder="Search station..."
-                        className="w-full px-3 py-2 text-sm"
+                        className="w-full px-3 py-2 text-sm rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
                         value={stationQuery}
                         onChange={(e) => setStationQuery(e.target.value)}
                         required
@@ -166,11 +170,12 @@ function Edit({ vehicle }: EditProps) {
                           {stations.slice(0, 10).map((station) => (
                             <div
                               key={station.id}
-                              className="px-3 py-2 text-sm"
+                              className="px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
                               onClick={() => {
                                 setData('station_id', station.id)
                                 setStationQuery(station.name)
                                 setStations([])
+                                setOrigin(station.name)
                               }}
                             >
                               {station.name}
@@ -184,13 +189,17 @@ function Edit({ vehicle }: EditProps) {
 
                   {/* Association Name Dropdown */}
                   <div className='mb-4'>
-                    <InputLabel htmlFor='association_id' value='Association Name' />
+                    <InputLabel 
+                      htmlFor='association_id' 
+                      value='Association Name'
+                      className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'
+                    />
                     <div className="relative">
                       <input
                         type="text"
                         id="association_id"
                         placeholder="Search association..."
-                        className="w-full px-3 py-2 text-sm"
+                        className="w-full px-3 py-2 text-sm rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
                         value={associationQuery}
                         onChange={(e) => setAssociationQuery(e.target.value)}
                         required
@@ -216,19 +225,194 @@ function Edit({ vehicle }: EditProps) {
                     <InputError message={errors.association_id} className='mt-2' />
                   </div>
 
-                  {/* Other fields remain the same */}
-                  {/* ... */}
+                  {/** Plate Number */}
+                  <div className='mb-4'>
+                    <InputLabel 
+                      htmlFor='plate_number'
+                      value='Plate Number'
+                    />
+
+                    <TextInput 
+                      id='plate_number'
+                      name='plate_number'
+                      value={data.plate_number}
+                      onChange={(e)=> setData('plate_number', e.target.value)}
+                      required
+                    />
+                    
+                    <InputError message={errors.plate_number} className='mt-2' />
+                  </div>
+
+                  {/**Level */}
+                  <div className='mb-4'>
+                    <InputLabel 
+                      htmlFor='level'
+                      value='Level'
+                    />
+
+                    <SelectInput 
+                      value={data.level}
+                      onChange={(e)=> setData('level', e)}
+                    >
+                      <SelectGroup>
+                        <SelectLabel>Levels</SelectLabel>
+                        <SelectItem value="level_1">Level 1</SelectItem>
+                        <SelectItem value="level_2">Level 2</SelectItem>
+                        <SelectItem value="level_3">Level 3</SelectItem>
+                        <SelectItem value="level_4">Level 4</SelectItem>
+                      </SelectGroup>
+                    </SelectInput>
+                    
+                    <InputError message={errors.level} className='mt-2' />
+                  </div>
+
+                  {/**Code */}
+                  <div className='mb-4'>
+                    <InputLabel 
+                      htmlFor='code'
+                      value='Code'
+                    />
+
+                    <SelectInput 
+                      value={data.code}
+                      onChange={(e)=> setData('code', e)}
+                    >
+                      <SelectGroup>
+                        <SelectLabel>Codes</SelectLabel>
+                        <SelectItem value="1">Code 1</SelectItem>
+                        <SelectItem value="2">Code 2</SelectItem>
+                        <SelectItem value="3">Code 3</SelectItem>
+                      </SelectGroup>
+                    </SelectInput>
+                    
+                    <InputError message={errors.code} className='mt-2' />
+                  </div>
 
                 </div>
 
-                {/* Second column remains the same */}
-                {/* ... */}
+                {/* Second column */}
+                <div>
+                  {/**Passengers Capcity */}
+                  <div className='mb-4'>
+                    <InputLabel 
+                      htmlFor='number_of_passengers'
+                      value='Passengers Capacity'
+                    />
+
+                    <SelectInput 
+                      value={data.number_of_passengers}
+                      onChange={(e)=> setData('number_of_passengers', e)}
+                    >
+                      <SelectGroup>
+                        <SelectLabel>Levels</SelectLabel>
+                        <SelectItem value="4">4 Passengers</SelectItem>
+                        <SelectItem value="12">12 Passengers</SelectItem>
+                        <SelectItem value="20">20 Passengers</SelectItem>
+                        <SelectItem value="24">24 Passengers</SelectItem>
+                        <SelectItem value="70">70 Passengers</SelectItem>
+                      </SelectGroup>
+                    </SelectInput>
+                    
+                    <InputError message={errors.number_of_passengers} className='mt-2' />
+                  </div>
+
+                  {/**Car Type */}
+                  <div className='mb-4'>
+                    <InputLabel 
+                      htmlFor='car_type'
+                      value='Car Type'
+                    />
+
+                    <SelectInput 
+                      value={data.car_type}
+                      onChange={(e)=> setData('car_type', e)}
+                    >
+                      <SelectGroup>
+                        <SelectLabel>Car Type</SelectLabel>
+                        <SelectItem value="bus">Bus</SelectItem>
+                        <SelectItem value="mini_bus">Mini Bus</SelectItem>
+                        <SelectItem value="higer">Higer</SelectItem>
+                        <SelectItem value="lonchin">Lonchin</SelectItem>
+                      </SelectGroup>
+                    </SelectInput>
+                    
+                    <InputError message={errors.car_type} className='mt-2' />
+                  </div>
+                    
+                  <div className='mb-4'>
+                    <InputLabel 
+                      htmlFor='region'
+                      value='Region'
+                    />
+
+                    <SelectInput 
+                      value={data.region}
+                      onChange={(e)=> setData('region', e)}
+                    >
+                      <SelectGroup>
+                        <SelectLabel>Select Region</SelectLabel>
+                        <SelectItem value="TG">Tigray</SelectItem>
+                        <SelectItem value="AF">Afar</SelectItem>
+                        <SelectItem value="AA">Addis Ababa</SelectItem>
+                        <SelectItem value="SN">Southern People's</SelectItem>
+                        <SelectItem value="DR">Dire Dawa</SelectItem>
+                        <SelectItem value="SD">Sidama</SelectItem>
+                        <SelectItem value="AM">Amhara</SelectItem>
+                        <SelectItem value="OR" >Oromia</SelectItem>
+                        <SelectItem value="SM">Somalia</SelectItem>
+                        <SelectItem value="BN">Benishalgul Gumuz</SelectItem>
+                        <SelectItem value="HR">Harari</SelectItem>
+                        <SelectItem value="SW">Southern Western</SelectItem>
+                        <SelectItem value="ET">Ethiopia</SelectItem>
+                      </SelectGroup>
+                    </SelectInput>
+                    
+                    <InputError message={errors.region} className='mt-2' />
+                  </div>
+
+                  <div className='mb-4'>
+                    <InputLabel 
+                      htmlFor='origin'
+                      value='Deployment Origin'
+                    />
+
+                    <TextInput 
+                      id='origin'
+                      name='origin'
+                      value={origin}
+                      onChange={(e)=> {
+                        setData('origin', e.target.value)
+                        setOrigin(e.target.value)
+                      }}
+                      required
+                    />
+                    
+                    <InputError message={errors.origin} className='mt-2' />
+                  </div>
+
+                  <div className='mb-4'>
+                    <InputLabel 
+                      htmlFor='destination'
+                      value='Deployment Destination'
+                    />
+
+                    <TextInput 
+                      id='destination'
+                      name='destination'
+                      value={data.destination}
+                      onChange={(e)=> setData('destination', e.target.value)}
+                      required
+                    />
+                    
+                    <InputError message={errors.destination} className='mt-2' />
+                  </div>
+                </div>
 
               </div>
 
               {/* Submit */}
-              <div className='flex justify-center'>
-                <PrimaryButton className='w-full py-4' disabled={processing}>
+              <div className='mt-6'>
+                <PrimaryButton className='ms-4' type='submit' disabled={processing}>
                   Update Vehicle
                 </PrimaryButton>
               </div>

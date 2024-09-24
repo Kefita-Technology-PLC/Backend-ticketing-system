@@ -55,6 +55,7 @@ function Index({ vehicles, queryParams = {}, success}: IndexProps) {
 
   queryParams = queryParams || {}
 
+  // console.log(vehicles)
   const searchFieldChanged = (name: string, value: any) => {
     if (value) {
       queryParams[name] = value;
@@ -213,12 +214,13 @@ function Index({ vehicles, queryParams = {}, success}: IndexProps) {
                       <TableCell>{vehicle.level ? vehicle.level.replace('_', ' ') : ''}</TableCell>
                       <TableCell>{vehicle.car_type ? vehicle.car_type.replace('_', ' ') : ''}</TableCell>
                       <TableCell className='text-nowrap'>{dayjs(vehicle.created_at).fromNow()}</TableCell>
-                      <TableCell>
+                      <TableCell className=' text-nowrap'>
                         {vehicle.created_at == vehicle.updated_at ? (
                           'No'
                         ) : (
                           <span className="flex items-center">
-                            Edited <FontAwesomeIcon icon={faCheckCircle} className="w-4 ml-1" />
+                            Edited <FontAwesomeIcon icon={faCheckCircle} className="w-4 ml-1" /> <small className='mx-1'> &middot;</small>
+                            {dayjs(vehicle.updated_at).fromNow()}
                           </span>
                         )}
                       </TableCell>

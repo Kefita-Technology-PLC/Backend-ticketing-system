@@ -24,6 +24,8 @@ class VehicleResource extends JsonResource
             'car_type' =>
             $this->car_type,
             'region' => $this->region,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
             'creator' => new UserResource($this->creator),
             'updater' => new UserResource($this->updater),
         ];

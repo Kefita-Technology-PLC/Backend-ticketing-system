@@ -40,7 +40,7 @@ function Create() {
 
   const submit: FormEventHandler = (e) => {
     e.preventDefault()
-    console.log('submitting data:', data)
+    // console.log('submitting data:', data)
 
     post(route('vehicles.store'),{
       onSuccess: ()=>{
@@ -112,6 +112,7 @@ function Create() {
                       value='Station Name'
                       className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'
                     />
+
                     <div className="relative">
                       <input
                         type="text"
@@ -145,6 +146,7 @@ function Create() {
                     <InputError message={errors.station_id} className='mt-2' />
                   </div>
 
+                  {/**Association Name */}
                   <div className='mb-4'>
                     <InputLabel
                       htmlFor='association_id'
@@ -183,7 +185,7 @@ function Create() {
                     <InputError message={errors.association_id} className='mt-2' />
                   </div>
 
-                  {/**Palte Number */}
+                  {/** Plate Number */}
                   <div className='mb-4'>
                     <InputLabel 
                       htmlFor='plate_number'
@@ -264,6 +266,7 @@ function Create() {
                         <SelectLabel>Levels</SelectLabel>
                         <SelectItem value="4">4 Passengers</SelectItem>
                         <SelectItem value="12">12 Passengers</SelectItem>
+                        <SelectItem value="20">20 Passengers</SelectItem>
                         <SelectItem value="24">24 Passengers</SelectItem>
                         <SelectItem value="70">70 Passengers</SelectItem>
                       </SelectGroup>
