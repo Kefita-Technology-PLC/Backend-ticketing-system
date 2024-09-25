@@ -7,6 +7,8 @@ import AuthenticatedLayoutSuper from '@/Layouts/AuthenticatedLayoutSuper'
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useState } from 'react'
 import { usePage } from '@inertiajs/react';
+import { Eye } from 'lucide-react';
+import { EyeClosedIcon } from '@radix-ui/react-icons';
 
 interface Station {
   id: string;
@@ -14,8 +16,10 @@ interface Station {
 }
 
 function Create() {
-  const [stations, setStations] = useState<Station[]>([]);
-  const [stationQuery, setStationQuery] = useState('');
+  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword2, setShowPassword2] = useState(false)
+  const [stations, setStations] = useState<Station[]>([])
+  const [stationQuery, setStationQuery] = useState('')
   const {data, setData, post, processing, errors, reset} = useForm({
     name: '',
     phone_no: '+251',
@@ -23,7 +27,9 @@ function Create() {
     gender: '',
     salary: '',
     station_id: '',
-  });
+    password: '',
+    password_confirmation: '',
+  })
 
   const submit: FormEventHandler = (e) => {
     e.preventDefault();
@@ -32,8 +38,8 @@ function Create() {
       onError: (e) => {
         console.log('Validation errors:', errors);
       }
-    });
-  };
+    })
+  }
 
   const fetchStations = async (query: string) => {
     try {
@@ -44,14 +50,22 @@ function Create() {
       console.error('Error fetching stations:', error);
       setStations([]);
     }
-  };
+  }
 
   useEffect(() => {
     if (stationQuery.length > 0) {
       fetchStations(stationQuery);
     }
-  }, [stationQuery]);
+  }, [stationQuery])
 
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  }
+
+  const togglePasswordVisibility2 = () => {
+      setShowPassword2(!showPassword2);
+  }
   return (
     <AuthenticatedLayoutSuper
       header={
@@ -104,10 +118,7 @@ function Create() {
                     placeholder="admin@example.com"
                     type="email"
                   />
-                </div>
 
-                {/**Second Column */}
-                <div>
                   {/* Gender */}
                   <div className="mb-4 mt-2">
                     <InputLabel htmlFor="gender" value="Admin's Gender" />
@@ -150,6 +161,10 @@ function Create() {
 
                     <InputError message={errors.gender} className="mt-2" />
                   </div>
+                </div>
+
+                {/**Second Column */}
+                <div>
 
                   {/* Salary */}
                   <FormInput 
@@ -202,6 +217,64 @@ function Create() {
 
                     <InputError message={errors.station_id} className="mt-2" />
                   </div>
+
+                  {/**Password */}
+                  <div className="mt-4">
+                    <InputLabel htmlFor="password" value="Password" />
+
+                    <div className='relative'>
+                      <TextInput
+                          id="password"
+                          type={showPassword ? "text" : "password"}
+                          name="password"
+                          value={data.password}
+                          className="mt-1 block w-full"
+                          autoComplete="new-password"
+                          onChange={(e) => setData('password', e.target.value)}
+                          required
+                      />
+                      <span
+                        className="absolute inset-y-0 right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                        onClick={togglePasswordVisibility}
+                      >
+                        {showPassword ? <Eye size={20} /> : <EyeClosedIcon />}
+                      </span>
+                    </div>
+
+                        <InputError message={errors.password} className="mt-2" />
+                  </div>
+
+                  {/**Password Confirmation */}
+                  <div className="mt-4">
+                    <InputLabel htmlFor="password_confirmation" value="Confirm Password" />
+
+                    <div className='relative'>
+                      <TextInput
+                          id="password_confirmation"
+                          type={showPassword2 ? "text" : "password"}
+                          name="password_confirmation"
+                          value={data.password_confirmation}
+                          className="mt-1 block w-full"
+                          autoComplete="new-password"
+                          onChange={(e) => setData('password_confirmation', e.target.value)}
+                          required
+                      />
+
+                      <span
+                          className="absolute inset-y-0 right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                          onClick={togglePasswordVisibility2}
+                      >
+                          {showPassword2 ? <Eye size={20} /> : <EyeClosedIcon />}
+                      </span>
+                    </div>
+
+                    <InputError message={errors.password_confirmation} className="mt-2" />
+                  </div>
+
+                  <div className='mt-4'>
+                    <InputLabel  />
+                  </div>
+
                 </div>
               </div>
               

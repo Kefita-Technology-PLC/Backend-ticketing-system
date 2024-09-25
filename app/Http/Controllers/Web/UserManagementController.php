@@ -32,4 +32,16 @@ class UserManagementController extends Controller
         return Inertia::render('user-managements/Create');
     }
 
+    public function store(Request $request){
+        $attrs = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'phone_no' => ['required', 'regex:/^\+251[79]\d{8}$/', 'unique:users,phone_no'],
+            'gender' => ['required', 'in:male,female,other'],
+            'salary' => ['required'],
+            'station_id' => ['required'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+    }
+
 }

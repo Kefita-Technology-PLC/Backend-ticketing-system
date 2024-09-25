@@ -39,6 +39,7 @@ export default function Register() {
             <Head title="Register" />
 
             <form onSubmit={submit}>
+                {/**Name */}
                 <div>
                     <InputLabel htmlFor="name" value="Name" />
 
@@ -56,6 +57,7 @@ export default function Register() {
                     <InputError message={errors.name} className="mt-2" />
                 </div>
 
+                {/**Email */}
                 <div className="mt-4">
                     <InputLabel htmlFor="email" value="Email" />
 
