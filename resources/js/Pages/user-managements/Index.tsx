@@ -19,6 +19,7 @@ interface user{
   station_id: number
   created_at: string,
   updated_at: string,
+  station?: {name: string}
   creator?: {name: string},
   updater?: {name: string},
 }
@@ -69,7 +70,7 @@ function Index({users, queryParams={}, success}: IndexProps) {
         }
     >
       <Head title='user management' />
-
+      {JSON.stringify(users)}
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg dark:bg-gray-900">
@@ -126,6 +127,7 @@ function Index({users, queryParams={}, success}: IndexProps) {
                         </div>
                       </div>
                     </TableHead>
+                    <TableHead className=' text-nowrap'>Station</TableHead>
                     <TableHead onClick={()=> sortChanged('salary')} className='text-nowrap'>
                       <div className='flex items-center gap-x-1'>
                         <span className='text-nowrap'>Salary</span>
@@ -169,6 +171,9 @@ function Index({users, queryParams={}, success}: IndexProps) {
                       </TableCell>
                       <TableCell className=' text-nowrap'>
                         {user.phone_no}
+                      </TableCell>
+                      <TableCell className=' text-nowrap'>
+                        {user.station?.name || 'N/A'}
                       </TableCell>
                       <TableCell className=' text-nowrap'>
                         {user.salary || 'N/A'}

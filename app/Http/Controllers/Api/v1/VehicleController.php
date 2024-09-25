@@ -18,6 +18,41 @@ class VehicleController extends Controller
      */
     use Searchable;
 
+    public function vehiclePlateNumber(Request $request)
+    {
+        // Validate input
+        $attrs = $request->validate([
+            'plate_number' => 'required',
+            'region'   => 'required|string',
+            'code'     => 'required',
+        ]);
+    
+        // Search for the vehicle using a single query
+        $vehicle = Vehicle::where([
+            ['plate_number', '=', $attrs['plate_number']],
+            ['region', '=', $attrs['region']],
+            ['code', '=', $attrs['code']]
+        ])->with('creator','updater', 'station', 'association')->first();
+    
+        // Return error if vehicle is not found
+        if (!$vehicle) {
+            return response()->json([
+                'data' => [
+                    'error' => 'Vehicle not found.'
+                ]
+                
+            ], 404);
+        }
+    
+        // Return the vehicle data
+        return response()->json([
+            'data' => [
+                'vehicle' => $vehicle,
+            ]
+        ], 200);
+    }
+    
+
     public function searchQueries(Request $request){
         $searchColumns = ["plate_number"];
         $vehicleQuery = Vehicle::with(['association','station','creator','updater']);

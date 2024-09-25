@@ -21,6 +21,7 @@ class UserManagementIndexResource extends JsonResource
             'email' => $this->email,
             'gender' => $this->gender,
             'salary' => $this->salary,
+            'station' => $this->station,
             'station_id' => $this->station_id,
             'created_at' => $this->created_at,
             'updated_at'=> $this->updated_at,

@@ -20,7 +20,7 @@ class UserManagementController extends Controller
         $sortField = request('sort_field', 'created_at');
         $sortDirection = request('sort_direction', 'desc');
 
-        $users = $query->orderBy($sortField, $sortDirection)->with('creator','updater')->paginate(10);
+        $users = $query->orderBy($sortField, $sortDirection)->with('creator','updater','station')->paginate(10);
 
         return Inertia::render("user-managements/Index", [
             'users' => UserManagementIndexResource::collection( $users ),
