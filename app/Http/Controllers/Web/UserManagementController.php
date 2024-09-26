@@ -28,9 +28,6 @@ class UserManagementController extends Controller
             $query->where('name','like','%'. request('name') .'%');
         }
 
-        $sortField = request('sort_field', 'created_at');
-        $sortDirection = request('sort_direction', 'desc');
-
         $users = $query->orderBy($sortField, $sortDirection)->with('creator','updater','station')->paginate(10);
 
         return Inertia::render("user-managements/Index", [
