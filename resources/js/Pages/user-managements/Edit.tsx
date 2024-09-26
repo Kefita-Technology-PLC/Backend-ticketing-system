@@ -7,7 +7,6 @@ import { Eye } from 'lucide-react';
 import { EyeClosedIcon } from '@radix-ui/react-icons';
 import { allPermissions } from '@/constants/allPermissions';
 import InputError from '@/Components/InputError';
-import { Input } from '@headlessui/react';
 
 interface User {
   id: number,

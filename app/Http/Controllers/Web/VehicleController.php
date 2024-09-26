@@ -45,6 +45,7 @@ class VehicleController extends Controller
         return Inertia::render('Vehicles/Index',[
             'vehicles' => VehicleResource::collection($vehicles),
             'queryParams' => request()->query() ?: null,
+            'success' => session('success'),
         ]);
     }
 
@@ -82,7 +83,7 @@ class VehicleController extends Controller
 
       Vehicle::create($attrs);
 
-      return to_route('vehicles.index')->with('success','A vehicle '.$attrs['plate_number'].' has been created.');
+      return to_route('vehicles.index')->with('success',value: 'A vehicle '.$attrs['plate_number'].' has been created.');
     }
 
     /**
@@ -139,8 +140,10 @@ class VehicleController extends Controller
     {
       
         $plateNumber = $vehicle->plate_number;
+        $code = $vehicle->code;
+        $region = $vehicle->region;
         $vehicle->delete();
 
-        return to_route('vehicles.index')->with('success','Vehicle '.$plateNumber.' Deleted Successfully');
+        return to_route('vehicles.index')->with('success','Vehicle '.$region.'-'.$code.'-'.$plateNumber.' Deleted Successfully');
     }
 }

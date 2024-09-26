@@ -48,12 +48,14 @@ interface VehiclesResponse {
 interface IndexProps {
   vehicles: VehiclesResponse;
   queryParams?: any;
-  success: string
+  success?: string
 }
 
 function Index({ vehicles, queryParams = {}, success}: IndexProps) {
 
   queryParams = queryParams || {}
+
+  console.log('prop',success)
 
   const searchFieldChanged = (name: string, value: any) => {
     if (value) {

@@ -302,13 +302,6 @@ function Create() {
                 >
                   Add User
                 </PrimaryButton>
-                <PrimaryButton
-                  type="button"
-                  className="ms-4 bg-red-500 hover:bg-red-600"
-                  onClick={() => reset()}
-                >
-                  Cancel
-                </PrimaryButton>
               </div>
             </form>
           </div>
