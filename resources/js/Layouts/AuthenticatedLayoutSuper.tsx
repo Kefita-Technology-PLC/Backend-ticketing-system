@@ -36,7 +36,19 @@ export default function AuthenticatedLayoutSuper({ header, children }: PropsWith
                                     href={route('user-managements.index')}
                                     active={route().current('user-managements.index')}
                                 >
-                                    Add Users
+                                     Users
+                                </NavLink>
+                                <NavLink
+                                    href={route('all-stations.index')}
+                                    active={route().current('all-stations.index')}
+                                >
+                                     Stations
+                                </NavLink>
+                                <NavLink
+                                    href={route('all-associations.index')}
+                                    active={route().current('all-associations.index')}
+                                >
+                                    Associations 
                                 </NavLink>
                             </div>
                         </div>
@@ -116,7 +128,19 @@ export default function AuthenticatedLayoutSuper({ header, children }: PropsWith
                             href={route('user-managements.index')}
                             active={route().current('user-management.index')}
                         >
-                            Add Users
+                            Users
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('all-stations.index')}
+                            active={route().current('all-stations.index')}
+                        >
+                                Stations
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('all-associations.index')}
+                            active={route().current('all-associations.index')}
+                        >
+                            Associations 
                         </ResponsiveNavLink>
                     </div>
 

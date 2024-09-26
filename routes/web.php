@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Web\AllStationController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\StationAndAssociationFetch;
 use App\Http\Controllers\Web\UserManagementController;
@@ -29,16 +30,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth', 'role:admin|super admin'])->group(function () {
-    Route::resource('vehicles', VehicleController::class);
-});
-
-Route::middleware(['auth','role:super admin'])->group(function () {
-    Route::resource('user-managements', UserManagementController::class);
-});
-
-
-
 
 Route::get('auth/google/redirect',[GoogleAuthController::class,'redirectToGoogle']);
 Route::get('auth/google/callback', [GoogleAuthController::class,'handleGoogleCallback']);
@@ -51,6 +42,13 @@ Route::middleware('auth')->prefix('v1')->group(function () {
     Route::get('stations/{station}', [StationAndAssociationFetch::class, 'station']);
 
     Route::get('associations/{association}', [StationAndAssociationFetch::class, 'association']);
+});
+
+Route::middleware(['auth','role:super admin'])->group(function(){
+    Route::resource('all-stations', AllStationController::class);
+    Route::resource('all-associations', AllStationController::class);
+    Route::resource('user-managements', UserManagementController::class);
+    Route::resource('vehicles', VehicleController::class);
 });
 
 require __DIR__.'/auth.php';

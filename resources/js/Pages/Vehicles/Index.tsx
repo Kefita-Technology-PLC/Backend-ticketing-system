@@ -55,7 +55,6 @@ function Index({ vehicles, queryParams = {}, success}: IndexProps) {
 
   queryParams = queryParams || {}
 
-  // console.log(vehicles)
   const searchFieldChanged = (name: string, value: any) => {
     if (value) {
       queryParams[name] = value;

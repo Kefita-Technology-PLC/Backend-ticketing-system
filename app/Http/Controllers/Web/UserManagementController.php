@@ -17,9 +17,16 @@ class UserManagementController extends Controller
     public function index() {
         // Fetch users with 'admin' role under the 'api' guard
 
+        $sortField = request('sort_field','created_at');
+        $sortDirection = request('sort_direction', 'desc');
+
         $query = User::whereHas('roles', function($query) {
             $query->where('name', 'admin')->where('guard_name', 'api');
         });
+
+        if(request('name')) {
+            $query->where('name','like','%'. request('name') .'%');
+        }
 
         $sortField = request('sort_field', 'created_at');
         $sortDirection = request('sort_direction', 'desc');
@@ -125,6 +132,14 @@ class UserManagementController extends Controller
     
         // Return a response, e.g., redirect or return success message
         return to_route('user-managements.index')->with('success','User has updated successfullu.');
+    }
+
+    public function destroy(string $id){
+        $user = User::findOrFail(intval($id));
+        $name = $user->name;
+        $user->delete();
+
+        return to_route('user-managements.index')->with('success', $name.' '.'has been deleted sucessfully.');
     }
     
 

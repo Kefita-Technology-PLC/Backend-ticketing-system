@@ -8,6 +8,7 @@ import realativeTime from 'dayjs/plugin/relativeTime'
 import PrimaryLink from '@/Components/PrimaryLink'
 import ShowAdminPrevillage from '@/Components/ShowAdminPrevillage'
 import { AlertDelete } from './AlertDelete'
+import TextInput from '@/Components/TextInput'
 
 dayjs.extend(realativeTime)
 
@@ -63,6 +64,11 @@ function Index({users, queryParams={}, success}: IndexProps) {
     router.get(route('user-managements.index'), queryParams);
   };
 
+  const onKeyDown = (name: string, e: any) => {
+    if (e.key !== 'Enter') return;
+    searchFieldChanged(name, e.target.value);
+  };
+
   return (
     <AuthenticatedLayoutSuper
         header={
@@ -94,7 +100,7 @@ function Index({users, queryParams={}, success}: IndexProps) {
                         </div>
                       </div>
                     </TableHead>
-                    <TableHead onClick={()=> sortChanged('name')}>
+                    <TableHead className='w-[500px]' onClick={()=> sortChanged('name')}>
                       <div className='flex items-center gap-x-1'>
                         <span className='text-nowrap'>Name</span>
                         <div className=' hover:cursor-pointer'>
@@ -157,6 +163,29 @@ function Index({users, queryParams={}, success}: IndexProps) {
 
                 </TableHeader>
 
+                <TableHeader>
+                  <TableHead></TableHead>
+                  <TableHead className='w-full'>
+                    <TextInput 
+                      className=' w-full'
+                      placeholder='Admin Name'
+                      defaultValue={queryParams.name}
+                      onBlur={(e)=> searchFieldChanged('name', e.target.value)}
+                      onKeyDown={(e) => onKeyDown('name', e)}
+                    />
+                  </TableHead>
+                  <TableHead></TableHead>
+                  <TableHead></TableHead>
+                  <TableHead></TableHead>
+                  <TableHead></TableHead>
+                  <TableHead></TableHead>
+                  <TableHead></TableHead>
+                  <TableHead></TableHead>
+                  <TableHead></TableHead>
+                  <TableHead></TableHead>
+                  <TableHead></TableHead>
+                </TableHeader>
+
                 <TableBody>
                   {users.data.map((user,index)=>(
                     <TableRow key={index}>
@@ -197,7 +226,7 @@ function Index({users, queryParams={}, success}: IndexProps) {
                       <TableCell className=' text-nowrap'>
                         {user.updater?.name || 'N/A'}
                       </TableCell>
-                      <TableCell className='flex gap-x-3'>
+                      <TableCell className='flex gap-x-3 items-center'>
                         <Dropdown>
                           <Dropdown.Trigger>
                           <button>
@@ -218,9 +247,10 @@ function Index({users, queryParams={}, success}: IndexProps) {
                             {/* <Dropdown.Link as='button' href={route('user-managements.destroy',user.id )} method="delete">
                               Delete
                             </Dropdown.Link> */}
-                            <AlertDelete user={user} />
+                            {/* <AlertDelete user={user} /> */}
                           </Dropdown.Content>
                         </Dropdown>
+                        <AlertDelete user={user}/>
                       </TableCell>
 
                     </TableRow>

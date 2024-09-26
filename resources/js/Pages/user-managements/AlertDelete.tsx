@@ -1,16 +1,7 @@
 import PrimaryLink from "@/Components/PrimaryLink"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/Components/ui/alert-dialog"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/Components/ui/dialog";
 import { Button } from "@/Components/ui/button"
+import { Link } from "@inertiajs/react"
 
 interface User{
   id: number,
@@ -25,31 +16,33 @@ interface AlertDelete{
 export function AlertDelete({user}: AlertDelete) {
   console.log(user)
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button variant={'outline'}>Delete</Button>
-      </AlertDialogTrigger>
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant={'outline'} className=" bg-red-600 text-white p-2">Delete</Button>
+      </DialogTrigger>
 
-      <AlertDialogContent>
+      <DialogContent>
 
-        <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete {user.name}
+        <DialogHeader>
+          <DialogTitle>Are you absolutely sure?</DialogTitle>
+          <DialogDescription>
+            This action cannot be undone. This will permanently delete <strong>{user.name+' '}</strong>  
             account and remove your data from the servers.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
+          </DialogDescription>
+        </DialogHeader>
 
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <PrimaryLink className="mt-2"
-            href={route('user-managements.destroy',{
-              user_management: user.id
-            })}
-          >Continue</PrimaryLink>
-        </AlertDialogFooter>
+        <DialogFooter>
+          
+            <PrimaryLink
+              href={route('user-managements.destroy',{
+                user_management: user.id
+              })}
+              method={"delete"}
+            >Continue</PrimaryLink>
+         
+        </DialogFooter>
 
-      </AlertDialogContent>
-    </AlertDialog>
+      </DialogContent>
+    </Dialog>
   )
 }
