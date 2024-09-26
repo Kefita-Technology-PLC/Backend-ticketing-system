@@ -6,6 +6,8 @@ import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react'
 import dayjs from 'dayjs'
 import realativeTime from 'dayjs/plugin/relativeTime'
 import PrimaryLink from '@/Components/PrimaryLink'
+import ShowAdminPrevillage from '@/Components/ShowAdminPrevillage'
+import { AlertDelete } from './AlertDelete'
 
 dayjs.extend(realativeTime)
 
@@ -22,6 +24,7 @@ interface user{
   station?: {name: string}
   creator?: {name: string},
   updater?: {name: string},
+  permissions: string[]
 }
 
 interface UsersResponse{
@@ -70,12 +73,12 @@ function Index({users, queryParams={}, success}: IndexProps) {
         }
     >
       <Head title='user management' />
-      {JSON.stringify(users)}
+      
       <div className="py-12">
-        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div className="max-w-8xl mx-auto sm:px-6 lg:px-8">
           <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg dark:bg-gray-900">
             <div className="p-6 text-gray-900 dark:text-gray-100">
-              {/* {JSON.stringify(users)} */}
+            
 
               <Table>
                 <TableCaption>A list of admin users</TableCaption>
@@ -181,8 +184,12 @@ function Index({users, queryParams={}, success}: IndexProps) {
                       <TableCell className=' text-nowrap'>
                         {dayjs(user.created_at).fromNow() || 'N/A'}
                       </TableCell>
-                      <TableCell className=' text-nowrap'>
-                        {''}
+                      <TableCell className='text-nowrap'>
+                        {<>
+                        <ShowAdminPrevillage 
+                          user={user}
+                        />
+                        </>}
                       </TableCell>
                       <TableCell className=' text-nowrap'>
                         {user.creator?.name || 'N/A'}
@@ -208,9 +215,10 @@ function Index({users, queryParams={}, success}: IndexProps) {
                             >
                               Edit
                             </Dropdown.Link>
-                            <Dropdown.Link as='button' href={route('user-managements.destroy',user.id )} method="delete">
+                            {/* <Dropdown.Link as='button' href={route('user-managements.destroy',user.id )} method="delete">
                               Delete
-                            </Dropdown.Link>
+                            </Dropdown.Link> */}
+                            <AlertDelete user={user} />
                           </Dropdown.Content>
                         </Dropdown>
                       </TableCell>

@@ -1,16 +1,16 @@
-import React, { FormEventHandler, useEffect, useState } from 'react'
-import { Head, useForm } from '@inertiajs/react'
-import AuthenticatedLayoutSuper from '@/Layouts/AuthenticatedLayoutSuper'
-import InputLabel from '@/Components/InputLabel'
-import TextInput from '@/Components/TextInput'
-import InputError from '@/Components/InputError'
-import PrimaryButton from '@/Components/PrimaryButton'
-import FormInput from '@/Components/FormInput'
-import { Eye } from 'lucide-react'
-import { EyeClosedIcon } from '@radix-ui/react-icons'
-import {allPermissions} from '@/constants/allPermissions'
+import React, { FormEventHandler, useEffect, useState } from 'react';
+import { Head, useForm } from '@inertiajs/react';
+import AuthenticatedLayoutSuper from '@/Layouts/AuthenticatedLayoutSuper';
+import FormInput from '@/Components/FormInput';
+import PrimaryButton from '@/Components/PrimaryButton';
+import { Eye } from 'lucide-react';
+import { EyeClosedIcon } from '@radix-ui/react-icons';
+import { allPermissions } from '@/constants/allPermissions';
+import InputError from '@/Components/InputError';
+import { Input } from '@headlessui/react';
 
-interface FormData {
+interface User {
+  id: number,
   name: string;
   phone_no: string;
   email: string;
@@ -22,39 +22,48 @@ interface FormData {
   permissions: string[];
 }
 
-function Create() {
-  const [showPassword, setShowPassword] = useState(false)
-  const [showPassword2, setShowPassword2] = useState(false)
-  const [stations, setStations] = useState<{ id: string; name: string }[]>([])
-  const [stationQuery, setStationQuery] = useState('')
+interface EditUser {
+  user: {
+    data: User
+  };
+}
 
-  const { data, setData, post, processing, errors, reset } = useForm<FormData>({
-    name: '',
-    phone_no: '+251',
-    email: '',
-    gender: '',
-    salary: '',
-    station_id: '',
-    password: '',
+function Edit({ user }: EditUser) {
+  const userData = user.data
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
+  const [stations, setStations] = useState<{ id: string; name: string }[]>([]);
+  const [stationQuery, setStationQuery] = useState('');
+
+  // Initialize the form state with user object values
+  const { data, setData, put, processing, errors, reset } = useForm({
+    name: userData.name,
+    phone_no: userData.phone_no,
+    email: userData.email,
+    gender: userData.gender,
+    salary: userData.salary,
+    station_id: userData.station_id,
+    password: '', // Keeping password empty for security reasons
     password_confirmation: '',
-    permissions: [],
-  })
+    permissions: userData.permissions || [],
+  });
 
-  const [selectedPermissions, setSelectedPermissions] = useState<string[]>([])
+  const [selectedPermissions, setSelectedPermissions] = useState<string[]>(userData.permissions || []);
+
+  console.log(user.data)
 
   const handlePermissionChange = (permission: string) => {
     const updatedPermissions = selectedPermissions.includes(permission)
-      ? selectedPermissions.filter(p => p !== permission)
+      ? selectedPermissions.filter((p) => p !== permission)
       : [...selectedPermissions, permission];
-    
+
     setSelectedPermissions(updatedPermissions);
     setData('permissions', updatedPermissions);
   };
 
   const submit: FormEventHandler = (e) => {
     e.preventDefault();
-    // return console.log(data)
-    post(route('user-managements.store'), {
+    put(route('user-managements.update', { user_management: userData.id }), {
       onSuccess: () => {
         // Handle success (e.g., show a success message, redirect)
       },
@@ -73,34 +82,49 @@ function Create() {
       console.error('Error fetching stations:', error);
       setStations([]);
     }
+  };
+
+  const fetchStationName = async (id: string) => {
+    try {
+      const response = await fetch(`/v1/stations/${id}`)
+      const data = await response.json()
+      console.log(data)
+      setStationQuery(data.data.name)
+    } catch (error) {
+      console.error('Error fetching station name:', error)
+    }
   }
+
+  useEffect(()=>{
+    fetchStationName(data.station_id)
+  },[])
 
   useEffect(() => {
     if (stationQuery.length > 0) {
       fetchStations(stationQuery);
     }
-  }, [stationQuery])
+  }, [stationQuery]);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
-  }
+  };
 
   const togglePasswordVisibility2 = () => {
     setShowPassword2(!showPassword2);
-  }
+  };
 
   return (
     <AuthenticatedLayoutSuper
-      header={<div><h1>Add Users</h1></div>}
+      header={<div><h1>Edit User</h1></div>}
     >
-      <Head title="User Add" />
+      <Head title="User Edit" />
       <div className="py-12">
         <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+          <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
             <form onSubmit={submit}>
               <div className='flex justify-center gap-x-20 flex-col sm:flex-row'>
                 <div>
-                  <FormInput 
+                  <FormInput
                     labelName='Admin Name'
                     htmlFor='name'
                     name='name'
@@ -111,7 +135,7 @@ function Create() {
                     type="text"
                   />
 
-                  <FormInput 
+                  <FormInput
                     labelName='Admin Phone Number'
                     htmlFor='phone_no'
                     name='phone_no'
@@ -122,7 +146,7 @@ function Create() {
                     type="text"
                   />
 
-                  <FormInput 
+                  <FormInput
                     labelName='Admin Email'
                     htmlFor='email'
                     name='email'
@@ -134,46 +158,46 @@ function Create() {
                   />
 
                   <div className="mb-4 mt-2">
-                    <InputLabel htmlFor="gender" value="Admin's Gender" />
+                    <label htmlFor="gender" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Admin's Gender</label>
                     <div className="flex gap-x-4 px-3 items-center">
-                      <TextInput
+                      <input
                         id="gender-male"
                         name="gender"
                         type="radio"
                         value="male"
                         checked={data.gender === 'male'}
                         onChange={(e) => setData('gender', e.target.value)}
-                      /> 
+                      />
                       <span>Male</span>
                     </div>
                     <div className="flex gap-x-4 px-3 items-center">
-                      <TextInput
+                      <input
                         id="gender-female"
                         name="gender"
                         type="radio"
                         value="female"
                         checked={data.gender === 'female'}
                         onChange={(e) => setData('gender', e.target.value)}
-                      /> 
+                      />
                       <span>Female</span>
                     </div>
                     <div className="flex gap-x-4 px-3 items-center">
-                      <TextInput
+                      <input
                         id="gender-other"
                         name="gender"
                         type="radio"
                         value="other"
                         checked={data.gender === 'other'}
                         onChange={(e) => setData('gender', e.target.value)}
-                      /> 
+                      />
                       <span>Other</span>
                     </div>
-                    <InputError message={errors.gender} className="mt-2" />
+                    <InputError message={errors.gender} />
                   </div>
                 </div>
 
                 <div>
-                  <FormInput 
+                  <FormInput
                     labelName="Admin Salary"
                     htmlFor="salary"
                     name="salary"
@@ -184,12 +208,11 @@ function Create() {
                     value={data.salary}
                   />
 
+                  {/**Station Name */}
                   <div className="mb-4">
-                    <InputLabel
-                      htmlFor="station_id"
-                      value="Station Name"
-                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                    />
+                    <label htmlFor="station_id" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Station Name
+                    </label>
                     <div className="relative">
                       <input
                         type="text"
@@ -218,13 +241,14 @@ function Create() {
                         </div>
                       )}
                     </div>
-                    <InputError message={errors.station_id} className="mt-2" />
+                    <InputError message={errors.station_id} />
                   </div>
 
+                  {/**Password */}
                   <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
+                    <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
                     <div className='relative'>
-                      <TextInput
+                      <input
                         id="password"
                         type={showPassword ? "text" : "password"}
                         name="password"
@@ -232,7 +256,6 @@ function Create() {
                         className="mt-1 block w-full"
                         autoComplete="new-password"
                         onChange={(e) => setData('password', e.target.value)}
-                        required
                       />
                       <span
                         className="absolute inset-y-0 right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
@@ -241,14 +264,14 @@ function Create() {
                         {showPassword ? <Eye size={20} /> : <EyeClosedIcon />}
                       </span>
                     </div>
-                    <InputError message={errors.password} className="mt-2" />
+                    <InputError message={errors.password} />
                   </div>
 
                     {/**Password Confirmation */}
                   <div className="mt-4">
-                    <InputLabel htmlFor="password_confirmation" value="Confirm Password" />
+                    <label htmlFor="password_confirmation" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Confirm Password</label>
                     <div className='relative'>
-                      <TextInput
+                      <input
                         id="password_confirmation"
                         type={showPassword2 ? "text" : "password"}
                         name="password_confirmation"
@@ -256,7 +279,6 @@ function Create() {
                         className="mt-1 block w-full"
                         autoComplete="new-password"
                         onChange={(e) => setData('password_confirmation', e.target.value)}
-                        required
                       />
                       <span
                         className="absolute inset-y-0 right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
@@ -265,49 +287,34 @@ function Create() {
                         {showPassword2 ? <Eye size={20} /> : <EyeClosedIcon />}
                       </span>
                     </div>
-                    <InputError message={errors.password_confirmation} className="mt-2" />
+                    <InputError message={errors.password_confirmation} />
                   </div>
+                </div>
+              </div>
 
-                  {/**Permissions */}
+              {/**Permissions */}
+              <div className="mt-6">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Permissions</label>
+                <div className="flex flex-wrap gap-4 mt-3">
+                  {allPermissions.map((permission, index) => (
+                    <label key={index} className="inline-flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        className="form-checkbox h-4 w-4 text-indigo-600 dark:text-indigo-400"
+                        checked={selectedPermissions.includes(permission.name)}
+                        onChange={() => handlePermissionChange(permission.name)}
+                      />
+                      <span className="text-sm text-gray-700 dark:text-gray-300">{permission.name}</span>
+                    </label>
+                  ))}
                 </div>
 
-                <div className='mt-4'>
-                    <InputLabel htmlFor='permissions' value='Privileges' />
-
-                    <div>
-                    {allPermissions.map((permission, index) => (
-                      <div key={index} className='flex gap-x-4 px-3 items-center'>
-                        <input
-                          type='checkbox'
-                          id={permission.name}
-                          name='permissions[]'
-                          value={permission.name}
-                          checked={selectedPermissions.includes(permission.name)}
-                          onChange={() => handlePermissionChange(permission.name)}
-                        />
-                        <label htmlFor={permission.name}>{'Can'+' '+ permission.name}</label>
-                      </div>
-                    ))}
-                    </div>
-
-                    <InputError message={errors.permissions} className='mt-2' />
-                  </div>
+                <InputError message={errors.permissions} />
               </div>
-              
-              <div className="mt-6 flex justify-center gap-x-2">
-                <PrimaryButton 
-                  type="submit" 
-                  className="ms-4" 
-                  disabled={processing}
-                >
-                  Add User
-                </PrimaryButton>
-                <PrimaryButton
-                  type="button"
-                  className="ms-4 bg-red-500 hover:bg-red-600"
-                  onClick={() => reset()}
-                >
-                  Cancel
+
+              <div className="mt-6 flex justify-end">
+                <PrimaryButton className="ml-4" disabled={processing}>
+                  Update User
                 </PrimaryButton>
               </div>
             </form>
@@ -318,4 +325,4 @@ function Create() {
   );
 }
 
-export default Create;
+export default Edit;

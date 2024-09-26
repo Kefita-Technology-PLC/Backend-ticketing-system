@@ -42,6 +42,7 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
+        // Attempt to authenticate the user
         if (! Auth::attempt($this->only('phone_no', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
@@ -50,6 +51,7 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        // Clear the rate limiter for the current user
         RateLimiter::clear($this->throttleKey());
     }
 
