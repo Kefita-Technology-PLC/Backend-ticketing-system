@@ -5,16 +5,17 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 
-interface Association{
+interface Station{
   id: number,
   name: string,
+  location: string,
 }
 
 interface AlertDeleteProps{
-  association: Association
+  station: Station
 }
 
-function DeleteDialog({association}: AlertDeleteProps) {
+function DeleteAlert({station}: AlertDeleteProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const closeDialog = () => {
@@ -34,8 +35,8 @@ function DeleteDialog({association}: AlertDeleteProps) {
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete <strong>{association.name + " "}</strong>
-            association and remove the data from the servers.
+            This action cannot be undone. This will permanently delete <strong>{station.name + " "}</strong>
+            station and remove the data from the servers.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
@@ -45,8 +46,8 @@ function DeleteDialog({association}: AlertDeleteProps) {
           </AlertDialogCancel>
           <AlertDialogAction>
             <PrimaryLink
-              href={route("all-associations.destroy", {
-                all_association: association.id,
+              href={route("all-stations.destroy", {
+                all_station: station.id,
               })}
               method={"delete"}
               onSuccess={closeDialog} // Close dialog after deletion
@@ -60,4 +61,4 @@ function DeleteDialog({association}: AlertDeleteProps) {
   )
 }
 
-export default DeleteDialog
+export default DeleteAlert

@@ -100,7 +100,7 @@ function Index({users, queryParams={}, success}: IndexProps) {
                         </div>
                       </div>
                     </TableHead>
-                    <TableHead className='w-[500px]' onClick={()=> sortChanged('name')}>
+                    <TableHead className='w-[200px]' onClick={()=> sortChanged('name')}>
                       <div className='flex items-center gap-x-1'>
                         <span className='text-nowrap'>Name</span>
                         <div className=' hover:cursor-pointer'>

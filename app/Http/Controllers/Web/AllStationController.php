@@ -28,6 +28,7 @@ class AllStationController extends Controller
         return Inertia::render('all-stations/Index',[
             'stations' => AllStationIndexResource::collection($stations),
             'queryParams' => request()->query() ?: null,
+            'success' => session('success'),
         ]);
     }
 
@@ -38,6 +39,8 @@ class AllStationController extends Controller
         ]);
 
         $station = Station::create($request->all());
+        $station->created_by = auth()->id();
+        $station->save();
         $name = $station->name;
 
         return redirect()->route('all-stations.index')->with('success','A station called '.$name.' is created successfully');

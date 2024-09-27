@@ -7,17 +7,17 @@ import { Button } from "@/Components/ui/button";
 import { useForm } from "@inertiajs/react";
 import { FormEventHandler, useState } from "react";
 
-interface Association{
+interface Station{
   id: number,
   name: string,
-  establishment_date: string,
+  location: string,
 }
 
 interface AlertUpdateProps{
-  association: Association
+  station: Station
 }
 
-function EditDialog({association}: AlertUpdateProps) {
+function UpdateAlert({station}: AlertUpdateProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const closeDialog = () => {
@@ -25,13 +25,13 @@ function EditDialog({association}: AlertUpdateProps) {
   };
 
   const {data, setData, put, processing, errors, reset} = useForm({
-    name: association.name,
-    establishment_date: association.establishment_date,
+    name: station.name,
+    location: station.location,
   })
 
   const submit: FormEventHandler = (e)=>{
     e.preventDefault()
-    put(route('all-associations.update', association.id),{
+    put(route('all-stations.update', station.id),{
       onSuccess:()=>{
         closeDialog()
       },
@@ -51,7 +51,7 @@ function EditDialog({association}: AlertUpdateProps) {
 
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Update an Association</AlertDialogTitle>
+          <AlertDialogTitle>Update a Station</AlertDialogTitle>
           <AlertDialogDescription>
             Fill all the data required
           </AlertDialogDescription>
@@ -62,7 +62,7 @@ function EditDialog({association}: AlertUpdateProps) {
             <div className="mb-4">
               <InputLabel 
                 htmlFor='name'
-                value='Station Name*'
+                value='Station Name'
               />
               <TextInput 
                 id="name"
@@ -76,20 +76,21 @@ function EditDialog({association}: AlertUpdateProps) {
             </div>
 
             <div className="mb-4">
+
               <InputLabel 
-                htmlFor='establishment_date'
-                value='Establishement Date*'
+                htmlFor='location'
+                value='Station Location'
               />
+
               <TextInput 
-                id="establishment_date"
-                name="establishment_date"
-                value={data.establishment_date}
-                onChange={(e)=> setData('establishment_date', e.target.value)}
-                type="date"
+                id="location"
+                name="location"
+                value={data.location}
+                onChange={(e)=> setData('location', e.target.value)}
                 required
               />
 
-              <InputError message={errors.establishment_date}  className="mt-2"/>
+              <InputError message={errors.location}  className="mt-2"/>
             </div>
 
             <div className="mt-6 flex gap-x-2">
@@ -115,4 +116,4 @@ function EditDialog({association}: AlertUpdateProps) {
   )
 }
 
-export default EditDialog
+export default UpdateAlert

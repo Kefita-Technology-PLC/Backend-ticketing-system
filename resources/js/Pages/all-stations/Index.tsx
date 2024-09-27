@@ -17,6 +17,10 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import Pagination from "@/Components/Pagination";
+import { CreateAlert } from "./CreateAlert";
+import { toast } from "sonner";
+import UpdateAlert from "./UpdateAlert";
+import DeleteAlert from "./DeleteAlert";
 
 dayjs.extend(relativeTime);
 
@@ -44,8 +48,11 @@ interface IndexProps {
 
 function Index({stations, queryParams = {}, success}: IndexProps) {
 
-  console.log(stations)
+  
   queryParams = queryParams || {}
+  if(success){
+    toast(success)
+  }
 
   const searchFieldChanged = (name: string, value: any) => {
     if (value) {
@@ -76,7 +83,7 @@ function Index({stations, queryParams = {}, success}: IndexProps) {
     <AuthenticatedLayoutSuper header={
       <div className='flex justify-between'>
       <h1>Station</h1>
-        <PrimaryLink href={route('all-stations.create')}>Add Station</PrimaryLink>
+        <CreateAlert />
     </div>
     }>
       <Head title='Stations' />
@@ -123,8 +130,8 @@ function Index({stations, queryParams = {}, success}: IndexProps) {
                     </div>
                   </TableHead>
                   <TableHead>Edited</TableHead>
-                  <TableHead>Created At</TableHead>
-                  <TableHead>Updated At</TableHead>
+                  <TableHead className=" text-nowrap">Created At</TableHead>
+                  <TableHead className=" text-nowrap">Updated At</TableHead>
                   <TableHead>Creator</TableHead>
                   <TableHead>Updater</TableHead>
                   <TableHead>Actions</TableHead>
@@ -159,22 +166,37 @@ function Index({stations, queryParams = {}, success}: IndexProps) {
                 {stations.data.map((station, index)=>(
                   <TableRow key={station.id}>
                     <TableCell>{index + 1}</TableCell>
-                    <TableCell>{station.name}</TableCell>
-                    <TableCell>{station.location}</TableCell>
-                    <TableCell className=' text-nowrap'>
+                    <TableCell className=" text-nowrap">{station.name}</TableCell>
+                    <TableCell className=" text-nowrap">{station.location}</TableCell>
+                    <TableCell className='text-nowrap'>
                         {station.created_at == station.updated_at ? (
                           'No'
                         ) : (
-                          <span className="flex items-center">
-                            Edited <FontAwesomeIcon icon={faCheckCircle} className="w-4 ml-1" /> <small className='mx-1'> &middot;</small>
-                            {dayjs(station.updated_at).fromNow()}
-                          </span>
+                          <div className="flex flex-col">
+                            <span>Edited <FontAwesomeIcon icon={faCheckCircle} className="w-4 ml-1" /></span>
+                            <span>({dayjs(station.updated_at).fromNow()})</span>
+                          </div>
                         )}
                     </TableCell>
-                    <TableCell>{dayjs(station.created_at).fromNow()}</TableCell>
-                    <TableCell>{dayjs(station.updated_at).fromNow()}</TableCell>
-                    <TableCell>{station.creator?.name}</TableCell>
-                    <TableCell>{station.updater?.name}</TableCell>
+                    <TableCell className=" text-nowrap ">
+                      <div className="flex flex-col items-center">
+                        <span>{new Date(station.created_at).toLocaleDateString()}</span>
+                        <span>({dayjs(station.created_at).fromNow()})</span>
+                      </div>
+                  </TableCell>
+
+                    <TableCell className=" text-nowrap">
+                      <div className="flex flex-col items-center">
+                        <span>{new Date(station.updated_at).toLocaleDateString()}</span>
+                        <span>({dayjs(station.updated_at).fromNow()})</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className=" text-nowrap">{station.creator?.name||'N/A'}</TableCell>
+                    <TableCell className=" text-nowrap">{station.updater?.name||'N/A'}</TableCell>
+                    <TableCell className=" text-nowrap flex items-center gap-x-3">
+                      <UpdateAlert station={station} />
+                      <DeleteAlert station={station} />
+                    </TableCell>
 
                   </TableRow>
                 ))}

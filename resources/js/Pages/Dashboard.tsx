@@ -1,9 +1,10 @@
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 
 export default function Dashboard({ user }: { user: any }) {
     return (
-        <Authenticated
+        <AuthenticatedLayout
             header={<h2 className="font-semibold text-xl text-foreground leading-tight">Dashboard</h2>}
         >
             <Head title="Dashboard" />
@@ -15,6 +16,6 @@ export default function Dashboard({ user }: { user: any }) {
                     </div>
                 </div>
             </div>
-        </Authenticated>
+        </AuthenticatedLayout>
     );
 }

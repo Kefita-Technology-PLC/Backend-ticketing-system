@@ -23,6 +23,7 @@ import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { useEffect } from 'react';
 import {toast} from 'sonner'
 import Dropdown from '@/Components/Dropdown';
+import { AlertDelete } from './AlertDelete';
 
 dayjs.extend(relativeTime);
 
@@ -35,6 +36,7 @@ interface Vehicle {
   car_type: string;
   created_at: string;
   updated_at: string;
+  station_name: string
   creator?: { name: string };
   updater?: { name: string };
 }
@@ -55,7 +57,9 @@ function Index({ vehicles, queryParams = {}, success}: IndexProps) {
 
   queryParams = queryParams || {}
 
-  console.log('prop',success)
+  if(success){
+    toast(success)
+  }
 
   const searchFieldChanged = (name: string, value: any) => {
     if (value) {
@@ -136,6 +140,7 @@ function Index({ vehicles, queryParams = {}, success}: IndexProps) {
                         </div>
                       </div>
                     </TableHead>
+                    <TableHead>Station</TableHead>
                     <TableHead>Level</TableHead>
                     <TableHead>Car Type</TableHead>
                     <TableHead onClick={()=> sortChanged('created_at')}>
@@ -168,6 +173,7 @@ function Index({ vehicles, queryParams = {}, success}: IndexProps) {
                         onKeyDown={(e) => onKeyDown('plate_number', e)}
                       />
                     </TableHead>
+                    <TableHead></TableHead>
                     <TableHead>
                       <SelectInput
                         value={queryParams.level}
@@ -212,6 +218,7 @@ function Index({ vehicles, queryParams = {}, success}: IndexProps) {
                           {vehicle.region + '-' + vehicle.plate_number}
                         </Link>
                       </TableCell>
+                      <TableCell>{vehicle.station_name}</TableCell>
                       <TableCell>{vehicle.level ? vehicle.level.replace('_', ' ') : ''}</TableCell>
                       <TableCell>{vehicle.car_type ? vehicle.car_type.replace('_', ' ') : ''}</TableCell>
                       <TableCell className='text-nowrap'>{dayjs(vehicle.created_at).fromNow()}</TableCell>
@@ -227,7 +234,7 @@ function Index({ vehicles, queryParams = {}, success}: IndexProps) {
                       </TableCell>
                       <TableCell className='text-nowrap'>{vehicle.creator?.name || 'N/A'}</TableCell>
                       <TableCell className='text-nowrap'>{vehicle.updater?.name || 'N/A'}</TableCell>
-                      <TableCell>
+                      <TableCell className='flex items-center gap-x-2'>
                         <Dropdown>
                           <Dropdown.Trigger>
                             <button>
@@ -245,11 +252,12 @@ function Index({ vehicles, queryParams = {}, success}: IndexProps) {
                             >
                               Edit
                             </Dropdown.Link>
-                            <Dropdown.Link as='button' href={route('vehicles.destroy',vehicle.id )} method="delete">
+                            {/* <Dropdown.Link as='button' href={route('vehicles.destroy',vehicle.id )} method="delete">
                               Delete
-                            </Dropdown.Link>
+                            </Dropdown.Link> */}
                           </Dropdown.Content>
                         </Dropdown>
+                        <AlertDelete vehicle={vehicle} />
                       </TableCell>
                     </TableRow>
                   ))}

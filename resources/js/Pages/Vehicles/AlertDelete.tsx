@@ -1,21 +1,22 @@
+
 import PrimaryLink from "@/Components/PrimaryLink";
 import { useState } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/Components/ui/dialog";
 import { Button } from "@/Components/ui/button";
-import { Link } from "@inertiajs/react";
-import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/Components/ui/alert-dialog";
-import { AlertDialogAction, AlertDialogCancel } from "@radix-ui/react-alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/Components/ui/alert-dialog";
 
-interface User {
+
+interface Vehicle {
   id: number;
-  name: string;
+  plate_number: string;
+  code: number,
+  region: string,
 }
 
 interface AlertDeleteProps {
-  user: User;
+  vehicle: Vehicle;
 }
 
-export function AlertDelete({ user }: AlertDeleteProps) {
+export function AlertDelete({ vehicle }: AlertDeleteProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const closeDialog = () => {
@@ -25,7 +26,7 @@ export function AlertDelete({ user }: AlertDeleteProps) {
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant={"outline"} className="bg-red-600 text-white p-2" onClick={() => setIsOpen(true)}>
+        <Button variant={"outline"} className="bg-red-600 text-white p-2 text-xs" onClick={() => setIsOpen(true)}>
           Delete
         </Button>
       </AlertDialogTrigger>
@@ -34,8 +35,8 @@ export function AlertDelete({ user }: AlertDeleteProps) {
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete <strong>{user.name + " "}</strong>
-            account and remove your data from the servers.
+            This action cannot be undone. This will permanently delete <strong>{vehicle.plate_number + " "}</strong>
+            vehicle and remove the data from the servers.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
@@ -45,8 +46,8 @@ export function AlertDelete({ user }: AlertDeleteProps) {
           </AlertDialogCancel>
           <AlertDialogAction>
             <PrimaryLink
-              href={route("user-managements.destroy", {
-                user_management: user.id,
+              href={route("vehicles.destroy", {
+                vehicle: vehicle.id,
               })}
               method={"delete"}
               onSuccess={closeDialog} // Close dialog after deletion

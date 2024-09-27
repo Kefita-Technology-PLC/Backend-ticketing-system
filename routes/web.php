@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\VehicleInStationController;
 use App\Http\Controllers\Web\AllAssociationController;
 use App\Http\Controllers\Web\AllStationController;
 use App\Http\Controllers\Web\DashboardController;
@@ -50,6 +51,10 @@ Route::middleware(['auth','role:super admin'])->group(function(){
     Route::resource('all-associations', AllAssociationController::class);
     Route::resource('user-managements', UserManagementController::class);
     Route::resource('vehicles', VehicleController::class);
+});
+
+Route::middleware(['auth','role:admin|super admin'])->group(function () {
+    Route::resource('vehicles-stations', VehicleInStationController::class);
 });
 
 require __DIR__.'/auth.php';

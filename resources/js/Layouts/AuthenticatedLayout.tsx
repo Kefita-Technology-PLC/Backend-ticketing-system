@@ -6,7 +6,8 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
 import { ModeToggle } from '@/Components/mode-toggle';
 
-export default function Authenticated({ header, children }: PropsWithChildren<{ header?: ReactNode }>) {
+
+export default function AuthenticatedLayout({ header, children }: PropsWithChildren<{ header?: ReactNode }>) {
     const user = usePage().props.auth.user;
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
@@ -26,7 +27,7 @@ export default function Authenticated({ header, children }: PropsWithChildren<{ 
                                 <NavLink href={route('dashboard')} active={route().current('dashboard')}>
                                     Dashboard
                                 </NavLink>
-                                <NavLink href={route('vehicles.index')} active={route().current('vehicles.index')}>
+                                <NavLink href={route('vehicles-stations.index')} active={route().current('vehicles-stations.index')}>
                                     Vehicles
                                 </NavLink>
                             </div>
@@ -73,7 +74,7 @@ export default function Authenticated({ header, children }: PropsWithChildren<{ 
                         <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
                             Dashboard
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink href={route('vehicles.index')} active={route().current('vehicles.index')}>
+                        <ResponsiveNavLink href={route('vehicles-stations.index')} active={route().current('vehicles-stations.index')}>
                             Vehicles
                         </ResponsiveNavLink>
                     </div>

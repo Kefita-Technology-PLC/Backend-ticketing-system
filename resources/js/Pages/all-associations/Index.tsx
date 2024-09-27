@@ -13,10 +13,15 @@ import {
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import TextInput from "@/Components/TextInput";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime';
 import Pagination from "@/Components/Pagination";
+import CreateAlert from "./CreateAlert";
+import EditDialog from "./EditDialog";
+import DeleteDialog from "./DeleteDialog";
+import { toast } from "sonner";
+import EditedChecker from "@/Components/EditedChecker";
 
 
 dayjs.extend(relativeTime)
@@ -47,9 +52,10 @@ interface IndexProps {
 
 function Index({ associations, queryParams = {}, success }: IndexProps) {
 
-  console.log(associations)
   queryParams = queryParams || {}
-
+  if(success){
+    toast(success)
+  }
   const searchFieldChanged = (name: string, value: any) => {
     if (value) {
       queryParams[name] = value;
@@ -79,7 +85,7 @@ function Index({ associations, queryParams = {}, success }: IndexProps) {
       header={
         <div className="flex justify-between">
           <h1>Associations</h1>
-          <PrimaryLink href={route('all-associations.create')}>Add Associations</PrimaryLink>
+          <CreateAlert />
         </div>
       }
     >
@@ -220,22 +226,24 @@ function Index({ associations, queryParams = {}, success }: IndexProps) {
                   <TableRow key={association.id}>
                     <TableCell className=" text-nowrap">{index + 1}</TableCell>
                     <TableCell className=" text-nowrap">{association.name}</TableCell>
-                    <TableCell className=" text-nowrap">{dayjs(association.establishment_date).fromNow()}</TableCell>
+                    <TableCell className=" text-nowrap">
+                      <div className="flex flex-col items-center">
+                        <span>{new Date(association.establishment_date).toLocaleDateString() }</span>
+                        <span>({dayjs(association.establishment_date).fromNow()})</span>
+                      </div></TableCell>
                     <TableCell className=' text-nowrap'>
-                      {association.created_at == association.updated_at ? (
-                        'No'
-                      ) : (
-                        <span className="flex items-center">
-                          Edited <FontAwesomeIcon icon={faCheckCircle} className="w-4 ml-1" /> <small className='mx-1'> &middot;</small>
-                          {dayjs(association.updated_at).fromNow()}
-                        </span>
-                      )}
+                      <EditedChecker thing={association} />
                     </TableCell>
                     <TableCell className=" text-nowrap">{ dayjs(association.created_at).fromNow()}</TableCell>
                     <TableCell className=" text-nowrap">{dayjs(association.updated_at).fromNow()}</TableCell>
                     <TableCell className=" text-nowrap">{association.creator?.name}</TableCell>
                     <TableCell className=" text-nowrap">{association.updater?.name}</TableCell>
-                    <TableCell>{''}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-x-2">
+                        <EditDialog association={association} />
+                        <DeleteDialog association={association} />
+                      </div>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

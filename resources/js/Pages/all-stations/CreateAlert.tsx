@@ -1,42 +1,34 @@
-import InputError from "@/Components/InputError";
-import InputLabel from "@/Components/InputLabel";
-import PrimaryButton from "@/Components/PrimaryButton";
-import TextInput from "@/Components/TextInput";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/Components/ui/alert-dialog";
+import { FormEventHandler, useState } from "react";
 import { Button } from "@/Components/ui/button";
 import { useForm } from "@inertiajs/react";
-import { FormEventHandler, useState } from "react";
+import PrimaryButton from "@/Components/PrimaryButton";
+import TextInput from "@/Components/TextInput";
+import InputError from "@/Components/InputError";
+import InputLabel from "@/Components/InputLabel";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/Components/ui/alert-dialog";
 
-interface Association{
-  id: number,
-  name: string,
-  establishment_date: string,
-}
 
-interface AlertUpdateProps{
-  association: Association
-}
-
-function EditDialog({association}: AlertUpdateProps) {
+export function CreateAlert() {
   const [isOpen, setIsOpen] = useState(false);
 
   const closeDialog = () => {
     setIsOpen(false);
   };
 
-  const {data, setData, put, processing, errors, reset} = useForm({
-    name: association.name,
-    establishment_date: association.establishment_date,
+  const {data, setData, post, processing, errors, reset} = useForm({
+    name: '',
+    location: '',
   })
 
-  const submit: FormEventHandler = (e)=>{
+  const submit: FormEventHandler = (e) =>{
     e.preventDefault()
-    put(route('all-associations.update', association.id),{
-      onSuccess:()=>{
+    post(route('all-stations.store'),{
+      onSuccess: ()=>{
+        // toast('A vehicle has been created')
         closeDialog()
       },
-      onError:(e)=>{
-        console.log('Validation errors: ', e)
+      onError: (errors)=>{
+        console.log('Validation errors:', errors)
       }
     })
   }
@@ -44,14 +36,14 @@ function EditDialog({association}: AlertUpdateProps) {
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant={"outline"} className="text-xs" onClick={() => setIsOpen(true)}>
-          Update
+        <Button variant={"outline"} className="p-2 text-xs" onClick={() => setIsOpen(true)}>
+          Add Station
         </Button>
       </AlertDialogTrigger>
 
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Update an Association</AlertDialogTitle>
+          <AlertDialogTitle>Create a Station</AlertDialogTitle>
           <AlertDialogDescription>
             Fill all the data required
           </AlertDialogDescription>
@@ -62,7 +54,7 @@ function EditDialog({association}: AlertUpdateProps) {
             <div className="mb-4">
               <InputLabel 
                 htmlFor='name'
-                value='Station Name*'
+                value='Station Name'
               />
               <TextInput 
                 id="name"
@@ -76,20 +68,21 @@ function EditDialog({association}: AlertUpdateProps) {
             </div>
 
             <div className="mb-4">
+
               <InputLabel 
-                htmlFor='establishment_date'
-                value='Establishement Date*'
+                htmlFor='location'
+                value='Station Location'
               />
+
               <TextInput 
-                id="establishment_date"
-                name="establishment_date"
-                value={data.establishment_date}
-                onChange={(e)=> setData('establishment_date', e.target.value)}
-                type="date"
+                id="location"
+                name="location"
+                value={data.location}
+                onChange={(e)=> setData('location', e.target.value)}
                 required
               />
 
-              <InputError message={errors.establishment_date}  className="mt-2"/>
+              <InputError message={errors.location}  className="mt-2"/>
             </div>
 
             <div className="mt-6 flex gap-x-2">
@@ -102,7 +95,7 @@ function EditDialog({association}: AlertUpdateProps) {
                   type="submit"
                 // Close dialog after deletion
                 >
-                  Update
+                  Add Station
                 </PrimaryButton>
               </AlertDialogAction>
 
@@ -112,7 +105,5 @@ function EditDialog({association}: AlertUpdateProps) {
  
       </AlertDialogContent>
     </AlertDialog>
-  )
+  );
 }
-
-export default EditDialog

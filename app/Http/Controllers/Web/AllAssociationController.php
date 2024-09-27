@@ -25,16 +25,19 @@ class AllAssociationController extends Controller
         return Inertia::render('all-associations/Index',[
             'associations' => AllAssociationIndexResource::collection($associations),
             'queryParams' => request()->query() ?: null,
+            'success' => session('success'),
         ]);
     }
 
     public function store(Request $request){
         $validate = $request->validate([
             'name'=> 'required|max:150',
-            'establishment_data' => '',
+            'establishment_date' => '',
         ]);
 
         $association = Association::create($validate);
+        $association->created_by = auth()->id();
+        $association->save();
         $name = $association->name;
         return to_route('all-associations.index')->with('success', 'An association called '.$name.' created successfully');
     }
@@ -44,10 +47,13 @@ class AllAssociationController extends Controller
 
         $validate = $request->validate([
             'name'=> 'required|max:150',
-            'establishment_data' => '',
+            'establishment_date' => '',
         ]);
 
         $association->update($validate);
+        $association->updated_by = auth()->id();
+        $association->save();
+        
         $name = $association->name;
 
         return to_route('all-associations.index')->with('success', 'An association called '.$name.' is updated successfully');
