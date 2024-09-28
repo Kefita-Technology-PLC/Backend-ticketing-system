@@ -20,8 +20,8 @@ class StationResource extends JsonResource
             'location' => $this->location,
             'created_at' => $this->created_at,
             'updated_at'=> $this->updated_at,
-            'created_by' => new UserResource($this->creator),
-            'updated_by' => new UserResource($this->updator),
+            'created_by' => new UserNameAndIdResource($this->creator),
+            'updated_by' => new UserNameAndIdResource($this->updator),
         ];
     }
 }

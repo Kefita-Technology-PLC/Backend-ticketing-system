@@ -5,6 +5,7 @@ import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
 import { ModeToggle } from '@/Components/mode-toggle';
+import { Toaster } from '@/Components/ui/sonner';
 
 
 export default function AuthenticatedLayout({ header, children }: PropsWithChildren<{ header?: ReactNode }>) {
@@ -102,6 +103,7 @@ export default function AuthenticatedLayout({ header, children }: PropsWithChild
             )}
 
             <main>{children}</main>
+            <Toaster />
         </div>
     );
 }

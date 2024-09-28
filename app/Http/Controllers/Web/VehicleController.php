@@ -76,7 +76,7 @@ class VehicleController extends Controller
         'code' => ['required','in:1,2,3'],
         'region' => ['required','in:TG,AF,AA,SN,DR,SD,AM,OR,SM,BN,HR,SW,ET'],
         'plate_number' => [new UniqueVehicleCombination($request->plate_number, $request->code, $request->region)]
-    ]);
+      ]);
 
       // dd($attrs);
       $attrs['created_by'] = Auth::user()->id;
@@ -138,12 +138,11 @@ class VehicleController extends Controller
      */
     public function destroy(Vehicle $vehicle)
     {
-      
-        $plateNumber = $vehicle->plate_number;
-        $code = $vehicle->code;
-        $region = $vehicle->region;
-        $vehicle->delete();
+      $plateNumber = $vehicle->plate_number;
+      $code = $vehicle->code;
+      $region = $vehicle->region;
+      $vehicle->delete();
 
-        return to_route('vehicles.index')->with('success','Vehicle '.$region.'-'.$code.'-'.$plateNumber.' Deleted Successfully');
+      return to_route('vehicles.index')->with('success','Vehicle '.$region.'-'.$code.'-'.$plateNumber.' Deleted Successfully');
     }
 }

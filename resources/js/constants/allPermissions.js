@@ -11,4 +11,4 @@ export const allPermissions = [
   { name: 'add tariffs' },
   { name: 'update tariffs' },
   { name: 'delete tariffs' },
-];
+]

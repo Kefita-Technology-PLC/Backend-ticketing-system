@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VehicleInStationController;
 use App\Http\Controllers\Web\AllAssociationController;
 use App\Http\Controllers\Web\AllStationController;
+use App\Http\Controllers\Web\AssociationInStationController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\StationAndAssociationFetch;
 use App\Http\Controllers\Web\UserManagementController;
@@ -55,6 +56,7 @@ Route::middleware(['auth','role:super admin'])->group(function(){
 
 Route::middleware(['auth','role:admin|super admin'])->group(function () {
     Route::resource('vehicles-stations', VehicleInStationController::class);
+    Route::resource('associations-stations', AllAssociationController::class);
 });
 
 require __DIR__.'/auth.php';
