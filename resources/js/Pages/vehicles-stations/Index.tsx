@@ -23,7 +23,7 @@ import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import {toast} from 'sonner'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import PermissionAlert from '@/Components/PermissionAlert';
-import { Divide } from 'lucide-react';
+
 
 const EditAlert = lazy(()=>import('./EditAlert'))
 const DeleteAlert = lazy(() => import('./DeleteAlert'));

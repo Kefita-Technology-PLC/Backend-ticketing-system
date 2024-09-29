@@ -3,6 +3,7 @@ import { Head } from '@inertiajs/react';
 import { VehicleChart } from '../shadcn-components/ChartPie';
 import { TicketSalesChart } from '../shadcn-components/LineGraph';
 import { RadialChart } from '../shadcn-components/RadialChart';
+import {  BarChartData } from '../shadcn-components/BarChart';
 
 export default function Dashboard({  user,
     vehicleData, vehicleChartConfig,
@@ -26,7 +27,9 @@ export default function Dashboard({  user,
                         <div className="p-6 text-gray-900">
                         <VehicleChart vehicleData={vehicleData} vehicleChartConfig={vehicleChartConfig}/>
                         <TicketSalesChart initialData={initialData} />
+                        <BarChartData backendData={initialData}  />
                         <RadialChart />
+
                         </div>
                     </div>
                 </div>

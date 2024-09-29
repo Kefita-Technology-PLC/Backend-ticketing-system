@@ -40,6 +40,8 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export function TicketSalesChart({ initialData }: Props) {
+
+  // console.log(initialData)
   const [chartData, setChartData] = React.useState<TicketSalesData[]>(initialData)
 
   console.log(chartData)

@@ -35,7 +35,18 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function RadialChart() {
+
+interface Backend{
+  stations : number
+}
+
+interface RadialChartProp{
+  backendData: Backend
+}
+
+export function RadialChart({backendData}: RadialChartProp) {
+
+
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">

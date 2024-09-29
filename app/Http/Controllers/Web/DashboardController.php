@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Web\UserResource;
+use App\Models\Station;
 use App\Models\Ticket;
 use App\Models\Vehicle;
 use Carbon\Carbon;
@@ -38,36 +39,39 @@ class DashboardController extends Controller
                 });
         });
 
-        // Create an array of all months for the last 5 months
-        $months = [];
-        for ($i = 0; $i < 5; $i++) {
-            $months[] = Carbon::now()->subMonths($i)->format('F'); // Month name
-        }
+        $StationCount = Station::count();
+        $associationCount = Station::count();
+        
 
-        // Fetching ticket sales data for the last 5 months
-        $salesData = Ticket::select(DB::raw("strftime('%Y-%m', created_at) as month"), DB::raw('SUM(price) as totalSales'))
-            ->whereBetween('created_at', [Carbon::now()->subMonths(5), Carbon::now()])
-            ->groupBy('month')
-            ->get()
-            ->keyBy('month') // Change to key by month for easy lookup
-            ->toArray();
+    // Create an array of all months for the last 5 months (format 'Y-m' for lookup)
+    $months = [];
+    for ($i = 0; $i < 5; $i++) {
+        $months[] = Carbon::now()->subMonths($i)->format('Y-m'); // 'Y-m' for proper lookup
+    }
 
-        // echo($salesData);
+    // Fetching ticket sales data for the last 5 months
+    $salesData = Ticket::select(DB::raw("strftime('%Y-%m', created_at) as month"), DB::raw('SUM(price) as totalSales'), DB::raw('COUNT(*) as ticketCount'))
+    ->whereBetween('created_at', [Carbon::now()->subMonths(5), Carbon::now()])
+    ->groupBy('month')
+    ->get()
+    ->keyBy('month')
+    ->toArray();
 
-        // Prepare the final initialData with months and sales
-        $initialData = [];
-        foreach ($months as $month) {
-            $monthKey = Carbon::now()->subMonths(5)->format('Y-m'); // Adjust the format for key lookup
-            $totalSales = $salesData[$monthKey] ?? ['totalSales' => 0]; // Use 0 if no sales data exists
+    // Prepare the final initialData with months and sales
+    $initialData = [];
+    foreach ($months as $month) {
+        $totalSales = $salesData[$month]['totalSales'] ?? 0; // Use 0 if no sales data exists
+        $ticketCount = $salesData[$month]['ticketCount'] ?? 0; // Use 0 if no ticket data exists
+    
+        $initialData[] = [
+            'month' => Carbon::parse($month)->format('F'), // Convert 'Y-m' back to full month name
+            'totalSales' => (float) $totalSales,
+            'ticketCount' => (int) $ticketCount, // Include the ticket count
+        ];
+    }
 
-            $initialData[] = [
-                'month' => $month,
-                'totalSales' => (float) $totalSales['totalSales'],
-            ];
+        // dd($initialData);
 
-            // Move to the next month
-            Carbon::now()->subMonth(); // Adjust for the next month in the loop
-        }
 
         if($request->user()->hasRole('admin')){
             return Inertia::render('Dashboard',[ 'user' => new UserResource(Auth::user()) ]);
@@ -86,6 +90,8 @@ class DashboardController extends Controller
                     'bus' => ['label' => 'Bus', 'color' => 'hsl(var(--chart-5))']
                 ],
                 'initialData' => $initialData,
+                'stations' => $StationCount,
+                'associatons' => $associationCount,
             ]);
         }
     }

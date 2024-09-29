@@ -25,7 +25,6 @@ class VehicleInStationController extends Controller
             $query->where('level', request('level'));
             // dd($query);
           }
-    
         if (request('plate_number')){
           $query->where('plate_number','like','%'. request('plate_number')  .'%');
         }

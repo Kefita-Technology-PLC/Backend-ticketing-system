@@ -56,7 +56,7 @@ Route::middleware(['auth','role:super admin'])->group(function(){
 
 Route::middleware(['auth','role:admin|super admin'])->group(function () {
     Route::resource('vehicles-stations', VehicleInStationController::class);
-    Route::resource('associations-stations', AllAssociationController::class);
+    Route::resource('associations-stations', AssociationInStationController::class);
 });
 
 require __DIR__.'/auth.php';

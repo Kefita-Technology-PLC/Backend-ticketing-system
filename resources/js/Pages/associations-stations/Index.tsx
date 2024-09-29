@@ -12,15 +12,18 @@ import {
 } from '@/Components/ui/table';
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import TextInput from "@/Components/TextInput";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime';
 import Pagination from "@/Components/Pagination";
-
 import { toast } from "sonner";
 import EditedChecker from "@/Components/EditedChecker";
+import { lazy, Suspense } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import PermissionAlert from "@/Components/PermissionAlert";
+
+const EditDialog = lazy(() => import('./EditDialog'))
+const DeleteDialog = lazy(() => import('./DeleteDialog'))
+const CreateAlert = lazy(() => import('./CreateAlert'))
 
 
 dayjs.extend(relativeTime)
@@ -46,21 +49,36 @@ interface IndexProps {
   associations: AssociationResponse,
   queryParams?: any,
   success: string,
+  stationName?: string,
+  addAssociation: boolean,
+  updateAssociation: boolean,
+  deleteAssociation: boolean,
+  
 }
 
-function Index({ associations, queryParams = {}, success }: IndexProps) {
+
+function Index({ 
+  associations, 
+  queryParams = {}, 
+  success, 
+  addAssociation, 
+  updateAssociation, 
+  deleteAssociation,
+  stationName 
+  }: IndexProps) {
 
   queryParams = queryParams || {}
-  if(success){
+  if (success) {
     toast(success)
   }
+
   const searchFieldChanged = (name: string, value: any) => {
     if (value) {
       queryParams[name] = value;
     } else {
       delete queryParams[name];
     }
-    router.get(route('all-associations.index'), queryParams);
+    router.get(route('associations-stations.index'), queryParams);
   };
 
   const sortChanged = (name: string) => {
@@ -70,7 +88,7 @@ function Index({ associations, queryParams = {}, success }: IndexProps) {
       queryParams.sort_field = name;
       queryParams.sort_direction = 'asc';
     }
-    router.get(route('all-associations.index'), queryParams);
+    router.get(route('associations-stations.index'), queryParams);
   };
 
   const onKeyDown = (name: string, e: any) => {
@@ -82,8 +100,16 @@ function Index({ associations, queryParams = {}, success }: IndexProps) {
     <AuthenticatedLayout
       header={
         <div className="flex justify-between">
-          <h1>Associations</h1>
-          {/* <CreateAlert /> */}
+          <div className='flex flex-col'>
+            <strong className=' capitalize text-xl'>{stationName?.replace('-', ' ')}</strong>
+            <h1>Associations</h1>
+          </div>
+          {
+            addAssociation ? <Suspense  fallback={<div>Loading...</div>}>
+            <CreateAlert />
+          </Suspense> : <PermissionAlert children={'Add Association'} permission="add association" />
+          }
+
         </div>
       }
     >
@@ -226,20 +252,34 @@ function Index({ associations, queryParams = {}, success }: IndexProps) {
                     <TableCell className=" text-nowrap">{association.name}</TableCell>
                     <TableCell className=" text-nowrap">
                       <div className="flex flex-col items-center">
-                        <span>{new Date(association.establishment_date).toLocaleDateString() }</span>
+                        <span>{new Date(association.establishment_date).toLocaleDateString()}</span>
                         <span>({dayjs(association.establishment_date).fromNow()})</span>
                       </div></TableCell>
                     <TableCell className=' text-nowrap'>
                       <EditedChecker thing={association} />
                     </TableCell>
-                    <TableCell className=" text-nowrap">{ dayjs(association.created_at).fromNow()}</TableCell>
+                    <TableCell className=" text-nowrap">{dayjs(association.created_at).fromNow()}</TableCell>
                     <TableCell className=" text-nowrap">{dayjs(association.updated_at).fromNow()}</TableCell>
                     <TableCell className=" text-nowrap">{association.creator?.name}</TableCell>
                     <TableCell className=" text-nowrap">{association.updater?.name}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-x-2">
-                        {/* <EditDialog association={association} />
-                        <DeleteDialog association={association} /> */}
+                        {
+                          updateAssociation ?                         <Suspense fallback={<div>Loading...</div>}>
+                            <EditDialog association={association} />
+                          </Suspense> 
+                            :
+                          <PermissionAlert children={'Update'} permission="update association" />
+                        }
+                        {
+                          deleteAssociation ?   
+                          <Suspense fallback={<div>Loading...</div>}>
+                            <DeleteDialog association={association} />
+                          </Suspense> 
+                            : 
+                          <PermissionAlert children={'Delete'} permission="delete association" className="bg-red-500 text-white" />
+                        }
+                        
                       </div>
                     </TableCell>
                   </TableRow>

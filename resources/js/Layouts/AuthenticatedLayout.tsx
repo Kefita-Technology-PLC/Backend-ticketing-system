@@ -31,6 +31,9 @@ export default function AuthenticatedLayout({ header, children }: PropsWithChild
                                 <NavLink href={route('vehicles-stations.index')} active={route().current('vehicles-stations.index')}>
                                     Vehicles
                                 </NavLink>
+                                <NavLink href={route('associations-stations.index')} active={route().current('associations-stations.index')}>
+                                    Associations
+                                </NavLink>
                             </div>
                         </div>
 
@@ -77,6 +80,9 @@ export default function AuthenticatedLayout({ header, children }: PropsWithChild
                         </ResponsiveNavLink>
                         <ResponsiveNavLink href={route('vehicles-stations.index')} active={route().current('vehicles-stations.index')}>
                             Vehicles
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('associations-stations.index')} active={route().current('associations-stations.index')}>
+                            Associations
                         </ResponsiveNavLink>
                     </div>
 
