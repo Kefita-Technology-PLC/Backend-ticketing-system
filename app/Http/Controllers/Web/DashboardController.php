@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Web\UserResource;
+use App\Http\Resources\Web\VehicleStationResource;
+use App\Models\Association;
 use App\Models\Station;
 use App\Models\Ticket;
 use App\Models\Vehicle;
@@ -17,6 +19,20 @@ use Inertia\Inertia;
 class DashboardController extends Controller
 {
     public function index(Request $request){
+
+        if($request->user()->hasRole('admin')){
+            $user = Auth::user();
+            $vehicles = Vehicle::where('station_id', $user->station_id)->count();
+            $vehiclesCreatedBy = Vehicle::where('created_by', Auth::user()->id)->count();
+            $associationsCreatedBy = Association::where('created_by', $user->id)->count();
+
+            return Inertia::render('Dashboard',[ 
+                'user' => new UserResource(Auth::user()),
+                'vehiclesCount'=> $vehicles,
+                'vehiclesCreatedBy' => $vehiclesCreatedBy,
+                'associationsCreatedBy' => $associationsCreatedBy,
+            ]);
+        }
       
         $vehicleData = Cache::remember('vehicleData', 60 * 10, function () {
             return Vehicle::select('car_type', DB::raw('count(*) as registeredVehicles'))
@@ -42,42 +58,34 @@ class DashboardController extends Controller
         $stationCount = Station::count();
         $associationCount = Station::count();
 
-        // dd($stationCount, $associationCount);
-        
-
-    // Create an array of all months for the last 5 months (format 'Y-m' for lookup)
-    $months = [];
-    for ($i = 0; $i < 5; $i++) {
-        $months[] = Carbon::now()->subMonths($i)->format('Y-m'); // 'Y-m' for proper lookup
-    }
-
-    // Fetching ticket sales data for the last 5 months
-    $salesData = Ticket::select(DB::raw("strftime('%Y-%m', created_at) as month"), DB::raw('SUM(price) as totalSales'), DB::raw('COUNT(*) as ticketCount'))
-    ->whereBetween('created_at', [Carbon::now()->subMonths(5), Carbon::now()])
-    ->groupBy('month')
-    ->get()
-    ->keyBy('month')
-    ->toArray();
-
-    // Prepare the final initialData with months and sales
-    $initialData = [];
-    foreach ($months as $month) {
-        $totalSales = $salesData[$month]['totalSales'] ?? 0; // Use 0 if no sales data exists
-        $ticketCount = $salesData[$month]['ticketCount'] ?? 0; // Use 0 if no ticket data exists
-    
-        $initialData[] = [
-            'month' => Carbon::parse($month)->format('F'), // Convert 'Y-m' back to full month name
-            'totalSales' => (float) $totalSales,
-            'ticketCount' => (int) $ticketCount, // Include the ticket count
-        ];
-    }
-
-        // dd($initialData);
-
-
-        if($request->user()->hasRole('admin')){
-            return Inertia::render('Dashboard',[ 'user' => new UserResource(Auth::user()) ]);
+        // Create an array of all months for the last 5 months (format 'Y-m' for lookup)
+        $months = [];
+        for ($i = 0; $i < 5; $i++) {
+            $months[] = Carbon::now()->subMonths($i)->format('Y-m'); // 'Y-m' for proper lookup
         }
+
+        // Fetching ticket sales data for the last 5 months
+        $salesData = Ticket::select(DB::raw("strftime('%Y-%m', created_at) as month"), DB::raw('SUM(price) as totalSales'), DB::raw('COUNT(*) as ticketCount'))
+        ->whereBetween('created_at', [Carbon::now()->subMonths(5), Carbon::now()])
+        ->groupBy('month')
+        ->get()
+        ->keyBy('month')
+        ->toArray();
+
+        // Prepare the final initialData with months and sales
+        $initialData = [];
+        foreach ($months as $month) {
+            $totalSales = $salesData[$month]['totalSales'] ?? 0; // Use 0 if no sales data exists
+            $ticketCount = $salesData[$month]['ticketCount'] ?? 0; // Use 0 if no ticket data exists
+        
+            $initialData[] = [
+                'month' => Carbon::parse($month)->format('F'), // Convert 'Y-m' back to full month name
+                'totalSales' => (float) $totalSales,
+                'ticketCount' => (int) $ticketCount, // Include the ticket count
+            ];
+        }
+
+
 
         if($request->user()->hasRole('super admin')){
             return Inertia::render('SuperAdmin/Dashboard', [

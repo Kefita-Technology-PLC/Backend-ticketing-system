@@ -54,11 +54,16 @@ Route::middleware(['auth','role:super admin'])->group(function(){
     Route::resource('user-managements', UserManagementController::class);
     Route::resource('vehicles', VehicleController::class);
     Route::resource('reports', ReportController::class);
+    Route::get('/export/csv', [ReportController::class, 'exportScv']);
+    Route::get('/export/excel', [ReportController::class, 'exportExcel']);
+
 });
 
 Route::middleware(['auth','role:admin|super admin'])->group(function () {
     Route::resource('vehicles-stations', VehicleInStationController::class);
     Route::resource('associations-stations', AssociationInStationController::class);
 });
+
+
 
 require __DIR__.'/auth.php';

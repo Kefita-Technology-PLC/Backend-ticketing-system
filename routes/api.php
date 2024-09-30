@@ -48,6 +48,10 @@ Route::post('reset-password', [NewPasswordController::class, 'reset']);
 Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
     Route::resource('stations', StationController::class)->middleware(['role:admin|super admin']);
 
+
+
+  
+
     Route::resource('associations', AssociationController::class)->middleware(['role:admin|super admin']);
 
     Route::resource('vehicles', VehicleController::class)->middleware(['role:admin|super admin']);
