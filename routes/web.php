@@ -7,6 +7,7 @@ use App\Http\Controllers\Web\AllAssociationController;
 use App\Http\Controllers\Web\AllStationController;
 use App\Http\Controllers\Web\AssociationInStationController;
 use App\Http\Controllers\Web\DashboardController;
+use App\Http\Controllers\Web\ReportController;
 use App\Http\Controllers\Web\StationAndAssociationFetch;
 use App\Http\Controllers\Web\UserManagementController;
 use App\Http\Controllers\Web\VehicleController;
@@ -52,6 +53,7 @@ Route::middleware(['auth','role:super admin'])->group(function(){
     Route::resource('all-associations', AllAssociationController::class);
     Route::resource('user-managements', UserManagementController::class);
     Route::resource('vehicles', VehicleController::class);
+    Route::resource('reports', ReportController::class);
 });
 
 Route::middleware(['auth','role:admin|super admin'])->group(function () {

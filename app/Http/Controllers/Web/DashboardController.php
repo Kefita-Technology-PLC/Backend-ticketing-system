@@ -39,8 +39,10 @@ class DashboardController extends Controller
                 });
         });
 
-        $StationCount = Station::count();
+        $stationCount = Station::count();
         $associationCount = Station::count();
+
+        // dd($stationCount, $associationCount);
         
 
     // Create an array of all months for the last 5 months (format 'Y-m' for lookup)
@@ -90,8 +92,8 @@ class DashboardController extends Controller
                     'bus' => ['label' => 'Bus', 'color' => 'hsl(var(--chart-5))']
                 ],
                 'initialData' => $initialData,
-                'stations' => $StationCount,
-                'associatons' => $associationCount,
+                'stations' => $stationCount,
+                'associations' => $associationCount,
             ]);
         }
     }

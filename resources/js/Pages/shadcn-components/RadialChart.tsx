@@ -21,9 +21,7 @@ import { ChartConfig, ChartContainer } from "@/Components/ui/chart"
 
 export const description = "A radial chart with text"
 
-const chartData = [
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-]
+
 
 const chartConfig = {
   visitors: {
@@ -36,22 +34,19 @@ const chartConfig = {
 } satisfies ChartConfig
 
 
-interface Backend{
-  stations : number
-}
 
-interface RadialChartProp{
-  backendData: Backend
-}
 
-export function RadialChart({backendData}: RadialChartProp) {
-
+export function RadialChart({backendData, name}: {backendData:number, name: string}) {
+  console.log(backendData)
+  const chartData = [
+    { browser: "safari", visitors: backendData, fill: "var(--color-safari)" },
+  ]
 
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Radial Chart - Text</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle>Radial Chart </CardTitle>
+        <CardDescription>Total Number of {name}</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
@@ -96,7 +91,7 @@ export function RadialChart({backendData}: RadialChartProp) {
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground"
                         >
-                          Visitors
+                          {name}
                         </tspan>
                       </text>
                     )

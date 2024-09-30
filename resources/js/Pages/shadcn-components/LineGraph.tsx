@@ -51,18 +51,18 @@ export function TicketSalesChart({ initialData }: Props) {
     endDate: null as Date | null,
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    post('/api/ticket-sales', {
-      preserveState: true,
-      preserveScroll: true,
-      onSuccess: (page) => {
-        // Type assertion to ensure the received data matches TicketSalesData[]
-        const newData = page.props.ticketSalesData as TicketSalesData[];
-        setChartData(newData);
-      },
-    })
-  }
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault()
+  //   post('/api/ticket-sales', {
+  //     preserveState: true,
+  //     preserveScroll: true,
+  //     onSuccess: (page) => {
+  //       // Type assertion to ensure the received data matches TicketSalesData[]
+  //       const newData = page.props.ticketSalesData as TicketSalesData[];
+  //       setChartData(newData);
+  //     },
+  //   })
+  // }
 
   return (
     <Card>
@@ -73,7 +73,7 @@ export function TicketSalesChart({ initialData }: Props) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="mb-4 flex items-end gap-4">
+        {/* <form onSubmit={handleSubmit} className="mb-4 flex items-end gap-4">
           <div>
             <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">Start Date</label>
             <DatePicker
@@ -93,7 +93,7 @@ export function TicketSalesChart({ initialData }: Props) {
             />
           </div>
           <Button type="submit" disabled={processing}>Update Chart</Button>
-        </form>
+        </form> */}
         <ChartContainer config={chartConfig}>
           <AreaChart
             accessibilityLayer
