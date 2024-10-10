@@ -112,4 +112,8 @@ class User extends Authenticatable implements MustVerifyEmail
     public function updatedUsers(){
         return $this->hasMany(User::class,'updated_by');
     }
+
+    public function dailyReports(){
+        return $this->hasMany(DailyReport::class);
+    }
 }

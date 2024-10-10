@@ -80,6 +80,7 @@ class TicketGeneratorController extends Controller
 
 
         $dailyReport = DailyReport::create([
+            'user_id' => Auth::user()->id,
             'ticket_count' => $attrs['ticket_count'],
             'revenue' => $attrs['revenue'],
             'total_sale' => $attrs['total_sale'],

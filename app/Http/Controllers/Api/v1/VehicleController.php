@@ -68,7 +68,7 @@ class VehicleController extends Controller
     public function ByPlateNumber(Request $request){
         $request->validate([
             'code' => 'required',
-            'region' => 'required',
+            'region' => ['required', 'in:TG,AF,AA,SN,DR,SD,AM,OR,SM,BN,HR,SW,ET'],
             'plate_number' => 'required',
         ]);
 
@@ -78,7 +78,7 @@ class VehicleController extends Controller
         ->where('plate_number', $request->plate_number)
         ->first();
 
-        
+
         return new ApiVehicleResource($vehicle);
 
     }
