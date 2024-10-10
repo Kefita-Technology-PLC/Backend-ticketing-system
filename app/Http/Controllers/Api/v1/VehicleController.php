@@ -57,12 +57,30 @@ class VehicleController extends Controller
         $searchColumns = ["plate_number"];
         $vehicleQuery = Vehicle::with(['association','station','creator','updater']);
 
-        return $this->search($request, $vehicleQuery, $searchColumns);
+        return $this->search($request, $vehicleQuery, $searchColumns, ApiVehicleResource::class);
     }
 
      public function getAll(){
         $vehicle = Vehicle::with(['association', 'station', 'creator', 'updater'])->orderBy('plate_number', 'asc')->get();
         return new VehicleCollection($vehicle);
+    }
+
+    public function ByPlateNumber(Request $request){
+        $request->validate([
+            'code' => 'required',
+            'region' => 'required',
+            'plate_number' => 'required',
+        ]);
+
+        $vehicle = Vehicle::with('association', 'station','creator', 'updater')
+        ->where('code', $request->code)
+        ->where('region', $request->region)
+        ->where('plate_number', $request->plate_number)
+        ->first();
+
+        
+        return new ApiVehicleResource($vehicle);
+
     }
 
     public function index()

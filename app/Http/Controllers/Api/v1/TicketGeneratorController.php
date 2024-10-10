@@ -71,33 +71,15 @@ class TicketGeneratorController extends Controller
 
     public function ticketPos(Request $request){
 
-        $attrs = $request->validate([
-            'station_name' => 'required',
+        $attrs = $request->validate([  
+            // 'station_name' => 'required',
             'ticket_count' => 'required',
-            'origin' => 'required',
-            'destination' => 'required',
-            'revenue' => 'required',
-            'association_name' => 'required',
             'total_sale' => 'required',
+            'revenue' => 'required',
         ]);
 
 
-        $stations = Station::pluck('id', 'name');
-        $associations = Association::pluck('id', 'name');
-
-        $station_id = $stations[$attrs['station_name']] ?? null;
-        $association_id = $associations[$attrs['association_name']] ?? null;
-
-        // Find the deployment line ID that matches both origin and destination
-        $deploymentLine = DeploymentLine::where('origin', $attrs['origin'])
-                                        ->where('destination', $attrs['destination'])
-                                        ->first();
-        $deploymentLine_id = $deploymentLine ? $deploymentLine->id : null;
-
         $dailyReport = DailyReport::create([
-            'station_id' => $station_id,
-            'deployment_line_id' => $deploymentLine_id,
-            'association_id' => $association_id,
             'ticket_count' => $attrs['ticket_count'],
             'revenue' => $attrs['revenue'],
             'total_sale' => $attrs['total_sale'],

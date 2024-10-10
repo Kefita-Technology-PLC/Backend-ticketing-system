@@ -25,8 +25,8 @@ class VehicleResource extends JsonResource
             'level' => $this->level,
             'number_of_passengers' => $this->number_of_passengers,
             'car_type' => $this->car_type,
-            'created_by' => new UserResource($this->created_by),
-            'updated_by' => new UserResource($this->updated_by),
+            'created_by' => new UserResource($this->creator),
+            'updated_by' => new UserResource($this->updater),
         ];
     }
 }

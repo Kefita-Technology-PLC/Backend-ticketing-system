@@ -48,15 +48,13 @@ Route::post('reset-password', [NewPasswordController::class, 'reset']);
 Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
     Route::resource('stations', StationController::class)->middleware(['role:admin|super admin']);
 
-
-
-  
-
     Route::resource('associations', AssociationController::class)->middleware(['role:admin|super admin']);
 
     Route::resource('vehicles', VehicleController::class)->middleware(['role:admin|super admin']);
 
     Route::get('/vehicles-search',[VehicleController::class,'searchQueries']);
+
+    Route::post('/vehicles-plate-number',[VehicleController::class, 'ByPlateNumber']);
 
     Route::resource('deployment-lines', DeploymentLineController::class)->middleware(['role:admin|super admin']);
 
@@ -88,7 +86,7 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
     Route::get('/vehicle-plate-number', [VehicleController::class,'vehiclePlateNumber']);
 
     Route::post('/daily-report-pos', [TicketGeneratorController::class,'ticketPos']);
-    // Route::post('/daily-ticket-report', ReportControol)
+
 });
 
 Route::prefix('v1')->group(function(){
