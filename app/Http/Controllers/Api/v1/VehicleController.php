@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\AssociationResource;
+use App\Http\Resources\Api\StationResource;
+use App\Http\Resources\Api\UserResource;
 use App\Http\Resources\Api\VehicleResource as ApiVehicleResource;
 use App\Http\Resources\Api\VehicleCollection;
+use App\Models\Tariff;
 use App\Models\Vehicle;
 use App\Traits\Searchable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -78,8 +82,41 @@ class VehicleController extends Controller
         ->where('plate_number', $request->plate_number)
         ->first();
 
+        $tariff = Tariff::where('origin', strtolower($vehicle->origin))
+        ->where('destination', strtolower($vehicle->destination))->first();
 
-        return new ApiVehicleResource($vehicle);
+        // dd($tariff);
+
+        $price = 0;
+
+        // dd($vehicle);
+
+        if($vehicle->level == 'level_1'){
+            $price = $vehicle->number_of_passengers * $tariff->level1_price;
+        }else if($vehicle->level == 'level_2'){
+            $price = $vehicle->number_of_passengers * $tariff->level2_price;
+        }else{
+            $price = $vehicle->number_of_passengers * $tariff->level3_price;
+        }
+
+
+        // return new ApiVehicleResource($vehicle);
+
+        return response()->json([
+            'data' =>[
+                'id' => $vehicle->id,
+                'station' => new StationResource($vehicle->station),
+                'association' => new AssociationResource($vehicle->association),
+                'plate_number' => $vehicle->plate_number,
+                'code' => $vehicle->code,
+                'level' => $vehicle->level,
+                'number_of_passengers' => $vehicle->number_of_passengers,
+                'car_type' => $vehicle->car_type,
+                'created_by' => new UserResource($vehicle->creator),
+                'updated_by' => new UserResource($vehicle->updater),
+                'price' => $price
+            ]
+        ]);
 
     }
 
