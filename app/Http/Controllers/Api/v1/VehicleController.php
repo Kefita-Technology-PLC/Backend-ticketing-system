@@ -10,6 +10,7 @@ use App\Http\Resources\Api\VehicleResource as ApiVehicleResource;
 use App\Http\Resources\Api\VehicleCollection;
 use App\Models\Tariff;
 use App\Models\Vehicle;
+use App\Rules\UniqueVehicleCombination;
 use App\Traits\Searchable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -82,14 +83,26 @@ class VehicleController extends Controller
         ->where('plate_number', $request->plate_number)
         ->first();
 
+        if(!$vehicle){
+            return response()->json([
+                'data' => [
+                    'message' => 'vehicle not found.'
+                ]
+            ], 404);
+        }
+
         $tariff = Tariff::where('origin', strtolower($vehicle->origin))
         ->where('destination', strtolower($vehicle->destination))->first();
 
-        // dd($tariff);
+        if(!$tariff){
+            return response()->json([
+                'data' => [
+                    'message' => 'Tarrif not found.'
+                ]
+            ], 404);
+        }
 
         $price = 0;
-
-        // dd($vehicle);
 
         if($vehicle->level == 'level_1'){
             $price = $vehicle->number_of_passengers * $tariff->level1_price;
@@ -98,9 +111,6 @@ class VehicleController extends Controller
         }else{
             $price = $vehicle->number_of_passengers * $tariff->level3_price;
         }
-
-
-        // return new ApiVehicleResource($vehicle);
 
         return response()->json([
             'data' =>[
