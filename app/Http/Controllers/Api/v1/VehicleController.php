@@ -105,11 +105,11 @@ class VehicleController extends Controller
         $price = 0;
 
         if($vehicle->level == 'level_1'){
-            $price = $vehicle->number_of_passengers * $tariff->level1_price;
+            $price = $tariff->level1_price;
         }else if($vehicle->level == 'level_2'){
-            $price = $vehicle->number_of_passengers * $tariff->level2_price;
+            $price =  $tariff->level2_price;
         }else{
-            $price = $vehicle->number_of_passengers * $tariff->level3_price;
+            $price =  $tariff->level3_price;
         }
 
         return response()->json([
