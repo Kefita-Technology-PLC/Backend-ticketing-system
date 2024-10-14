@@ -113,16 +113,7 @@ class SessionController extends Controller
                 ], 401);
             }
 
-            // Log request input
-            Log::info('Phone No: ' . $request->phone_no);
-            Log::info('Password: ' . $request->password);
-
             $user = User::where('phone_no', $request->phone_no)->first();
-
-            // Log database password
-            Log::info('Database Password: ' . $user->password);
-
-            // dd($user);
 
             if (!$user || !Auth::attempt(['phone_no' => $request->phone_no, 'password' => $request->password])) {
                 return response()->json([
@@ -138,6 +129,9 @@ class SessionController extends Controller
                 'status' => true,
                 'message' => 'User login successfully',
                 'token' => $user->createToken("API TOKEN")->plainTextToken,
+                'is_admin' => $user->hasRole('admin') ? true : false,
+                'is_super_admin' => $user->hasRole('super admin') ? true : false,
+                'is_ticket_seller' => $user->hasRole('ticket seller') ? true : false,
             ]);
 
         } catch (\Throwable $th) {
